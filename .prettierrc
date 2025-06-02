@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json.schemastore.org/prettierrc.json",
+  "singleQuote": true,
+  "jsxSingleQuote": true,
+  "semi": false,
+  "singleAttributePerLine": true,
+  "htmlWhitespaceSensitivity": "strict",
+  "tailwindFunctions": ["cva"],
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "tailwindStylesheet": "./app/styles/global.css"
+}

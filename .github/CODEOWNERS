@@ -1,0 +1,4 @@
+* @yaperos/web
+.github/**/* @yaperos/devops
+infra/**/* @yaperos/devops
+Dockerfile @yaperos/devops

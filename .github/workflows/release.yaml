@@ -1,0 +1,124 @@
+---
+name: Release Flow
+
+on: # yamllint disable-line rule:truthy
+  workflow_dispatch:
+    inputs:
+      releaseCandidateVersion:
+        description: 'Name of version (ie v5.5.0-rc.0)'
+        required: true
+
+env:
+  SLACK_CHANNEL: deploys
+  SLACK_CHANNEL_PRD: deploys_prd
+  SQUAD_NAME: SQUAD_NAME
+  HOSTNAME: web
+
+run-name: Release Flow at version ${{ github.event.inputs.releaseCandidateVersion }}
+
+jobs:
+  validate_release:
+    uses: yaperos/reusable-workflows/.github/workflows/validate_release.yaml@main
+    with:
+      environment: stg
+      version: ${{ inputs.releaseCandidateVersion }}
+      slack_channel: deploys
+    secrets: inherit
+  unit_test:
+    uses: yaperos/reusable-workflows/.github/workflows/tests.yaml@main
+    needs: [validate_release]
+    with:
+      node_version: 20.18.0
+      environment: stg
+      pre_test_command: npm install
+      test_command: npm run test
+      test_with_postgres: false
+      slack_channel: deploys
+  build_stg:
+    uses: yaperos/reusable-workflows/.github/workflows/build.yaml@main
+    needs: [unit_test]
+    with:
+      environment: stg
+      vault_vars: |
+        NEXT_PUBLIC_VAULT_VAR
+      vault_secrets: |
+        VAULT_SECRET
+      releaseCandidateVersion: ${{ inputs.releaseCandidateVersion }}
+      slack_channel: deploys
+    secrets: inherit
+  deploy_stg:
+    uses: yaperos/reusable-workflows/.github/workflows/deploy.yaml@main
+    needs: [build_stg]
+    with:
+      environment: stg
+      squad_name: squad_name
+      hostname: web
+      slack_channel: deploys
+      ingress_restart_rollout: true
+      releaseCandidateVersion: ${{ inputs.releaseCandidateVersion }}
+    secrets: inherit
+  owasp_scan:
+    uses: yaperos/reusable-workflows/.github/workflows/owasp_scan.yaml@main
+    needs: [deploy_stg]
+    with:
+      environment: stg
+      owasp_target: owasp_target
+      owasp_scan_type: baseline
+      slack_channel: deploys
+    secrets: inherit
+  get_last_tag:
+    uses: yaperos/reusable-workflows/.github/workflows/last_tag.yaml@main
+    needs: [owasp_scan]
+    with:
+      tag: ${{ inputs.releaseCandidateVersion }}
+      message: ${{ inputs.releaseCandidateVersion }}
+      slack_channel: deploys
+    secrets: inherit
+  generate_pre_release:
+    uses: yaperos/reusable-workflows/.github/workflows/generate_release.yaml@main
+    needs: [get_last_tag]
+    with:
+      environment: stg
+      releaseCandidateVersion: ${{ inputs.releaseCandidateVersion }}
+      base_ref: ${{ needs.get_last_tag.outputs.stg_last_version }}
+      slack_channel: deploys
+    secrets: inherit
+  promote_prd:
+    uses: yaperos/reusable-workflows/.github/workflows/approve.yaml@main
+    needs: [generate_pre_release]
+    with:
+      environment: promotePRD
+      slack_channel: deploys_prd
+    secrets: inherit
+  build_prd:
+    uses: yaperos/reusable-workflows/.github/workflows/build.yaml@main
+    needs: [promote_prd]
+    with:
+      environment: prd
+      vault_vars: |
+        NEXT_PUBLIC_VAULT_VAR
+      vault_secrets: |
+        VAULT_SECRET
+      releaseCandidateVersion: ${{ inputs.releaseCandidateVersion }}
+      slack_channel: deploys_prd
+    secrets: inherit
+  deploy_prd:
+    uses: yaperos/reusable-workflows/.github/workflows/deploy.yaml@main
+    needs: [build_prd]
+    with:
+      environment: prd
+      squad_name: squad_name
+      hostname: web
+      slack_channel: deploys_prd
+      releaseCandidateVersion: ${{ inputs.releaseCandidateVersion }}
+      ingress_restart_rollout: true
+    secrets: inherit
+  generate_release:
+    uses: yaperos/reusable-workflows/.github/workflows/generate_release.yaml@main
+    needs: [deploy_prd]
+    with:
+      environment: prd
+      releaseCandidateVersion: ${{ inputs.releaseCandidateVersion }}
+      base_ref: ${{ needs.get_last_tag.outputs.stg_last_version }}
+      slack_channel: deploys_prd
+    secrets: inherit

@@ -1,0 +1,48 @@
+---
+name: QA Flow
+
+on: # yamllint disable-line rule:truthy
+  push:
+    branches: [main]
+
+jobs:
+  unit_test:
+    uses: yaperos/reusable-workflows/.github/workflows/tests.yaml@main
+    with:
+      node_version: 20.18.0
+      environment: qa
+      pre_test_command: npm install
+      test_command: npm run test
+      test_with_postgres: false
+      slack_channel: deploys
+    secrets: inherit
+  build:
+    uses: yaperos/reusable-workflows/.github/workflows/build.yaml@main
+    needs: [unit_test]
+    with:
+      environment: qa
+      vault_vars: |
+        NEXT_PUBLIC_VAULT_VAR
+      vault_secrets: |
+        VAULT_SECRET
+      slack_channel: deploys
+    secrets: inherit
+  deploy:
+    uses: yaperos/reusable-workflows/.github/workflows/deploy.yaml@main
+    needs: [build]
+    with:
+      environment: qa
+      squad_name: squad_name
+      hostname: web
+      slack_channel: deploys
+      ingress_restart_rollout: true
+    secrets: inherit
+  owasp_scan:
+    uses: yaperos/reusable-workflows/.github/workflows/owasp_scan.yaml@main
+    needs: [deploy]
+    with:
+      environment: qa
+      owasp_target: owasp_target
+      owasp_scan_type: baseline
+      slack_channel: deploys
+    secrets: inherit
