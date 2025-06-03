@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
-import ComponentPageAbout from './about'
+import ViewPage1 from './sample-1'
 
-describe('Component Page About', () => {
+describe('Component Page Home', () => {
   it('renders a heading', () => {
-    render(<ComponentPageAbout />)
+    render(<ViewPage1 />)
 
     const heading = screen.getByRole('heading', { level: 1 })
 

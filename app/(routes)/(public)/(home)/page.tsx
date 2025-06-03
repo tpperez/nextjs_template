@@ -1,7 +1,7 @@
-import ComponentPageHome from '@/app/components/pages/home'
+import ViewHome from '@/app/views/home'
 
 const PageHome = () => {
-  return <ComponentPageHome />
+  return <ViewHome />
 }
 
 export default PageHome
