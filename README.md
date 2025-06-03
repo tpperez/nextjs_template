@@ -12,7 +12,7 @@
 8. [Scripts Disponíveis](#scripts-disponíveis)
 9. [Arquitetura e Conceitos](#arquitetura-e-conceitos)
 10. [Testes](#testes)
-11. [Exemplos Práticos](#exemplos-práticos)
+11. [📚 Exemplos Práticos](#-exemplos-práticos)
 12. [Workflows e Boas Práticas](#workflows-e-boas-práticas)
 
 ---
@@ -26,6 +26,7 @@ Este é um projeto Next.js moderno utilizando o App Router e TypeScript. O proje
 - ⚡ **Next.js** com App Router e Turbopack
 - 🎨 **Tailwind CSS** para estilização
 - 📱 **TypeScript** para tipagem robusta
+- 🗃️ **Zustand** para gerenciamento de estado global
 - 🧪 **Jest + Testing Library** para testes
 - 📏 **ESLint + Prettier** para qualidade de código
 - 🎯 **Conventional Commits** para versionamento
@@ -88,36 +89,22 @@ npm run dev
 
 Esta é a estrutura **atual** do template starter - o que você encontrará ao clonar o projeto:
 
+> 📝 **Nota**: Diretórios e arquivos estão organizados como nos editores - **pastas primeiro** em ordem alfabética, depois **arquivos** em ordem alfabética.
+
 ```
 /app
-├── layout.tsx                    # Layout raiz da aplicação
-├── styles/
-│   └── globals.css              # Estilos globais (Tailwind CSS)
-│
 ├── (routes)/                    # 🗂️ Rotas da aplicação
 │   └── (public)/               # 🌐 Rotas públicas
-│       ├── layout.tsx          # Layout para páginas públicas
 │       ├── (home)/             # 🏠 Página inicial
 │       │   └── page.tsx        # PageHome (usa ViewHome)
-│       └── sample-1/           # 📄 Página de exemplo
-│           └── page.tsx        # PageSample1 (usa ViewSample1)
-│
-├── views/                       # 📱 Views implementadas
-│   ├── home/                   # 🏠 View da página inicial
-│   │   ├── home.tsx            # Componente ViewHome
-│   │   ├── home.test.tsx       # Testes da view
-│   │   └── index.ts            # Exportação
-│   └── sample-1/               # 📄 View de exemplo
-│       ├── sample-1.tsx        # Componente ViewSample1
-│       ├── sample-1.test.tsx   # Testes da view
-│       └── index.ts            # Exportação
-│
+│       ├── sample-1/           # 📄 Página de exemplo
+│       │   └── page.tsx        # PageSample1 (usa ViewSample1)
+│       └── layout.tsx          # Layout para páginas públicas
 ├── components/                  # 🧩 Componentes (preparado para uso)
 │   ├── structure/              # 🏗️ Componentes estruturais
 │   │   └── .placeholder        # Pasta vazia (pronta para usar)
 │   └── ui/                     # 🎨 Componentes de interface
 │       └── .placeholder        # Pasta vazia (pronta para usar)
-│
 ├── constants/                   # 📊 Constantes da aplicação
 │   └── .placeholder            # Pasta vazia (pronta para usar)
 ├── hooks/                       # 🎣 Custom hooks
@@ -126,16 +113,28 @@ Esta é a estrutura **atual** do template starter - o que você encontrará ao c
 │   └── .placeholder            # Pasta vazia (pronta para usar)
 ├── stores/                      # 🗃️ Stores de estado
 │   └── .placeholder            # Pasta vazia (pronta para usar)
+├── styles/                      # 🎨 Estilos globais
+│   └── globals.css              # Estilos globais (Tailwind CSS)
 ├── typings/                     # 📝 Tipos globais
 │   └── .placeholder            # Pasta vazia (pronta para usar)
-└── utils/                       # 🛠️ Funções utilitárias
-    └── .placeholder             # Pasta vazia (pronta para usar)
+├── utils/                       # 🛠️ Funções utilitárias
+│   └── .placeholder            # Pasta vazia (pronta para usar)
+├── views/                       # 📱 Views implementadas
+│   ├── home/                   # 🏠 View da página inicial
+│   │   ├── home.test.tsx       # Testes da view
+│   │   ├── home.tsx            # Componente ViewHome
+│   │   └── index.ts            # Exportação
+│   └── sample-1/               # 📄 View de exemplo
+│       ├── index.ts            # Exportação
+│       ├── sample-1.test.tsx   # Testes da view
+│       └── sample-1.tsx        # Componente ViewSample1
+├── favicon.ico                  # 🌐 Favicon principal (App Router)
+└── layout.tsx                   # Layout raiz da aplicação
 
 /public/                          # 📁 Arquivos estáticos (raiz do projeto)
-├── images/                       # 🖼️ Imagens (logos, ícones, fotos)
-├── icons/                        # 🎯 Ícones e favicons
 ├── documents/                    # 📄 PDFs, documentos para download
-├── favicon.ico                   # 🌐 Favicon principal
+├── icons/                        # 🎯 Ícones adicionais e favicons
+├── images/                       # 🖼️ Imagens (logos, ícones, fotos)
 ├── robots.txt                    # 🤖 Instruções para crawlers
 └── sitemap.xml                   # 🗺️ Mapa do site
 ```
@@ -153,9 +152,11 @@ Esta é a estrutura **atual** do template starter - o que você encontrará ao c
 
 1. **Adicionar componentes** em `/components/ui/` e `/components/structure/`
 2. **Criar novas views** em `/views/[nome-da-view]/`
-3. **Implementar stores** em `/stores/` (ex: Zustand)
+3. **Implementar stores globais** em `/stores/` usando Zustand (já configurado)
 4. **Adicionar services** em `/services/` para APIs
-5. **Remover `.placeholder`** conforme usa as pastas
+5. **Criar hooks específicos** usando sufixo `.hook.ts` em views/components conforme necessário (ver exemplos na documentação)
+6. **Adicionar hooks globais** em `/hooks/` para lógica reutilizável
+7. **Remover `.placeholder`** conforme usa as pastas
 
 ---
 
@@ -163,57 +164,74 @@ Esta é a estrutura **atual** do template starter - o que você encontrará ao c
 
 Esta é uma **estrutura avançada** para quando o projeto estiver maduro e precisar de organização escalável:
 
+> 📝 **Nota**: Diretórios e arquivos estão organizados como nos editores - **pastas primeiro** em ordem alfabética, depois **arquivos** em ordem alfabética.
+
 ```
 /app
-├── layout.tsx                    # Layout raiz da aplicação
-│
 ├── (routes)/                     # 🗂️ Todas as rotas da aplicação
 │   ├── api/                      # 🔌 API Routes (endpoints)
 │   │   └── example/
 │   │       └── route.ts
-│   │
-│   ├── (public)/                 # 🌐 Rotas públicas (sem auth)
-│   │   ├── layout.tsx            # Layout para rotas públicas
-│   │   ├── (home)/               # 🏠 Página inicial
-│   │   ├── sample-1/             # 📄 Outras páginas públicas
-│   │   └── sample-2/
-│   │
-│   └── (auth)/                   # 🔒 Rotas protegidas (com auth)
-│       ├── layout.tsx            # Layout para rotas autenticadas
-│       ├── sample-3/             # 📄 Páginas protegidas
-│       └── sample-4/
-│
+│   ├── (auth)/                   # 🔒 Rotas protegidas (com auth)
+│   │   ├── sample-3/             # 📄 Páginas protegidas
+│   │   │   ├── page.tsx
+│   │   │   └── queries.ts        # 🔍 Queries da rota
+│   │   ├── sample-4/
+│   │   │   ├── page.tsx
+│   │   │   └── queries.ts        # 🔍 Queries da rota
+│   │   └── layout.tsx            # Layout para rotas autenticadas
+│   └── (public)/                 # 🌐 Rotas públicas (sem auth)
+│       ├── (home)/               # 🏠 Página inicial
+│       │   ├── error.tsx         # Error UI
+│       │   ├── loading.tsx       # Loading UI
+│       │   ├── page.tsx          # Página principal
+│       │   └── queries.ts        # 🔍 Queries específicas desta rota
+│       ├── sample-1/             # 📄 Outras páginas públicas
+│       │   ├── page.tsx
+│       │   └── queries.ts        # 🔍 Queries da rota
+│       ├── sample-2/
+│       │   ├── page.tsx
+│       │   └── queries.ts        # 🔍 Queries da rota
+│       └── layout.tsx            # Layout para rotas públicas
 ├── components/                   # 🧩 Componentes reutilizáveis
 │   ├── structure/                # 🏗️ Componentes estruturais
+│   │   ├── footer/
 │   │   ├── header/
-│   │   ├── sidebar/
-│   │   └── footer/
-│   │
+│   │   └── sidebar/
 │   └── ui/                       # 🎨 Componentes de interface
 │       ├── button/
+│       │   ├── button.test.tsx
+│       │   ├── button.tsx
+│       │   ├── button.type.ts
+│       │   ├── button.hook.ts   # 🎣 Hook específico (opcional)
+│       │   └── index.ts
 │       ├── input/
 │       └── modal/
-│
+├── constants/                    # 📊 Constantes da aplicação
+├── hooks/                        # 🎣 Custom hooks reutilizáveis
+├── services/                     # 🔧 Serviços e integrações de API
+├── stores/                       # 🗃️ Estados globais (Zustand)
+├── styles/                       # 🎨 Estilos globais e temas
+├── typings/                      # 📝 Definições de tipos globais
+├── utils/                        # 🛠️ Funções utilitárias
 ├── views/                        # 📱 Views/estruturas de páginas
 │   ├── home/                     # 🏠 Página inicial (public)
+│   │   ├── home.test.tsx
+│   │   ├── home.tsx
+│   │   ├── home.type.ts
+│   │   ├── home.hook.ts         # 🎣 Hook específico (opcional)
+│   │   └── index.ts
 │   ├── sample-1/                 # 📄 Sample 1 (public)
 │   ├── sample-2/                 # 📄 Sample 2 (public)
 │   ├── sample-3/                 # 🔒 Sample 3 (auth)
 │   └── sample-4/                 # 🔒 Sample 4 (auth)
-│
-├── constants/                    # 📊 Constantes da aplicação
-├── hooks/                        # 🎣 Custom hooks reutilizáveis
-├── services/                     # 🔧 Serviços e integrações de API
-├── stores/                       # 🗃️ Stores do Zustand
-├── styles/                       # 🎨 Estilos globais e temas
-├── typings/                      # 📝 Definições de tipos globais
-└── utils/                        # 🛠️ Funções utilitárias
+├── favicon.ico                   # 🌐 Favicon principal (App Router)
+└── layout.tsx                    # Layout raiz da aplicação
 
 /public/                          # 📁 Arquivos estáticos (raiz do projeto)
-├── images/                       # 🖼️ Imagens (logos, ícones, fotos)
-├── icons/                        # 🎯 Ícones e favicons
 ├── documents/                    # 📄 PDFs, documentos para download
-├── favicon.ico                   # 🌐 Favicon principal
+├── icons/                        # 🎯 Ícones e favicons
+├── images/                       # 🖼️ Imagens (logos, ícones, fotos)
 ├── robots.txt                    # 🤖 Instruções para crawlers
 └── sitemap.xml                   # 🗺️ Mapa do site
 ```
@@ -226,9 +244,10 @@ Tanto **components** quanto **views** seguem a mesma estrutura padrão:
 
 ```
 button/
-├── button.tsx                   # 📄 Componente principal
 ├── button.test.tsx              # 🧪 Testes unitários
+├── button.tsx                   # 📄 Componente principal
 ├── button.type.ts               # 📝 Tipos específicos
+├── button.hook.ts               # 🎣 Hook específico (opcional)
 └── index.ts                     # 📤 Arquivo de exportação
 ```
 
@@ -236,24 +255,24 @@ button/
 
 ```
 home/
-├── home.tsx                     # 📄 View principal
-├── home.test.tsx                # 🧪 Testes unitários
-├── home.type.ts                 # 📝 Tipos específicos
-├── home.store.ts                # 🗃️ Store específico (se necessário)
-├── home.query.ts                # 🔍 Queries/API calls (se necessário)
 ├── components/                  # 🧩 Componentes internos da view
 │   └── hero-section/
-│       ├── hero-section.tsx
 │       ├── hero-section.test.tsx
+│       ├── hero-section.tsx
+│       ├── hero-section.hook.ts # 🎣 Hook específico (opcional)
 │       └── index.ts
+├── home.test.tsx                # 🧪 Testes unitários
+├── home.tsx                     # 📄 View principal
+├── home.type.ts                 # 📝 Tipos específicos
+├── home.hook.ts                 # 🎣 Hook específico (opcional)
 └── index.ts                     # 📤 Arquivo de exportação
 ```
 
 #### 📋 Arquivos Opcionais
 
-- `.store.ts` - Para views que precisam de estado específico
-- `.query.ts` - Para views com chamadas de API específicas
 - `/components/` - Para componentes que só existem dentro desta view
+
+> 💡 **Estado na view**: Use React state (`useState`) para estado local da view. Para estado global, crie stores em `/stores/` usando Zustand.
 
 ---
 
@@ -261,16 +280,16 @@ home/
 
 ### 🏷️ Nomenclatura
 
-| Tipo                      | Convenção           | Exemplo                                  |
-| ------------------------- | ------------------- | ---------------------------------------- |
-| **Arquivos e Diretórios** | `kebab-case`        | `user-profile.tsx`, `auth-service/`      |
-| **Variáveis e Funções**   | `camelCase`         | `userName`, `handleSubmit()`             |
-| **Componentes**           | `PascalCase`        | `Button`, `Modal`, `Header`              |
-| **Views**                 | `View + PascalCase` | `ViewHome`, `ViewSample1`, `ViewProfile` |
-| **Páginas Next.js**       | `Page + PascalCase` | `PageHome`, `PageSample1`, `PageProfile` |
-| **Interfaces**            | `I + PascalCase`    | `IUserData`, `IButtonProps`              |
-| **Types**                 | `T + PascalCase`    | `TButtonVariant`, `TApiResponse`         |
-| **Constantes**            | `UPPER_SNAKE_CASE`  | `API_BASE_URL`, `MAX_ATTEMPTS`           |
+| Tipo                      | Convenção                     | Exemplo                                  |
+| ------------------------- | ----------------------------- | ---------------------------------------- |
+| **Arquivos e Diretórios** | `kebab-case`                  | `user-profile.tsx`, `auth-service/`      |
+| **Variáveis e Funções**   | `camelCase`                   | `userName`, `handleSubmit()`             |
+| **Componentes**           | `PascalCase`                  | `Button`, `Modal`, `Header`              |
+| **Views**                 | `View + PascalCase` (prefixo) | `ViewHome`, `ViewSample1`, `ViewProfile` |
+| **Páginas**               | `Page + PascalCase` (prefixo) | `PageHome`, `PageSample1`, `PageProfile` |
+| **Interfaces**            | `I + PascalCase` (prefixo)    | `IUserData`, `IButtonProps`              |
+| **Types**                 | `T + PascalCase` (prefixo)    | `TButtonVariant`, `TApiResponse`         |
+| **Constantes**            | `UPPER_SNAKE_CASE`            | `API_BASE_URL`, `MAX_ATTEMPTS`           |
 
 ### 🏹 Arrow Functions (Obrigatório)
 
@@ -296,6 +315,93 @@ function Button(props) {          // ESLint error!
 }
 ```
 
+### 🎣 Custom Hooks (Recomendado)
+
+Use custom hooks para abstrair lógica, regras de negócio e gerenciamento de estado sempre que possível.
+
+#### 📁 Organização de Custom Hooks
+
+**Hooks globais** - Reutilizáveis em toda aplicação:
+
+```
+/app/hooks/
+├── use-api.hook.ts              # Hook genérico para API calls
+├── use-local-storage.hook.ts    # Hook para localStorage
+└── use-debounce.hook.ts         # Hook para debounce
+```
+
+**Hooks específicos** - Usados apenas em um escopo (view/component):
+
+```
+/app/views/user-profile/
+├── user-profile.tsx
+├── user-profile.test.tsx
+├── user-profile.hook.ts         # ✅ Hook específico desta view
+└── index.ts
+
+/app/components/ui/data-table/
+├── data-table.tsx
+├── data-table.test.tsx
+├── data-table.hook.ts           # ✅ Hook específico deste component
+└── index.ts
+```
+
+#### 🔍 Convenção de Nomenclatura
+
+```typescript
+// ✅ Hooks globais (em /hooks/)
+export const useApi = () => {
+  /* ... */
+}
+export const useLocalStorage = () => {
+  /* ... */
+}
+export const useDebounce = () => {
+  /* ... */
+}
+
+// ✅ Hooks específicos (com sufixo .hook.)
+export const useUserProfile = () => {
+  /* ... */
+} // user-profile.hook.ts
+export const useDataTable = () => {
+  /* ... */
+} // data-table.hook.ts
+export const useFormValidation = () => {
+  /* ... */
+} // form-validation.hook.ts
+```
+
+#### 🎯 Quando Usar Cada Abordagem
+
+| Cenário                       | Use `/hooks/` (Global)     | Use `.hook.` (Específico) |
+| ----------------------------- | -------------------------- | ------------------------- |
+| **Lógica reutilizável**       | ✅ API calls, localStorage | ❌                        |
+| **Utilitários genéricos**     | ✅ debounce, throttle      | ❌                        |
+| **Lógica específica de view** | ❌                         | ✅ user-profile.hook.ts   |
+| **Estado complexo local**     | ❌                         | ✅ data-table.hook.ts     |
+| **Validação específica**      | ❌                         | ✅ contact-form.hook.ts   |
+| **Hooks usados 3+ lugares**   | ✅ Mover para `/hooks/`    | ❌                        |
+
+**Benefícios dos Custom Hooks:**
+
+- ✅ **Reutilização** - Lógica compartilhada entre componentes
+- ✅ **Testabilidade** - Hooks podem ser testados isoladamente
+- ✅ **Separação de responsabilidades** - Componentes focam apenas na renderização
+- ✅ **Manutenibilidade** - Mudanças de lógica centralizadas
+- ✅ **Legibilidade** - Componentes mais limpos e focados
+- ✅ **Colocation** - Hooks específicos próximos ao código que os usa
+
+**Quando criar custom hooks:**
+
+- 🔄 **Estado complexo** - Múltiplos estados relacionados
+- 🧠 **Lógica de negócio** - Validações, cálculos, transformações
+- 🌐 **Chamadas de API** - Fetch, cache, loading states
+- 🎯 **Side effects** - Subscriptions, timers, DOM manipulation
+- 🔁 **Lógica reutilizável** - Usada em múltiplos componentes
+
+📚 **[Ver exemplos práticos de implementação →](#-exemplos-práticos)**
+
 ### 🤔 Quando Usar Interface vs Type
 
 | Uso                       | Interface (I)         | Type (T)                 |
@@ -306,10 +412,10 @@ function Button(props) {          // ESLint error!
 | **Extensão**              | ✅ Pode ser estendida | ❌ Não extensível        |
 | **Performance**           | ✅ Melhor para TS     | ⚡ Alias simples         |
 
-### 🎯 Padrão de Sufixos
+### 🎯 Padrão de Prefixos
 
 ```typescript
-// ✅ Correto - Sufixos consistentes (padrão atual)
+// ✅ Correto - Prefixos consistentes (padrão atual)
 const PageHome = () => {                        // Página do Next.js (arrow function)
   return <ViewHome />                           // View que estrutura a página
 }
@@ -329,6 +435,8 @@ export default function Home() {                // Function declaration (não us
 }
 ```
 
+📚 **[Ver mais exemplos de nomenclatura →](#-convenções-de-nomenclatura)**
+
 ---
 
 ## 🛠 Tecnologias Utilizadas
@@ -342,10 +450,12 @@ export default function Home() {                // Function declaration (não us
 
 ### State & Data
 
-- **React State** - Hooks nativos (useState, useReducer) para gerenciamento de estado local
-- **Context API** - Para estado global quando necessário
+- **React State** - Hooks nativos (useState, useReducer) para gerenciamento de estado **local do componente**
+- **Zustand** - Gerenciamento de estado **global** no diretório `/stores/` (padrão definido)
 
-> 💡 **Recomendação**: Para projetos que crescem, considere adicionar **Zustand** ou **Redux Toolkit** para gerenciamento de estado mais robusto.
+> 💡 **Padrão de uso**: React state para estado local/componente, Zustand **exclusivamente** para estado global no diretório `/stores/`.
+
+📚 **[Ver exemplo de implementação com Zustand →](#-teste-de-store-global-zustand)**
 
 ### Development & Quality
 
@@ -416,7 +526,42 @@ git commit          # Commitizen abre automaticamente via Husky
 - 📱 **Específicas de uma página/tela**
 - 🎭 **Orquestram múltiplos components**
 - 🧠 **Contêm lógica de negócio**
-- 🔗 **Conectam stores, APIs, etc.**
+- 📊 **Recebem dados via props** (não fazem queries diretamente)
+
+**Queries** (`/routes/.../queries.ts`):
+
+- 🔍 **Específicas de uma rota/página**
+- 📡 **Fazem chamadas para APIs**
+- 🏗️ **Preparam dados para a view**
+- ⚡ **Server Components** (executam no servidor)
+
+### 🔄 Fluxo de Dados: Rota → Query → View
+
+```typescript
+// 1. Rota (Server Component) - Busca dados
+const PageHome = async () => {
+  const data = await getHomeData()  // Query
+  return <ViewHome data={data} />   // Passa para View
+}
+
+// 2. Query - Abstrai chamadas de API
+const getHomeData = async () => {
+  return await fetch('/api/home').then(r => r.json())
+}
+
+// 3. View - Renderiza com os dados
+const ViewHome = ({ data }) => {
+  return <div>{data.title}</div>
+}
+```
+
+**Benefícios dessa separação:**
+
+- ✅ **Views testáveis** - Props diretas, sem side effects
+- ✅ **Queries reutilizáveis** - Podem ser chamadas de outros lugares
+- ✅ **Server Components** - Queries executam no servidor
+- ✅ **Type Safety** - Dados tipados fluem da query até a view
+- ✅ **Manutenção** - Responsabilidades bem definidas
 
 ### Hierarquia de Componentes e Views
 
@@ -431,26 +576,32 @@ git commit          # Commitizen abre automaticamente via Husky
    - Buttons, Inputs, Modals, etc.
 
 3. **Views** (`/views/`)
+
    - Estruturas completas de páginas
    - Lógica de negócio e orquestração
    - Composição de componentes para formar uma tela
 
-### 🗺️ Mapeamento Rotas → Views
+4. **Queries** (`/routes/.../queries.ts`)
+   - Específicas de uma rota/página
+   - Fazem chamadas para APIs e preparam dados
 
-A estrutura de rotas tem correspondência direta com as views:
+### 🗺️ Mapeamento Rotas → Views → Queries
 
-| Rota                                      | View                              | Tipo           |
-| ----------------------------------------- | --------------------------------- | -------------- |
-| `app/(routes)/(public)/(home)/page.tsx`   | `views/home/` → `ViewHome`        | 🌐 Pública     |
-| `app/(routes)/(public)/sample-1/page.tsx` | `views/sample-1/` → `ViewSample1` | 🌐 Pública     |
-| `app/(routes)/(public)/sample-2/page.tsx` | `views/sample-2/` → `ViewSample2` | 🌐 Pública     |
-| `app/(routes)/(auth)/sample-3/page.tsx`   | `views/sample-3/` → `ViewSample3` | 🔒 Autenticada |
-| `app/(routes)/(auth)/sample-4/page.tsx`   | `views/sample-4/` → `ViewSample4` | 🔒 Autenticada |
+A estrutura de rotas tem correspondência direta com views, e as queries ficam junto às rotas:
+
+| Rota                                      | View                              | Query                 | Tipo           |
+| ----------------------------------------- | --------------------------------- | --------------------- | -------------- |
+| `app/(routes)/(public)/(home)/page.tsx`   | `views/home/` → `ViewHome`        | `(home)/queries.ts`   | 🌐 Pública     |
+| `app/(routes)/(public)/sample-1/page.tsx` | `views/sample-1/` → `ViewSample1` | `sample-1/queries.ts` | 🌐 Pública     |
+| `app/(routes)/(public)/sample-2/page.tsx` | `views/sample-2/` → `ViewSample2` | `sample-2/queries.ts` | 🌐 Pública     |
+| `app/(routes)/(auth)/sample-3/page.tsx`   | `views/sample-3/` → `ViewSample3` | `sample-3/queries.ts` | 🔒 Autenticada |
+| `app/(routes)/(auth)/sample-4/page.tsx`   | `views/sample-4/` → `ViewSample4` | `sample-4/queries.ts` | 🔒 Autenticada |
 
 **Padrão:**
 
 ```
-(routes)/[group]/[sample]/page.tsx  →  views/[sample]/  →  View[Sample]
+(routes)/[group]/[sample]/page.tsx    →  views/[sample]/  →  View[Sample]
+(routes)/[group]/[sample]/queries.ts  →  Queries específicas da rota
 ```
 
 ### 🤔 Quando Usar Cada Abordagem
@@ -465,6 +616,8 @@ A estrutura de rotas tem correspondência direta com as views:
 |                           | ❌                                 | ✅ `/views/sample-2/` → `ViewSample2` |
 | **Páginas autenticadas**  | ❌                                 | ✅ `/views/sample-3/` → `ViewSample3` |
 |                           | ❌                                 | ✅ `/views/sample-4/` → `ViewSample4` |
+
+📚 **[Ver exemplos práticos de implementação →](#-criando-component-reutilizável)**
 
 ---
 
@@ -497,9 +650,13 @@ npm test -- --coverage
 npm test -- button
 ```
 
+📚 **[Ver exemplos de testes implementados →](#-exemplos-de-testes)**
+
 ---
 
 ## 📚 Exemplos Práticos
+
+Esta seção centraliza todos os exemplos de implementação para facilitar a consulta e manutenção.
 
 ### 🎯 Convenções de Nomenclatura
 
@@ -541,6 +698,120 @@ interface ButtonProps {}              // sem prefixo I
 type UserData = {}                     // type para estrutura (use interface)
 ```
 
+### 🎣 Implementação de Custom Hooks
+
+#### Custom Hook para Lógica de Negócio
+
+```typescript
+// useUserManagement - Hook para gerenciar usuários
+const useUserManagement = () => {
+  const [users, setUsers] = useState<IUser[]>([])
+  const [loading, setLoading] = useState(false)
+
+  const fetchUsers = useCallback(async () => {
+    setLoading(true)
+    try {
+      const data = await getUsersAPI()
+      setUsers(data)
+    } catch (error) {
+      console.error('Error fetching users:', error)
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  return { users, loading, fetchUsers }
+}
+
+// useFormValidation - Hook para validação de formulários
+const useFormValidation = (initialValues: IFormData) => {
+  const [values, setValues] = useState(initialValues)
+  const [errors, setErrors] = useState<Record<string, string>>({})
+
+  const validateField = (field: string, value: string) => {
+    // Lógica de validação
+    return value.length > 0 ? '' : 'Campo obrigatório'
+  }
+
+  const handleChange = (field: string, value: string) => {
+    setValues((prev) => ({ ...prev, [field]: value }))
+    const error = validateField(field, value)
+    setErrors((prev) => ({ ...prev, [field]: error }))
+  }
+
+  return { values, errors, handleChange }
+}
+```
+
+#### Utilizando Custom Hooks
+
+```typescript
+// ✅ Componente limpo usando custom hooks
+const UserList = () => {
+  const { users, loading, fetchUsers } = useUserManagement()
+
+  useEffect(() => {
+    fetchUsers()
+  }, [fetchUsers])
+
+  if (loading) {
+    return <div>Carregando usuários...</div>
+  }
+
+  return (
+    <div>
+      <h2>Lista de Usuários</h2>
+      {users.map(user => (
+        <div key={user.id}>
+          {user.name} - {user.email}
+        </div>
+      ))}
+      <Button onClick={fetchUsers}>
+        Atualizar Lista
+      </Button>
+    </div>
+  )
+}
+
+// ✅ Formulário usando custom hook de validação
+const UserForm = () => {
+  const initialValues = { name: '', email: '', phone: '' }
+  const { values, errors, handleChange } = useFormValidation(initialValues)
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (Object.values(errors).every(error => error === '')) {
+      console.log('Formulário válido:', values)
+      // Enviar dados...
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <Input
+          value={values.name}
+          onChange={(e) => handleChange('name', e.target.value)}
+          placeholder="Nome"
+        />
+        {errors.name && <span className="error">{errors.name}</span>}
+      </div>
+
+      <div>
+        <Input
+          value={values.email}
+          onChange={(e) => handleChange('email', e.target.value)}
+          placeholder="Email"
+        />
+        {errors.email && <span className="error">{errors.email}</span>}
+      </div>
+
+      <Button type="submit">Salvar</Button>
+    </form>
+  )
+}
+```
+
 ### 🧩 Criando Component Reutilizável
 
 #### 1. Estrutura Base
@@ -564,6 +835,28 @@ export interface IButtonProps {
 
 export type TButtonVariant = 'primary' | 'secondary' | 'danger'
 export type TSize = 'sm' | 'md' | 'lg'
+```
+
+```typescript
+// button.hook.ts (opcional - para lógica específica do button)
+import { useState } from 'react'
+
+export const useButton = ({ onClick }: { onClick?: () => void }) => {
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleClick = async () => {
+    if (!onClick) return
+
+    setIsLoading(true)
+    try {
+      await onClick()
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return { isLoading, handleClick }
+}
 ```
 
 ```typescript
@@ -618,6 +911,7 @@ describe('Button', () => {
 ```typescript
 // index.ts
 export { Button } from './button'
+export { useButton } from './button.hook'
 export type { IButtonProps, TButtonVariant, TSize } from './button.type'
 ```
 
@@ -636,10 +930,11 @@ cd app/views/home
 ```typescript
 // home.type.ts
 export interface IHomeProps {
-  // Props vazias para home, mas mantém consistência da estrutura
+  homeData: IHomeData
+  features: IFeature[]
 }
 
-export interface IHeroSection {
+export interface IHomeData {
   title: string
   subtitle: string
   ctaText: string
@@ -654,43 +949,50 @@ export interface IFeature {
 ```
 
 ```typescript
+// home.hook.ts (opcional - para lógica específica da home)
+import { useState, useEffect } from 'react'
+import { IHomeData, IFeature } from './home.type'
+
+export const useHome = (
+  initialData: IHomeData,
+  initialFeatures: IFeature[],
+) => {
+  const [homeData, setHomeData] = useState(initialData)
+  const [features, setFeatures] = useState(initialFeatures)
+  const [selectedFeature, setSelectedFeature] = useState<string | null>(null)
+
+  const handleFeatureSelect = (featureId: string) => {
+    setSelectedFeature(featureId === selectedFeature ? null : featureId)
+  }
+
+  const resetSelection = () => {
+    setSelectedFeature(null)
+  }
+
+  return {
+    homeData,
+    features,
+    selectedFeature,
+    handleFeatureSelect,
+    resetSelection,
+  }
+}
+```
+
+```typescript
 // home.tsx
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { HeroSection } from '@/components/structure/hero-section'
 import { IHomeProps } from './home.type'
+import { useHome } from './home.hook'
 
-const ViewHome = ({}: IHomeProps) => {
-  const heroData = {
-    title: 'Bem-vindo à Nossa Aplicação',
-    subtitle: 'A solução perfeita para suas necessidades',
-    ctaText: 'Começar Agora'
-  }
-
-  const features = [
-    {
-      id: '1',
-      icon: '🚀',
-      title: 'Rápido',
-      description: 'Performance otimizada'
-    },
-    {
-      id: '2',
-      icon: '🔒',
-      title: 'Seguro',
-      description: 'Dados protegidos'
-    },
-    {
-      id: '3',
-      icon: '📱',
-      title: 'Responsivo',
-      description: 'Qualquer dispositivo'
-    }
-  ]
+const ViewHome = ({ homeData, features }: IHomeProps) => {
+  const { selectedFeature, handleFeatureSelect, resetSelection } = useHome(homeData, features)
 
   return (
     <div className="min-h-screen">
-      <HeroSection {...heroData} />
+      <HeroSection {...homeData} />
 
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -700,13 +1002,25 @@ const ViewHome = ({}: IHomeProps) => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {features.map((feature) => (
-              <Card key={feature.id} className="text-center p-6">
+              <Card
+                key={feature.id}
+                className={`text-center p-6 cursor-pointer transition-colors ${
+                  selectedFeature === feature.id ? 'bg-blue-50 border-blue-300' : ''
+                }`}
+                onClick={() => handleFeatureSelect(feature.id)}
+              >
                 <div className="text-4xl mb-4">{feature.icon}</div>
                 <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
                 <p className="text-gray-600">{feature.description}</p>
               </Card>
             ))}
           </div>
+
+          {selectedFeature && (
+            <div className="mt-8 text-center">
+              <Button onClick={resetSelection}>Limpar Seleção</Button>
+            </div>
+          )}
         </div>
       </section>
 
@@ -716,7 +1030,7 @@ const ViewHome = ({}: IHomeProps) => {
             Pronto para começar?
           </h2>
           <Button size="lg">
-            Criar Conta Grátis
+            {homeData.ctaText}
           </Button>
         </div>
       </section>
@@ -731,17 +1045,24 @@ export default ViewHome
 // index.ts
 import ViewHome from './home'
 export default ViewHome
-export type { IHomeProps, IHeroSection, IFeature } from './home.type'
+export { useHome } from './home.hook'
+export type { IHomeProps, IHomeData, IFeature } from './home.type'
 ```
 
-#### 3. Usando a View na Rota
+#### 3. Usando a View na Rota com Queries
 
 ```typescript
 // app/(routes)/(public)/(home)/page.tsx
 import ViewHome from '@/app/views/home'
+import { getHomeData, getFeatures } from './queries'
 
-const PageHome = () => {
-  return <ViewHome />
+const PageHome = async () => {
+  const [homeData, features] = await Promise.all([
+    getHomeData(),
+    getFeatures()
+  ])
+
+  return <ViewHome homeData={homeData} features={features} />
 }
 
 export default PageHome
@@ -753,16 +1074,42 @@ export const metadata = {
 }
 ```
 
+```typescript
+// app/(routes)/(public)/(home)/queries.ts
+export const getHomeData = async () => {
+  const response = await fetch('/api/home')
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch home data')
+  }
+
+  return response.json()
+}
+
+export const getFeatures = async () => {
+  const response = await fetch('/api/features')
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch features')
+  }
+
+  return response.json()
+}
+```
+
 ### 🛣️ Roteamento Next.js
 
-#### Estrutura de Rotas
+#### Estrutura de Rotas com Queries
 
 ```typescript
 // app/(routes)/(public)/sample-1/page.tsx
 import ViewSample1 from '@/app/views/sample-1'
+import { getSample1Data } from './queries'
 
-const PageSample1 = () => {
-  return <ViewSample1 />
+const PageSample1 = async () => {
+  const data = await getSample1Data()
+
+  return <ViewSample1 data={data} />
 }
 
 export default PageSample1
@@ -771,6 +1118,21 @@ export default PageSample1
 export const metadata = {
   title: 'Sample 1 | Minha Aplicação',
   description: 'Página de exemplo 1 da nossa aplicação'
+}
+```
+
+```typescript
+// app/(routes)/(public)/sample-1/queries.ts
+export const getSample1Data = async () => {
+  // Query específica desta rota
+  const response = await fetch('/api/sample-1')
+  return response.json()
+}
+
+export const getSample1Stats = async () => {
+  // Outra query específica desta página
+  const response = await fetch('/api/sample-1/stats')
+  return response.json()
 }
 ```
 
@@ -797,13 +1159,6 @@ const PublicLayout = ({ children }: { children: React.ReactNode }) => {
 
 export default PublicLayout
 ```
-
-**Como funciona:**
-
-- Todas as páginas em `(public)/` usam este layout
-- `children` = conteúdo da página específica (ViewHome, ViewSample1, etc.)
-- Header e Footer aparecem em todas as páginas públicas
-- Layout é aplicado automaticamente pelo Next.js
 
 ### 🧪 Exemplos de Testes
 
@@ -860,32 +1215,41 @@ describe('ViewHome', () => {
 })
 ```
 
-### 📁 Arquivos Estáticos (Public Directory)
+#### Teste de Store Global (Zustand)
 
-#### Estrutura Recomendada
+```typescript
+// user.store.test.ts
+import { act, renderHook } from '@testing-library/react'
+import { useUserStore } from './user.store'
 
+describe('useUserStore', () => {
+  it('should set user correctly', () => {
+    const { result } = renderHook(() => useUserStore())
+
+    const mockUser = { id: '1', name: 'João', email: 'joao@test.com' }
+
+    act(() => {
+      result.current.setUser(mockUser)
+    })
+
+    expect(result.current.user).toEqual(mockUser)
+  })
+
+  it('should clear user correctly', () => {
+    const { result } = renderHook(() => useUserStore())
+
+    act(() => {
+      result.current.clearUser()
+    })
+
+    expect(result.current.user).toBeNull()
+  })
+})
 ```
-public/
-├── images/                      # 🖼️ Imagens gerais
-│   ├── hero/                    # Imagens de hero sections
-│   ├── samples/                 # Fotos de amostras/exemplos
-│   └── backgrounds/             # Imagens de fundo
-│
-├── icons/                       # 🎯 Ícones e favicons
-│   ├── favicon-16x16.png
-│   ├── favicon-32x32.png
-│   └── apple-touch-icon.png
-│
-├── documents/                   # 📄 Arquivos para download
-│   ├── terms-of-service.pdf
-│   └── privacy-policy.pdf
-│
-├── favicon.ico                  # 🌐 Favicon principal
-├── robots.txt                   # 🤖 SEO - Instruções para crawlers
-└── sitemap.xml                  # 🗺️ SEO - Mapa do site
-```
 
-#### Como Usar no Código
+### 📁 Arquivos Estáticos e Imagens
+
+#### Como Usar Imagens no Código
 
 ```typescript
 // ✅ Correto - next/image (recomendado)
@@ -899,8 +1263,8 @@ import Image from 'next/image'
 />
 
 <Image
-  src="/icons/user-avatar.svg"
-  alt="Avatar"
+  src="/icons/logo-dark.svg"
+  alt="Logo"
   width={40}
   height={40}
 />
@@ -945,25 +1309,6 @@ import Image from 'next/image'
 />
 ```
 
-**Benefícios do next/image:**
-
-- 🚀 **Lazy loading** automático
-- 📱 **Responsivo** por padrão
-- 🎨 **Otimização** de formato (WebP, AVIF)
-- ⚡ **Performance** melhorada
-- 📐 **Evita layout shift**
-
-#### 🤔 Quando Usar Cada Abordagem
-
-| Cenário                     | Use next/image    | Use `<img>`     |
-| --------------------------- | ----------------- | --------------- |
-| **Fotos/imagens grandes**   | ✅ Sempre         | ❌              |
-| **Ícones pequenos (<24px)** | ⚠️ Opcional       | ✅ Recomendado  |
-| **SVGs simples**            | ⚠️ Depende        | ✅ Mais prático |
-| **Imagens responsivas**     | ✅ Sempre         | ❌              |
-| **Above-the-fold**          | ✅ Com `priority` | ❌              |
-| **Background images**       | ❌ Não suporta    | ✅ Via CSS      |
-
 ### 📂 Organização de Imports
 
 ```typescript
@@ -973,7 +1318,7 @@ import { create } from 'zustand' // 2. Bibliotecas externas (node_modules)
 
 import { Button } from '@/components/ui/button' // 3. Imports internos (absolutos @/)
 import { Header } from '@/components/structure/header'
-import { useAuthStore } from '@/stores/auth.store'
+import { useUserStore } from '@/stores/user.store'
 
 import { ComponentProps } from './component.type' // 4. Imports relativos (./ ou ../)
 import './component.styles.css' // 5. CSS/Styles sempre por último
