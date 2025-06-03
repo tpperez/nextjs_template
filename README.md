@@ -2,39 +2,40 @@
 
 ## 📋 Índice
 
-1. [Visão Geral](#-visão-geral)
-2. [Pré-requisitos](#-pré-requisitos)
-3. [Instalação e Configuração](#-instalação-e-configuração)
-4. [Estrutura do Projeto](#-estrutura-do-projeto)
-5. [Convenções de Código](#-convenções-de-código)
-6. [Tecnologias Utilizadas](#-tecnologias-utilizadas)
-7. [Scripts Disponíveis](#-scripts-disponíveis)
-8. [Arquitetura e Conceitos](#-arquitetura-e-conceitos)
-9. [Testes](#-testes)
-10. [Exemplos Práticos](#-exemplos-práticos)
-11. [Workflows e Boas Práticas](#-workflows-e-boas-práticas)
+1. [Visão Geral](#visão-geral)
+2. [Pré-requisitos](#pré-requisitos)
+3. [Instalação e Configuração](#instalação-e-configuração)
+4. [Estrutura Atual do Projeto](#estrutura-atual-do-projeto)
+5. [Estrutura Completa (Referência)](#estrutura-completa-referência)
+6. [Convenções de Código](#convenções-de-código)
+7. [Tecnologias Utilizadas](#tecnologias-utilizadas)
+8. [Scripts Disponíveis](#scripts-disponíveis)
+9. [Arquitetura e Conceitos](#arquitetura-e-conceitos)
+10. [Testes](#testes)
+11. [Exemplos Práticos](#exemplos-práticos)
+12. [Workflows e Boas Práticas](#workflows-e-boas-práticas)
 
 ---
 
 ## 🎯 Visão Geral
 
-Este é um projeto Next.js moderno utilizando o App Router, construído com React 19 e TypeScript. O projeto segue uma arquitetura bem definida com separação clara de responsabilidades e convenções consistentes de código.
+Este é um projeto Next.js moderno utilizando o App Router e TypeScript. O projeto segue uma arquitetura bem definida com separação clara de responsabilidades e convenções consistentes de código.
 
 ### Características Principais
 
-- ⚡ **Next.js 15** com App Router e Turbopack
-- 🎨 **Tailwind CSS 4** para estilização
-- 📱 **TypeScript 5** para tipagem robusta
+- ⚡ **Next.js** com App Router e Turbopack
+- 🎨 **Tailwind CSS** para estilização
+- 📱 **TypeScript** para tipagem robusta
 - 🧪 **Jest + Testing Library** para testes
-- 🔄 **Zustand** para gerenciamento de estado
 - 📏 **ESLint + Prettier** para qualidade de código
 - 🎯 **Conventional Commits** para versionamento
+- 🏗️ **Estrutura escalável** - Preparada para crescimento
 
 ---
 
 ## ✅ Pré-requisitos
 
-- **Node.js**: v22.15.1 (recomendado usar nvm)
+- **Node.js** (versão especificada no `.nvmrc` - recomendado usar nvm)
 - **npm** para gerenciamento de pacotes
 - **Git** para controle de versão
 
@@ -83,7 +84,84 @@ npm run dev
 
 ---
 
-## 📁 Estrutura do Projeto
+## 📁 Estrutura Atual do Projeto
+
+Esta é a estrutura **atual** do template starter - o que você encontrará ao clonar o projeto:
+
+```
+/app
+├── layout.tsx                    # Layout raiz da aplicação
+├── styles/
+│   └── globals.css              # Estilos globais (Tailwind CSS)
+│
+├── (routes)/                    # 🗂️ Rotas da aplicação
+│   └── (public)/               # 🌐 Rotas públicas
+│       ├── layout.tsx          # Layout para páginas públicas
+│       ├── (home)/             # 🏠 Página inicial
+│       │   └── page.tsx        # PageHome (usa ViewHome)
+│       └── sample-1/           # 📄 Página de exemplo
+│           └── page.tsx        # PageSample1 (usa ViewSample1)
+│
+├── views/                       # 📱 Views implementadas
+│   ├── home/                   # 🏠 View da página inicial
+│   │   ├── home.tsx            # Componente ViewHome
+│   │   ├── home.test.tsx       # Testes da view
+│   │   └── index.ts            # Exportação
+│   └── sample-1/               # 📄 View de exemplo
+│       ├── sample-1.tsx        # Componente ViewSample1
+│       ├── sample-1.test.tsx   # Testes da view
+│       └── index.ts            # Exportação
+│
+├── components/                  # 🧩 Componentes (preparado para uso)
+│   ├── structure/              # 🏗️ Componentes estruturais
+│   │   └── .placeholder        # Pasta vazia (pronta para usar)
+│   └── ui/                     # 🎨 Componentes de interface
+│       └── .placeholder        # Pasta vazia (pronta para usar)
+│
+├── constants/                   # 📊 Constantes da aplicação
+│   └── .placeholder            # Pasta vazia (pronta para usar)
+├── hooks/                       # 🎣 Custom hooks
+│   └── .placeholder            # Pasta vazia (pronta para usar)
+├── services/                    # 🔧 Serviços e APIs
+│   └── .placeholder            # Pasta vazia (pronta para usar)
+├── stores/                      # 🗃️ Stores de estado
+│   └── .placeholder            # Pasta vazia (pronta para usar)
+├── typings/                     # 📝 Tipos globais
+│   └── .placeholder            # Pasta vazia (pronta para usar)
+└── utils/                       # 🛠️ Funções utilitárias
+    └── .placeholder             # Pasta vazia (pronta para usar)
+
+/public/                          # 📁 Arquivos estáticos (raiz do projeto)
+├── images/                       # 🖼️ Imagens (logos, ícones, fotos)
+├── icons/                        # 🎯 Ícones e favicons
+├── documents/                    # 📄 PDFs, documentos para download
+├── favicon.ico                   # 🌐 Favicon principal
+├── robots.txt                    # 🤖 Instruções para crawlers
+└── sitemap.xml                   # 🗺️ Mapa do site
+```
+
+### 🎯 O que está implementado
+
+- ✅ **2 páginas funcionais** - Home e Sample-1
+- ✅ **Layout básico** - Estrutura de rotas públicas
+- ✅ **2 views completas** - Com testes e exportações
+- ✅ **Estrutura preparada** - Pastas organizadas com `.placeholder`
+
+### 📋 Próximos passos
+
+À medida que o projeto cresce, você pode:
+
+1. **Adicionar componentes** em `/components/ui/` e `/components/structure/`
+2. **Criar novas views** em `/views/[nome-da-view]/`
+3. **Implementar stores** em `/stores/` (ex: Zustand)
+4. **Adicionar services** em `/services/` para APIs
+5. **Remover `.placeholder`** conforme usa as pastas
+
+---
+
+## 🚀 Estrutura Completa (Referência)
+
+Esta é uma **estrutura avançada** para quando o projeto estiver maduro e precisar de organização escalável:
 
 ```
 /app
@@ -97,16 +175,16 @@ npm run dev
 │   ├── (public)/                 # 🌐 Rotas públicas (sem auth)
 │   │   ├── layout.tsx            # Layout para rotas públicas
 │   │   ├── (home)/               # 🏠 Página inicial
-│   │   ├── page-1/               # 📄 Outras páginas públicas
-│   │   └── page-2/
+│   │   ├── sample-1/             # 📄 Outras páginas públicas
+│   │   └── sample-2/
 │   │
 │   └── (auth)/                   # 🔒 Rotas protegidas (com auth)
 │       ├── layout.tsx            # Layout para rotas autenticadas
-│       ├── page-3/               # 📄 Páginas protegidas
-│       └── page-4/
+│       ├── sample-3/             # 📄 Páginas protegidas
+│       └── sample-4/
 │
 ├── components/                   # 🧩 Componentes reutilizáveis
-│   ├── layout/                   # 🏗️ Componentes estruturais
+│   ├── structure/                # 🏗️ Componentes estruturais
 │   │   ├── header/
 │   │   ├── sidebar/
 │   │   └── footer/
@@ -118,10 +196,10 @@ npm run dev
 │
 ├── views/                        # 📱 Views/estruturas de páginas
 │   ├── home/                     # 🏠 Página inicial (public)
-│   ├── page-1/                   # 📄 Página 1 (public)
-│   ├── page-2/                   # 📄 Página 2 (public)
-│   ├── page-3/                   # 🔒 Página 3 (auth)
-│   └── page-4/                   # 🔒 Página 4 (auth)
+│   ├── sample-1/                 # 📄 Sample 1 (public)
+│   ├── sample-2/                 # 📄 Sample 2 (public)
+│   ├── sample-3/                 # 🔒 Sample 3 (auth)
+│   └── sample-4/                 # 🔒 Sample 4 (auth)
 │
 ├── constants/                    # 📊 Constantes da aplicação
 ├── hooks/                        # 🎣 Custom hooks reutilizáveis
@@ -129,16 +207,15 @@ npm run dev
 ├── stores/                       # 🗃️ Stores do Zustand
 ├── styles/                       # 🎨 Estilos globais e temas
 ├── typings/                      # 📝 Definições de tipos globais
-├── utils/                        # 🛠️ Funções utilitárias
-└── public/                       # 📁 Arquivos estáticos (servidos pelo Next.js)
-    ├── images/                   # 🖼️ Imagens (logos, ícones, fotos)
-    ├── icons/                    # 🎯 Ícones e favicons
-    ├── documents/                # 📄 PDFs, documentos para download
-    ├── favicon.ico              # 🌐 Favicon principal
-    ├── robots.txt               # 🤖 Instruções para crawlers
-    └── sitemap.xml              # 🗺️ Mapa do site
+└── utils/                        # 🛠️ Funções utilitárias
 
-📚 **[Ver guia completo de arquivos estáticos →](#-arquivos-estáticos-public-directory)**
+/public/                          # 📁 Arquivos estáticos (raiz do projeto)
+├── images/                       # 🖼️ Imagens (logos, ícones, fotos)
+├── icons/                        # 🎯 Ícones e favicons
+├── documents/                    # 📄 PDFs, documentos para download
+├── favicon.ico                   # 🌐 Favicon principal
+├── robots.txt                    # 🤖 Instruções para crawlers
+└── sitemap.xml                   # 🗺️ Mapa do site
 ```
 
 ### Organização por Funcionalidade
@@ -184,18 +261,16 @@ home/
 
 ### 🏷️ Nomenclatura
 
-| Tipo                      | Convenção           | Exemplo                                    |
-| ------------------------- | ------------------- | ------------------------------------------ |
-| **Arquivos e Diretórios** | `kebab-case`        | `user-profile.tsx`, `auth-service/`        |
-| **Variáveis e Funções**   | `camelCase`         | `userName`, `handleSubmit()`               |
-| **Componentes**           | `PascalCase`        | `Button`, `Modal`, `Header`                |
-| **Views**                 | `PascalCase + View` | `HomeView`, `LoginView`, `ProductListView` |
-| **Páginas Next.js**       | `PascalCase + Page` | `HomePage`, `LoginPage`, `ProductsPage`    |
-| **Interfaces**            | `I + PascalCase`    | `IUserData`, `IButtonProps`                |
-| **Types**                 | `T + PascalCase`    | `TButtonVariant`, `TApiResponse`           |
-| **Constantes**            | `UPPER_SNAKE_CASE`  | `API_BASE_URL`, `MAX_ATTEMPTS`             |
-
-📚 **[Ver exemplos práticos de nomenclatura →](#-convenções-de-nomenclatura)**
+| Tipo                      | Convenção           | Exemplo                                  |
+| ------------------------- | ------------------- | ---------------------------------------- |
+| **Arquivos e Diretórios** | `kebab-case`        | `user-profile.tsx`, `auth-service/`      |
+| **Variáveis e Funções**   | `camelCase`         | `userName`, `handleSubmit()`             |
+| **Componentes**           | `PascalCase`        | `Button`, `Modal`, `Header`              |
+| **Views**                 | `View + PascalCase` | `ViewHome`, `ViewSample1`, `ViewProfile` |
+| **Páginas Next.js**       | `Page + PascalCase` | `PageHome`, `PageSample1`, `PageProfile` |
+| **Interfaces**            | `I + PascalCase`    | `IUserData`, `IButtonProps`              |
+| **Types**                 | `T + PascalCase`    | `TButtonVariant`, `TApiResponse`         |
+| **Constantes**            | `UPPER_SNAKE_CASE`  | `API_BASE_URL`, `MAX_ATTEMPTS`           |
 
 ### 🏹 Arrow Functions (Obrigatório)
 
@@ -234,12 +309,12 @@ function Button(props) {          // ESLint error!
 ### 🎯 Padrão de Sufixos
 
 ```typescript
-// ✅ Correto - Sufixos consistentes
-const HomePage = () => {                        // Página do Next.js (arrow function)
-  return <HomeView />                           // View que estrutura a página
+// ✅ Correto - Sufixos consistentes (padrão atual)
+const PageHome = () => {                        // Página do Next.js (arrow function)
+  return <ViewHome />                           // View que estrutura a página
 }
 
-const HomeView = () => {                        // View principal (arrow function)
+const ViewHome = () => {                        // View principal (arrow function)
   return (
     <div>
       <Header />                                // Component reutilizável
@@ -250,7 +325,7 @@ const HomeView = () => {                        // View principal (arrow functio
 
 // ❌ Incorreto - Function declarations
 export default function Home() {                // Function declaration (não usar)
-  return <Home />                              // Confuso: mesmo nome da página
+  return <ViewHome />                          // Confuso: mesmo nome da página
 }
 ```
 
@@ -267,9 +342,10 @@ export default function Home() {                // Function declaration (não us
 
 ### State & Data
 
-- **Zustand** - Gerenciamento de estado leve e flexível
+- **React State** - Hooks nativos (useState, useReducer) para gerenciamento de estado local
+- **Context API** - Para estado global quando necessário
 
-📚 **[Ver exemplo de implementação com Zustand →](#️-gerenciamento-de-estado-zustand)**
+> 💡 **Recomendação**: Para projetos que crescem, considere adicionar **Zustand** ou **Redux Toolkit** para gerenciamento de estado mais robusto.
 
 ### Development & Quality
 
@@ -284,7 +360,7 @@ export default function Home() {                // Function declaration (não us
 - **Commitizen** - Padronização de commits convencionais
 - **Turbopack** - Bundler rápido do Next.js
 
-> 📦 **Versões específicas**: Consulte o arquivo `package.json` para versões exatas de todas as dependências.
+> 📦 **Versões específicas**: Consulte o arquivo `package.json` para versões exatas de todas as dependências. O template inclui apenas as dependências essenciais - outras podem ser adicionadas conforme necessário.
 
 ---
 
@@ -342,12 +418,9 @@ git commit          # Commitizen abre automaticamente via Husky
 - 🧠 **Contêm lógica de negócio**
 - 🔗 **Conectam stores, APIs, etc.**
 
-📚 **[Ver exemplo de criação de Components →](#-criando-component-reutilizável)**
-📚 **[Ver exemplo de criação de Views →](#-criando-view-de-página)**
-
 ### Hierarquia de Componentes e Views
 
-1. **Layout Components** (`/components/layout/`)
+1. **Structure Components** (`/components/structure/`)
 
    - Componentes estruturais da aplicação
    - Headers, Footers, Sidebars, etc.
@@ -366,34 +439,32 @@ git commit          # Commitizen abre automaticamente via Husky
 
 A estrutura de rotas tem correspondência direta com as views:
 
-| Rota                                    | View                          | Tipo           |
-| --------------------------------------- | ----------------------------- | -------------- |
-| `app/(routes)/(public)/(home)/page.tsx` | `views/home/` → `HomeView`    | 🌐 Pública     |
-| `app/(routes)/(public)/page-1/page.tsx` | `views/page-1/` → `Page1View` | 🌐 Pública     |
-| `app/(routes)/(public)/page-2/page.tsx` | `views/page-2/` → `Page2View` | 🌐 Pública     |
-| `app/(routes)/(auth)/page-3/page.tsx`   | `views/page-3/` → `Page3View` | 🔒 Autenticada |
-| `app/(routes)/(auth)/page-4/page.tsx`   | `views/page-4/` → `Page4View` | 🔒 Autenticada |
+| Rota                                      | View                              | Tipo           |
+| ----------------------------------------- | --------------------------------- | -------------- |
+| `app/(routes)/(public)/(home)/page.tsx`   | `views/home/` → `ViewHome`        | 🌐 Pública     |
+| `app/(routes)/(public)/sample-1/page.tsx` | `views/sample-1/` → `ViewSample1` | 🌐 Pública     |
+| `app/(routes)/(public)/sample-2/page.tsx` | `views/sample-2/` → `ViewSample2` | 🌐 Pública     |
+| `app/(routes)/(auth)/sample-3/page.tsx`   | `views/sample-3/` → `ViewSample3` | 🔒 Autenticada |
+| `app/(routes)/(auth)/sample-4/page.tsx`   | `views/sample-4/` → `ViewSample4` | 🔒 Autenticada |
 
 **Padrão:**
 
 ```
-(routes)/[group]/[page]/page.tsx  →  views/[page]/  →  [Page]View
+(routes)/[group]/[sample]/page.tsx  →  views/[sample]/  →  View[Sample]
 ```
-
-📚 **[Ver exemplo de implementação de rotas →](#️-roteamento-nextjs)**
 
 ### 🤔 Quando Usar Cada Abordagem
 
-| Cenário                   | Use Component                   | Use View                          |
-| ------------------------- | ------------------------------- | --------------------------------- |
-| **Botão reutilizável**    | ✅ `/components/ui/button/`     | ❌                                |
-| **Modal de confirmação**  | ✅ `/components/ui/modal/`      | ❌                                |
-| **Header da aplicação**   | ✅ `/components/layout/header/` | ❌                                |
-| **Página inicial (Home)** | ❌                              | ✅ `/views/home/` → `HomeView`    |
-| **Páginas públicas**      | ❌                              | ✅ `/views/page-1/` → `Page1View` |
-|                           | ❌                              | ✅ `/views/page-2/` → `Page2View` |
-| **Páginas autenticadas**  | ❌                              | ✅ `/views/page-3/` → `Page3View` |
-|                           | ❌                              | ✅ `/views/page-4/` → `Page4View` |
+| Cenário                   | Use Component                      | Use View                              |
+| ------------------------- | ---------------------------------- | ------------------------------------- |
+| **Botão reutilizável**    | ✅ `/components/ui/button/`        | ❌                                    |
+| **Modal de confirmação**  | ✅ `/components/ui/modal/`         | ❌                                    |
+| **Header da aplicação**   | ✅ `/components/structure/header/` | ❌                                    |
+| **Página inicial (Home)** | ❌                                 | ✅ `/views/home/` → `ViewHome`        |
+| **Páginas de exemplo**    | ❌                                 | ✅ `/views/sample-1/` → `ViewSample1` |
+|                           | ❌                                 | ✅ `/views/sample-2/` → `ViewSample2` |
+| **Páginas autenticadas**  | ❌                                 | ✅ `/views/sample-3/` → `ViewSample3` |
+|                           | ❌                                 | ✅ `/views/sample-4/` → `ViewSample4` |
 
 ---
 
@@ -409,8 +480,6 @@ O Jest está configurado para:
 - Auto-mocking de módulos
 - Suporte a TypeScript
 - Testing Library preconfigurado
-
-📚 **[Ver exemplos completos de testes →](#-exemplos-de-testes)**
 
 ### 🏃‍♂️ Executando Testes
 
@@ -588,10 +657,10 @@ export interface IFeature {
 // home.tsx
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { HeroSection } from '@/components/layout/hero-section'
+import { HeroSection } from '@/components/structure/hero-section'
 import { IHomeProps } from './home.type'
 
-export const HomeView = ({}: IHomeProps) => {
+const ViewHome = ({}: IHomeProps) => {
   const heroData = {
     title: 'Bem-vindo à Nossa Aplicação',
     subtitle: 'A solução perfeita para suas necessidades',
@@ -654,11 +723,14 @@ export const HomeView = ({}: IHomeProps) => {
     </div>
   )
 }
+
+export default ViewHome
 ```
 
 ```typescript
 // index.ts
-export { HomeView } from './home'
+import ViewHome from './home'
+export default ViewHome
 export type { IHomeProps, IHeroSection, IFeature } from './home.type'
 ```
 
@@ -666,13 +738,13 @@ export type { IHomeProps, IHeroSection, IFeature } from './home.type'
 
 ```typescript
 // app/(routes)/(public)/(home)/page.tsx
-import { HomeView } from '@/views/home'
+import ViewHome from '@/app/views/home'
 
-const HomePage = () => {
-  return <HomeView />
+const PageHome = () => {
+  return <ViewHome />
 }
 
-export default HomePage
+export default PageHome
 
 // Metadados da página
 export const metadata = {
@@ -681,77 +753,24 @@ export const metadata = {
 }
 ```
 
-### 🗃️ Gerenciamento de Estado (Zustand)
-
-```typescript
-// stores/user.store.ts
-import { create } from 'zustand'
-
-interface IUser {
-  id: string
-  name: string
-  email: string
-}
-
-interface IUserState {
-  user: IUser | null
-  isLoading: boolean
-
-  // Actions
-  setUser: (user: IUser) => void
-  clearUser: () => void
-  setLoading: (loading: boolean) => void
-}
-
-export const useUserStore = create<IUserState>((set) => ({
-  user: null,
-  isLoading: false,
-
-  setUser: (user) => set({ user }),
-  clearUser: () => set({ user: null }),
-  setLoading: (isLoading) => set({ isLoading }),
-}))
-```
-
-#### Uso da Store na View
-
-```typescript
-// views/profile/profile.tsx
-import { useUserStore } from '@/stores/user.store'
-
-export const ProfileView = () => {
-  const { user, isLoading, setUser } = useUserStore()
-
-  if (isLoading) return <div>Carregando...</div>
-  if (!user) return <div>Usuário não encontrado</div>
-
-  return (
-    <div>
-      <h1>{user.name}</h1>
-      <p>{user.email}</p>
-    </div>
-  )
-}
-```
-
 ### 🛣️ Roteamento Next.js
 
 #### Estrutura de Rotas
 
 ```typescript
-// app/(routes)/(public)/products/page.tsx
-import { ProductsView } from '@/views/products'
+// app/(routes)/(public)/sample-1/page.tsx
+import ViewSample1 from '@/app/views/sample-1'
 
-const ProductsPage = () => {
-  return <ProductsView />
+const PageSample1 = () => {
+  return <ViewSample1 />
 }
 
-export default ProductsPage
+export default PageSample1
 
 // Metadados da página
 export const metadata = {
-  title: 'Produtos | Minha Loja',
-  description: 'Confira nossos produtos incríveis'
+  title: 'Sample 1 | Minha Aplicação',
+  description: 'Página de exemplo 1 da nossa aplicação'
 }
 ```
 
@@ -759,8 +778,8 @@ export const metadata = {
 
 ```typescript
 // app/(routes)/(public)/layout.tsx - Layout para páginas públicas
-import { Header } from '@/components/layout/header'
-import { Footer } from '@/components/layout/footer'
+import { Header } from '@/components/structure/header'
+import { Footer } from '@/components/structure/footer'
 
 const PublicLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -768,7 +787,7 @@ const PublicLayout = ({ children }: { children: React.ReactNode }) => {
       <Header />
 
       <main className="flex-1 bg-white">
-        {children}  {/* Aqui vai a página (HomeView, etc.) */}
+        {children}  {/* Aqui vai a página (ViewHome, ViewSample1, etc.) */}
       </main>
 
       <Footer />
@@ -782,7 +801,7 @@ export default PublicLayout
 **Como funciona:**
 
 - Todas as páginas em `(public)/` usam este layout
-- `children` = conteúdo da página específica (HomeView, etc.)
+- `children` = conteúdo da página específica (ViewHome, ViewSample1, etc.)
 - Header e Footer aparecem em todas as páginas públicas
 - Layout é aplicado automaticamente pelo Next.js
 
@@ -818,24 +837,25 @@ describe('Button', () => {
 })
 ```
 
-#### Teste de Store
+#### Teste de View
 
 ```typescript
-// user.store.test.ts
-import { act, renderHook } from '@testing-library/react'
-import { useUserStore } from './user.store'
+// home.test.tsx
+import { render, screen } from '@testing-library/react'
+import ViewHome from './home'
 
-describe('useUserStore', () => {
-  it('should set user correctly', () => {
-    const { result } = renderHook(() => useUserStore())
+describe('ViewHome', () => {
+  it('should render main heading', () => {
+    render(<ViewHome />)
 
-    const mockUser = { id: '1', name: 'João', email: 'joao@test.com' }
+    const heading = screen.getByRole('heading', { level: 1 })
+    expect(heading).toBeInTheDocument()
+  })
 
-    act(() => {
-      result.current.setUser(mockUser)
-    })
+  it('should display welcome message', () => {
+    render(<ViewHome />)
 
-    expect(result.current.user).toEqual(mockUser)
+    expect(screen.getByText(/bem-vindo/i)).toBeInTheDocument()
   })
 })
 ```
@@ -848,7 +868,7 @@ describe('useUserStore', () => {
 public/
 ├── images/                      # 🖼️ Imagens gerais
 │   ├── hero/                    # Imagens de hero sections
-│   ├── products/                # Fotos de produtos
+│   ├── samples/                 # Fotos de amostras/exemplos
 │   └── backgrounds/             # Imagens de fundo
 │
 ├── icons/                       # 🎯 Ícones e favicons
@@ -908,8 +928,8 @@ import Image from 'next/image'
 
 // ✅ Imagens responsivas
 <Image
-  src="/images/product-photo.jpg"
-  alt="Produto"
+  src="/images/sample-photo.jpg"
+  alt="Sample"
   fill
   className="object-cover"
 />
@@ -952,6 +972,7 @@ import React from 'react' // 1. React sempre primeiro
 import { create } from 'zustand' // 2. Bibliotecas externas (node_modules)
 
 import { Button } from '@/components/ui/button' // 3. Imports internos (absolutos @/)
+import { Header } from '@/components/structure/header'
 import { useAuthStore } from '@/stores/auth.store'
 
 import { ComponentProps } from './component.type' // 4. Imports relativos (./ ou ../)
