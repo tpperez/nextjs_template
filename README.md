@@ -5,8 +5,8 @@
 1. [Visão Geral](#visão-geral)
 2. [Pré-requisitos](#pré-requisitos)
 3. [Instalação e Configuração](#instalação-e-configuração)
-4. [Estrutura Atual do Projeto](#estrutura-atual-do-projeto)
-5. [Estrutura Completa (Referência)](#estrutura-completa-referência)
+4. [Estrutura Atual do Projeto](#-estrutura-atual-do-projeto)
+5. [Estrutura Completa (Referência Futura)](#-estrutura-completa-referência-futura)
 6. [Convenções de Código](#convenções-de-código)
 7. [Tecnologias Utilizadas](#tecnologias-utilizadas)
 8. [Scripts Disponíveis](#scripts-disponíveis)
@@ -36,7 +36,8 @@ Este é um projeto Next.js moderno utilizando o App Router e TypeScript. O proje
 
 ## ✅ Pré-requisitos
 
-- **Node.js** (versão especificada no `.nvmrc` - recomendado usar nvm)
+- **nvm** (Node Version Manager) para gerenciar versões do Node.js
+- **Node.js** (versão especificada no `.nvmrc`)
 - **npm** para gerenciamento de pacotes
 - **Git** para controle de versão
 
@@ -87,19 +88,21 @@ npm run dev
 
 ## 📁 Estrutura Atual do Projeto
 
-Esta é a estrutura **atual** do template starter - o que você encontrará ao clonar o projeto:
-
-> 📝 **Nota**: Diretórios e arquivos estão organizados como nos editores - **pastas primeiro** em ordem alfabética, depois **arquivos** em ordem alfabética.
+Esta é a estrutura **real do template starter** - exatamente o que você encontrará ao clonar o projeto:
 
 ```
 /app
 ├── (routes)/                    # 🗂️ Rotas da aplicação
-│   └── (public)/               # 🌐 Rotas públicas
-│       ├── (home)/             # 🏠 Página inicial
-│       │   └── page.tsx        # PageHome (usa ViewHome)
-│       ├── sample-1/           # 📄 Página de exemplo
-│       │   └── page.tsx        # PageSample1 (usa ViewSample1)
-│       └── layout.tsx          # Layout para páginas públicas
+│   ├── (auth)/                  # 🔒 Rotas autenticadas (ainda não implementado)
+│   │   └── .placeholder         # Criar quando adicionar autenticação
+│   ├── api/                     # 🔌 API Routes (ainda não implementado)
+│   │   └── .placeholder         # Criar quando adicionar endpoints
+│   └── (public)/                # 🌐 Rotas públicas
+│       ├── (home)/              # 🏠 Página inicial
+│       │   └── page.tsx         # PageHome (usa ViewHome)
+│       ├── sample-1/            # 📄 Página de exemplo
+│       │   └── page.tsx         # PageSample1 (usa ViewSample1)
+│       └── layout.tsx           # Layout para páginas públicas
 ├── components/                  # 🧩 Componentes (preparado para uso)
 │   ├── structure/              # 🏗️ Componentes estruturais
 │   │   └── .placeholder        # Pasta vazia (pronta para usar)
@@ -131,13 +134,11 @@ Esta é a estrutura **atual** do template starter - o que você encontrará ao c
 ├── favicon.ico                  # 🌐 Favicon principal (App Router)
 └── layout.tsx                   # Layout raiz da aplicação
 
-/public/                          # 📁 Arquivos estáticos (raiz do projeto)
-├── documents/                    # 📄 PDFs, documentos para download
-├── icons/                        # 🎯 Ícones adicionais e favicons
-├── images/                       # 🖼️ Imagens (logos, ícones, fotos)
-├── robots.txt                    # 🤖 Instruções para crawlers
-└── sitemap.xml                   # 🗺️ Mapa do site
+/public/                          # 📁 Arquivos estáticos (vazia no template)
+└── .placeholder                  # Arquivo temporário (remover ao usar)
 ```
+
+> 📝 **Sobre os arquivos `.placeholder`**: São arquivos temporários para manter as pastas no Git. Remova-os quando começar a adicionar conteúdo real nas pastas.
 
 ### 🎯 O que está implementado
 
@@ -145,6 +146,11 @@ Esta é a estrutura **atual** do template starter - o que você encontrará ao c
 - ✅ **Layout básico** - Estrutura de rotas públicas
 - ✅ **2 views completas** - Com testes e exportações
 - ✅ **Estrutura preparada** - Pastas organizadas com `.placeholder`
+- ✅ **Configurações completas** - ESLint, Prettier, Jest, Husky
+- ✅ **TypeScript configurado** - Com paths aliases (@/)
+- ✅ **Tailwind CSS** - Com configuração customizada
+- ⏳ **Pasta /public/ vazia** - Pronta para adicionar assets conforme necessário
+- ⏳ **Rotas (auth) e api/** - Estrutura preparada com placeholders
 
 ### 📋 Próximos passos
 
@@ -156,15 +162,14 @@ Esta é a estrutura **atual** do template starter - o que você encontrará ao c
 4. **Adicionar services** em `/services/` para APIs
 5. **Criar hooks específicos** usando sufixo `.hook.ts` em views/components conforme necessário (ver exemplos na documentação)
 6. **Adicionar hooks globais** em `/hooks/` para lógica reutilizável
-7. **Remover `.placeholder`** conforme usa as pastas
+7. **Organizar arquivos estáticos** em `/public/` criando subpastas como `/images/`, `/icons/`, `/documents/`
+8. **Remover `.placeholder`** conforme usa as pastas
 
 ---
 
-## 🚀 Estrutura Completa (Referência)
+## 🚀 Estrutura Completa
 
-Esta é uma **estrutura avançada** para quando o projeto estiver maduro e precisar de organização escalável:
-
-> 📝 **Nota**: Diretórios e arquivos estão organizados como nos editores - **pastas primeiro** em ordem alfabética, depois **arquivos** em ordem alfabética.
+Esta é uma **estrutura avançada de referência** para quando o projeto estiver mais completo mantendo a organização escalável:
 
 ```
 /app
@@ -204,22 +209,52 @@ Esta é uma **estrutura avançada** para quando o projeto estiver maduro e preci
 │       │   ├── button.tsx
 │       │   ├── button.type.ts
 │       │   ├── button.hook.ts   # 🎣 Hook específico (opcional)
+│       │   ├── button.const.ts  # 📊 Constantes (opcional)
 │       │   └── index.ts
 │       ├── input/
 │       └── modal/
 ├── constants/                    # 📊 Constantes da aplicação
 ├── hooks/                        # 🎣 Custom hooks reutilizáveis
+│   ├── use-api/
+│   │   ├── use-api.test.ts
+│   │   ├── use-api.ts
+│   │   ├── use-api.type.ts
+│   │   ├── use-api.const.ts     # 📊 Constantes (opcional)
+│   │   └── index.ts
+│   └── use-local-storage/
 ├── services/                     # 🔧 Serviços e integrações de API
+│   ├── auth/
+│   │   ├── auth.test.ts
+│   │   ├── auth.ts
+│   │   ├── auth.type.ts
+│   │   ├── auth.hook.ts         # 🎣 Hook específico (opcional)
+│   │   ├── auth.const.ts        # 📊 Constantes (opcional)
+│   │   └── index.ts
+│   └── api/
 ├── stores/                       # 🗃️ Estados globais (Zustand)
+│   └── user/
+│       ├── user.test.ts
+│       ├── user.ts
+│       ├── user.type.ts
+│       ├── user.hook.ts         # 🎣 Hook específico (opcional)
+│       ├── user.const.ts        # 📊 Constantes (opcional)
+│       └── index.ts
 ├── styles/                       # 🎨 Estilos globais e temas
 ├── typings/                      # 📝 Definições de tipos globais
 ├── utils/                        # 🛠️ Funções utilitárias
+│   └── format-date/
+│       ├── format-date.test.ts
+│       ├── format-date.ts
+│       ├── format-date.type.ts
+│       ├── format-date.const.ts # 📊 Constantes (opcional)
+│       └── index.ts
 ├── views/                        # 📱 Views/estruturas de páginas
 │   ├── home/                     # 🏠 Página inicial (public)
 │   │   ├── home.test.tsx
 │   │   ├── home.tsx
 │   │   ├── home.type.ts
 │   │   ├── home.hook.ts         # 🎣 Hook específico (opcional)
+│   │   ├── home.const.ts        # 📊 Constantes (opcional)
 │   │   └── index.ts
 │   ├── sample-1/                 # 📄 Sample 1 (public)
 │   ├── sample-2/                 # 📄 Sample 2 (public)
@@ -236,22 +271,70 @@ Esta é uma **estrutura avançada** para quando o projeto estiver maduro e preci
 └── sitemap.xml                   # 🗺️ Mapa do site
 ```
 
+> 💡 **Nota**: Esta é uma estrutura de referência completa. O template inicial vem com pastas vazias e arquivos `.placeholder` que devem ser removidos conforme você adiciona conteúdo real.
+
 ### Organização por Funcionalidade
 
-Tanto **components** quanto **views** seguem a mesma estrutura padrão:
+**Todos os módulos** do projeto seguem a mesma estrutura padrão, garantindo consistência total:
 
-#### 🧩 Estrutura de Component
+#### 📁 Estrutura Padrão de Módulos
 
 ```
-button/
-├── button.test.tsx              # 🧪 Testes unitários
-├── button.tsx                   # 📄 Componente principal
-├── button.type.ts               # 📝 Tipos específicos
-├── button.hook.ts               # 🎣 Hook específico (opcional)
+[nome-do-modulo]/
+├── [nome].test.tsx              # 🧪 Testes unitários
+├── [nome].tsx                   # 📄 Arquivo principal
+├── [nome].type.ts               # 📝 Tipos específicos
+├── [nome].hook.ts               # 🎣 Hook específico (opcional)
+├── [nome].const.ts              # 📊 Constantes do módulo (opcional)
 └── index.ts                     # 📤 Arquivo de exportação
 ```
 
-#### 📱 Estrutura de View
+Esta estrutura se aplica a:
+
+- 🧩 **components/** (button, modal, card)
+- 📱 **views/** (home, profile, dashboard)
+- 🔧 **services/** (auth, api, payment)
+- 🗃️ **stores/** (user, cart, theme)
+- 🎣 **hooks/** (use-api, use-debounce)
+- 🛠️ **utils/** (format-date, validate)
+
+#### 🧩 Exemplo: Component
+
+```
+button/
+├── button.test.tsx              # 🧪 Testes do botão
+├── button.tsx                   # 📄 Componente React
+├── button.type.ts               # 📝 IButtonProps, TButtonVariant
+├── button.hook.ts               # 🎣 useButton (opcional)
+├── button.const.ts              # 📊 BUTTON_VARIANTS, BUTTON_SIZES (opcional)
+└── index.ts                     # 📤 Exportações
+```
+
+#### 🔧 Exemplo: Service
+
+```
+auth/
+├── auth.test.ts                 # 🧪 Testes do serviço
+├── auth.ts                      # 📄 Lógica de autenticação
+├── auth.type.ts                 # 📝 IAuthResponse, TAuthStatus
+├── auth.hook.ts                 # 🎣 useAuth (opcional)
+├── auth.const.ts                # 📊 AUTH_ENDPOINTS, TOKEN_EXPIRY (opcional)
+└── index.ts                     # 📤 Exportações
+```
+
+#### 🗃️ Exemplo: Store (Zustand)
+
+```
+user/
+├── user.test.ts                 # 🧪 Testes da store
+├── user.ts                      # 📄 Store Zustand
+├── user.type.ts                 # 📝 IUserState, TUserActions
+├── user.hook.ts                 # 🎣 useUserSelector (opcional)
+├── user.const.ts                # 📊 USER_ROLES, DEFAULT_USER (opcional)
+└── index.ts                     # 📤 Exportações
+```
+
+#### 📱 Estrutura de View (com componentes internos)
 
 ```
 home/
@@ -260,19 +343,35 @@ home/
 │       ├── hero-section.test.tsx
 │       ├── hero-section.tsx
 │       ├── hero-section.hook.ts # 🎣 Hook específico (opcional)
+│       ├── hero-section.const.ts # 📊 Constantes do componente (opcional)
 │       └── index.ts
 ├── home.test.tsx                # 🧪 Testes unitários
 ├── home.tsx                     # 📄 View principal
 ├── home.type.ts                 # 📝 Tipos específicos
 ├── home.hook.ts                 # 🎣 Hook específico (opcional)
+├── home.const.ts                # 📊 Constantes da view (opcional)
 └── index.ts                     # 📤 Arquivo de exportação
 ```
 
 #### 📋 Arquivos Opcionais
 
-- `/components/` - Para componentes que só existem dentro desta view
+- `.hook.ts` - Para lógica complexa ou reutilizável dentro do módulo
+- `.const.ts` - Para constantes específicas do módulo (ex: configurações, enums, valores padrão)
+- `/components/` - Apenas em views, para componentes internos
 
-> 💡 **Estado na view**: Use React state (`useState`) para estado local da view. Para estado global, crie stores em `/stores/` usando Zustand.
+> 💡 **Quando criar `.const.ts`**: Quando você tem 3+ constantes relacionadas ao módulo, strings mágicas, configurações ou valores que podem mudar. Isso melhora a manutenibilidade e evita repetição.
+
+> 🔒 **Dica de TypeScript**: Use `as const` nas constantes para garantir type safety e permitir que o TypeScript infira tipos literais ao invés de tipos genéricos.
+
+> 💡 **Benefícios da padronização**: Previsibilidade total - você sempre sabe onde encontrar testes, tipos, hooks e constantes em qualquer parte do projeto.
+
+> ✅ **Benefícios de usar `.const.ts`**:
+>
+> - **Centralização** - Todas as constantes do módulo em um lugar
+> - **Type Safety** - TypeScript infere tipos literais com `as const`
+> - **Manutenção** - Fácil atualizar valores em um único local
+> - **Documentação** - Constantes servem como documentação do módulo
+> - **Testabilidade** - Fácil importar e testar valores esperados
 
 ---
 
@@ -383,6 +482,19 @@ export const useFormValidation = () => {
 | **Validação específica**      | ❌                         | ✅ contact-form.hook.ts   |
 | **Hooks usados 3+ lugares**   | ✅ Mover para `/hooks/`    | ❌                        |
 
+#### 🎯 Quando Usar `.const.ts` vs `/constants/`
+
+| Cenário                        | Use `.const.ts` (Local)         | Use `/constants/` (Global) |
+| ------------------------------ | ------------------------------- | -------------------------- |
+| **Constantes do módulo**       | ✅ BUTTON_VARIANTS, AUTH_ERRORS | ❌                         |
+| **Configurações específicas**  | ✅ TOKEN_CONFIG, DATE_FORMATS   | ❌                         |
+| **Classes CSS do componente**  | ✅ BUTTON_CLASSES               | ❌                         |
+| **Constantes compartilhadas**  | ❌                              | ✅ API_BASE_URL            |
+| **Configurações da aplicação** | ❌                              | ✅ APP_CONFIG              |
+| **Valores usados globalmente** | ❌                              | ✅ MAX_FILE_SIZE           |
+
+> 💡 **Regra simples**: Se a constante é específica do módulo, use `.const.ts`. Se é usada em múltiplos módulos, mova para `/constants/`.
+
 **Benefícios dos Custom Hooks:**
 
 - ✅ **Reutilização** - Lógica compartilhada entre componentes
@@ -455,7 +567,7 @@ export default function Home() {                // Function declaration (não us
 
 > 💡 **Padrão de uso**: React state para estado local/componente, Zustand **exclusivamente** para estado global no diretório `/stores/`.
 
-📚 **[Ver exemplo de implementação com Zustand →](#-teste-de-store-global-zustand)**
+📚 **[Ver exemplo de implementação com Zustand →](#-criando-store-global-zustand)**
 
 ### Development & Quality
 
@@ -825,16 +937,49 @@ cd app/components/ui/button
 #### 2. Arquivos do Component
 
 ```typescript
+// button.const.ts
+export const BUTTON_VARIANTS = {
+  PRIMARY: 'primary',
+  SECONDARY: 'secondary',
+  DANGER: 'danger',
+} as const
+
+export const BUTTON_SIZES = {
+  SMALL: 'sm',
+  MEDIUM: 'md',
+  LARGE: 'lg',
+} as const
+
+export const BUTTON_CLASSES = {
+  base: 'inline-flex items-center justify-center font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2',
+  variant: {
+    primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
+    secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500',
+    danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
+  },
+  size: {
+    sm: 'px-3 py-1.5 text-sm',
+    md: 'px-4 py-2 text-base',
+    lg: 'px-6 py-3 text-lg',
+  },
+  disabled: 'opacity-50 cursor-not-allowed',
+} as const
+```
+
+```typescript
 // button.type.ts
+import { BUTTON_VARIANTS, BUTTON_SIZES } from './button.const'
+
 export interface IButtonProps {
   variant?: TButtonVariant
   size?: TSize
   children: React.ReactNode
   onClick?: () => void
+  disabled?: boolean
 }
 
-export type TButtonVariant = 'primary' | 'secondary' | 'danger'
-export type TSize = 'sm' | 'md' | 'lg'
+export type TButtonVariant = keyof typeof BUTTON_VARIANTS
+export type TSize = keyof typeof BUTTON_SIZES
 ```
 
 ```typescript
@@ -862,17 +1007,29 @@ export const useButton = ({ onClick }: { onClick?: () => void }) => {
 ```typescript
 // button.tsx
 import { IButtonProps } from './button.type'
+import { BUTTON_CLASSES } from './button.const'
 
 export const Button = ({
   variant = 'primary',
   size = 'md',
   children,
-  onClick
+  onClick,
+  disabled = false
 }: IButtonProps) => {
+  const className = [
+    BUTTON_CLASSES.base,
+    BUTTON_CLASSES.variant[variant],
+    BUTTON_CLASSES.size[size],
+    disabled && BUTTON_CLASSES.disabled,
+  ]
+    .filter(Boolean)
+    .join(' ')
+
   return (
     <button
-      className={`btn btn-${variant} btn-${size}`}
+      className={className}
       onClick={onClick}
+      disabled={disabled}
     >
       {children}
     </button>
@@ -884,6 +1041,7 @@ export const Button = ({
 // button.test.tsx
 import { render, screen, fireEvent } from '@testing-library/react'
 import { Button } from './button'
+import { BUTTON_CLASSES } from './button.const'
 
 describe('Button', () => {
   it('should render with correct text', () => {
@@ -903,7 +1061,23 @@ describe('Button', () => {
   it('should apply correct variant classes', () => {
     render(<Button variant="secondary">Test</Button>)
 
-    expect(screen.getByRole('button')).toHaveClass('btn-secondary')
+    const button = screen.getByRole('button')
+    expect(button.className).toContain(BUTTON_CLASSES.variant.secondary)
+  })
+
+  it('should apply correct size classes', () => {
+    render(<Button size="lg">Large Button</Button>)
+
+    const button = screen.getByRole('button')
+    expect(button.className).toContain(BUTTON_CLASSES.size.lg)
+  })
+
+  it('should be disabled when disabled prop is true', () => {
+    render(<Button disabled>Disabled</Button>)
+
+    const button = screen.getByRole('button')
+    expect(button).toBeDisabled()
+    expect(button.className).toContain(BUTTON_CLASSES.disabled)
   })
 })
 ```
@@ -912,7 +1086,751 @@ describe('Button', () => {
 // index.ts
 export { Button } from './button'
 export { useButton } from './button.hook'
+export { BUTTON_VARIANTS, BUTTON_SIZES, BUTTON_CLASSES } from './button.const'
 export type { IButtonProps, TButtonVariant, TSize } from './button.type'
+```
+
+### 🔧 Criando Service
+
+#### 1. Estrutura do Service
+
+```bash
+# Crie o diretório do service
+mkdir app/services/auth
+cd app/services/auth
+```
+
+#### 2. Arquivos do Service
+
+```typescript
+// auth.const.ts
+export const AUTH_ENDPOINTS = {
+  LOGIN: '/auth/login',
+  LOGOUT: '/auth/logout',
+  REFRESH: '/auth/refresh',
+  REGISTER: '/auth/register',
+  FORGOT_PASSWORD: '/auth/forgot-password',
+  RESET_PASSWORD: '/auth/reset-password',
+} as const
+
+export const TOKEN_CONFIG = {
+  ACCESS_TOKEN_KEY: 'access_token',
+  REFRESH_TOKEN_KEY: 'refresh_token',
+  TOKEN_PREFIX: 'Bearer',
+  EXPIRY_BUFFER: 60, // segundos antes de expirar para renovar
+} as const
+
+export const AUTH_ERRORS = {
+  INVALID_CREDENTIALS: 'Email ou senha inválidos',
+  TOKEN_EXPIRED: 'Sessão expirada, faça login novamente',
+  NETWORK_ERROR: 'Erro de conexão, tente novamente',
+  SERVER_ERROR: 'Erro no servidor, tente mais tarde',
+} as const
+```
+
+```typescript
+// auth.type.ts
+export interface ILoginRequest {
+  email: string
+  password: string
+}
+
+export interface ILoginResponse {
+  user: IUser
+  token: string
+  refreshToken: string
+}
+
+export interface IUser {
+  id: string
+  name: string
+  email: string
+  role: TUserRole
+}
+
+export type TUserRole = 'admin' | 'user' | 'guest'
+export type TAuthStatus = 'authenticated' | 'unauthenticated' | 'loading'
+```
+
+```typescript
+// auth.ts
+import { ILoginRequest, ILoginResponse } from './auth.type'
+import { AUTH_ENDPOINTS, AUTH_ERRORS } from './auth.const'
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL
+
+export const authService = {
+  login: async (credentials: ILoginRequest): Promise<ILoginResponse> => {
+    try {
+      const response = await fetch(`${API_URL}${AUTH_ENDPOINTS.LOGIN}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+      })
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error(AUTH_ERRORS.INVALID_CREDENTIALS)
+        }
+        throw new Error(AUTH_ERRORS.SERVER_ERROR)
+      }
+
+      return response.json()
+    } catch (error) {
+      if (error instanceof TypeError) {
+        throw new Error(AUTH_ERRORS.NETWORK_ERROR)
+      }
+      throw error
+    }
+  },
+
+  logout: async (): Promise<void> => {
+    await fetch(`${API_URL}${AUTH_ENDPOINTS.LOGOUT}`, {
+      method: 'POST',
+      credentials: 'include',
+    })
+  },
+
+  refreshToken: async (refreshToken: string): Promise<string> => {
+    const response = await fetch(`${API_URL}${AUTH_ENDPOINTS.REFRESH}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ refreshToken }),
+    })
+
+    if (!response.ok) {
+      throw new Error(AUTH_ERRORS.TOKEN_EXPIRED)
+    }
+
+    const data = await response.json()
+    return data.token
+  },
+}
+```
+
+```typescript
+// auth.test.ts
+import { authService } from './auth'
+import { AUTH_ENDPOINTS, AUTH_ERRORS } from './auth.const'
+
+// Mock fetch
+global.fetch = jest.fn()
+
+describe('authService', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('should login successfully', async () => {
+    const mockResponse = {
+      user: { id: '1', name: 'John', email: 'john@test.com', role: 'user' },
+      token: 'token123',
+      refreshToken: 'refresh123',
+    }
+
+    ;(fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockResponse,
+    })
+
+    const result = await authService.login({
+      email: 'john@test.com',
+      password: 'password123',
+    })
+
+    expect(result).toEqual(mockResponse)
+    expect(fetch).toHaveBeenCalledWith(
+      `${process.env.NEXT_PUBLIC_API_URL}${AUTH_ENDPOINTS.LOGIN}`,
+      expect.objectContaining({
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      })
+    )
+  })
+
+  it('should throw error on invalid credentials', async () => {
+    ;(fetch as jest.Mock).mockResolvedValueOnce({
+      ok: false,
+      status: 401,
+    })
+
+    await expect(
+      authService.login({
+        email: 'john@test.com',
+        password: 'wrong',
+      })
+    ).rejects.toThrow(AUTH_ERRORS.INVALID_CREDENTIALS)
+  })
+
+  it('should throw network error on connection failure', async () => {
+    ;(fetch as jest.Mock).mockRejectedValueOnce(new TypeError('Network failed'))
+
+    await expect(
+      authService.login({
+        email: 'john@test.com',
+        password: 'password123',
+      })
+    ).rejects.toThrow(AUTH_ERRORS.NETWORK_ERROR)
+  })
+})
+```
+
+```typescript
+// index.ts
+export { authService } from './auth'
+export { AUTH_ENDPOINTS, TOKEN_CONFIG, AUTH_ERRORS } from './auth.const'
+export type {
+  ILoginRequest,
+  ILoginResponse,
+  IUser,
+  TUserRole,
+  TAuthStatus,
+} from './auth.type'
+```
+
+### 🗃️ Criando Store Global (Zustand)
+
+#### 1. Estrutura da Store
+
+```bash
+# Crie o diretório da store
+mkdir app/stores/user
+cd app/stores/user
+```
+
+#### 2. Arquivos da Store
+
+```typescript
+// user.const.ts
+export const USER_ROLES = {
+  ADMIN: 'admin',
+  USER: 'user',
+  GUEST: 'guest',
+} as const
+
+export const USER_PERMISSIONS = {
+  admin: ['read', 'write', 'delete', 'manage_users'],
+  user: ['read', 'write'],
+  guest: ['read'],
+} as const
+
+export const USER_STORAGE_KEY = 'user-storage'
+
+export const DEFAULT_USER_STATE = {
+  user: null,
+  isAuthenticated: false,
+  isLoading: false,
+  error: null,
+} as const
+```
+
+```typescript
+// user.type.ts
+import { IUser } from '@/services/auth'
+
+export interface IUserState {
+  user: IUser | null
+  isAuthenticated: boolean
+  isLoading: boolean
+  error: string | null
+}
+
+export interface IUserActions {
+  setUser: (user: IUser) => void
+  clearUser: () => void
+  setLoading: (isLoading: boolean) => void
+  setError: (error: string | null) => void
+}
+
+export type TUserStore = IUserState & IUserActions
+```
+
+```typescript
+// user.ts
+import { create } from 'zustand'
+import { devtools, persist } from 'zustand/middleware'
+import { TUserStore } from './user.type'
+import { USER_STORAGE_KEY, DEFAULT_USER_STATE } from './user.const'
+
+export const useUserStore = create<TUserStore>()(
+  devtools(
+    persist(
+      (set) => ({
+        // State inicial usando constantes
+        ...DEFAULT_USER_STATE,
+
+        // Actions
+        setUser: (user) =>
+          set({
+            user,
+            isAuthenticated: true,
+            error: null,
+          }),
+
+        clearUser: () =>
+          set(DEFAULT_USER_STATE),
+
+        setLoading: (isLoading) => set({ isLoading }),
+
+        setError: (error) => set({ error }),
+      }),
+      {
+        name: USER_STORAGE_KEY, // Nome no localStorage vindo das constantes
+        partialize: (state) => ({ user: state.user }), // Persiste apenas o user
+      }
+    )
+  )
+)
+```
+
+```typescript
+// user.test.ts
+import { act, renderHook } from '@testing-library/react'
+import { useUserStore } from './user'
+
+describe('useUserStore', () => {
+  it('should set user correctly', () => {
+    const { result } = renderHook(() => useUserStore())
+
+    const mockUser = {
+      id: '1',
+      name: 'John Doe',
+      email: 'john@test.com',
+      role: 'user' as const,
+    }
+
+    act(() => {
+      result.current.setUser(mockUser)
+    })
+
+    expect(result.current.user).toEqual(mockUser)
+    expect(result.current.isAuthenticated).toBe(true)
+    expect(result.current.error).toBeNull()
+  })
+
+  it('should clear user correctly', () => {
+    const { result } = renderHook(() => useUserStore())
+
+    act(() => {
+      result.current.clearUser()
+    })
+
+    expect(result.current.user).toBeNull()
+    expect(result.current.isAuthenticated).toBe(false)
+  })
+
+  it('should handle loading state', () => {
+    const { result } = renderHook(() => useUserStore())
+
+    act(() => {
+      result.current.setLoading(true)
+    })
+
+    expect(result.current.isLoading).toBe(true)
+  })
+
+  it('should handle error state', () => {
+    const { result } = renderHook(() => useUserStore())
+
+    const errorMessage = 'Authentication failed'
+
+    act(() => {
+      result.current.setError(errorMessage)
+    })
+
+    expect(result.current.error).toBe(errorMessage)
+  })
+})
+```
+
+```typescript
+// index.ts
+export { useUserStore } from './user'
+export { USER_ROLES, USER_PERMISSIONS, USER_STORAGE_KEY, DEFAULT_USER_STATE } from './user.const'
+export type { IUserState, IUserActions, TUserStore } from './user.type'
+```
+
+### 🛠️ Criando Utility
+
+#### 1. Estrutura do Utility
+
+```bash
+# Crie o diretório do utility
+mkdir app/utils/format-date
+cd app/utils/format-date
+```
+
+#### 2. Arquivos do Utility
+
+```typescript
+// format-date.const.ts
+export const DATE_FORMATS = {
+  SHORT: 'short',
+  LONG: 'long',
+  ISO: 'iso',
+  RELATIVE: 'relative',
+} as const
+
+export const DEFAULT_LOCALE = 'pt-BR'
+
+export const RELATIVE_TIME_UNITS: [string, number][] = [
+  ['year', 31536000],
+  ['month', 2592000],
+  ['week', 604800],
+  ['day', 86400],
+  ['hour', 3600],
+  ['minute', 60],
+  ['second', 1],
+]
+
+export const DATE_FORMAT_OPTIONS = {
+  short: {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  },
+  long: {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  },
+} as const
+```
+
+```typescript
+// format-date.type.ts
+import { DATE_FORMATS } from './format-date.const'
+
+export type TDateFormat = keyof typeof DATE_FORMATS
+
+export interface IFormatDateOptions {
+  format?: TDateFormat
+  locale?: string
+  timezone?: string
+}
+```
+
+```typescript
+// format-date.ts
+import { IFormatDateOptions } from './format-date.type'
+import {
+  DEFAULT_LOCALE,
+  RELATIVE_TIME_UNITS,
+  DATE_FORMAT_OPTIONS
+} from './format-date.const'
+
+export const formatDate = (
+  date: Date | string,
+  options: IFormatDateOptions = {}
+): string => {
+  const { format = 'short', locale = DEFAULT_LOCALE, timezone } = options
+
+  const dateObj = typeof date === 'string' ? new Date(date) : date
+
+  if (isNaN(dateObj.getTime())) {
+    throw new Error('Invalid date')
+  }
+
+  const formatOptions: Intl.DateTimeFormatOptions = {
+    timeZone: timezone,
+  }
+
+  switch (format) {
+    case 'short':
+      Object.assign(formatOptions, DATE_FORMAT_OPTIONS.short)
+      break
+    case 'long':
+      Object.assign(formatOptions, DATE_FORMAT_OPTIONS.long)
+      break
+    case 'iso':
+      return dateObj.toISOString()
+    case 'relative':
+      return formatRelativeTime(dateObj)
+  }
+
+  return new Intl.DateTimeFormat(locale, formatOptions).format(dateObj)
+}
+
+const formatRelativeTime = (date: Date): string => {
+  const now = new Date()
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
+
+  for (const [unit, seconds] of RELATIVE_TIME_UNITS) {
+    const interval = Math.floor(diffInSeconds / seconds)
+    if (interval >= 1) {
+      const rtf = new Intl.RelativeTimeFormat(DEFAULT_LOCALE, { numeric: 'auto' })
+      return rtf.format(-interval, unit as Intl.RelativeTimeFormatUnit)
+    }
+  }
+
+  return 'agora'
+}
+```
+
+```typescript
+// format-date.test.ts
+import { formatDate } from './format-date'
+
+describe('formatDate', () => {
+  const testDate = new Date('2024-01-15T10:30:00')
+
+  it('should format date in short format', () => {
+    const result = formatDate(testDate, { format: 'short' })
+    expect(result).toBe('15/01/2024')
+  })
+
+  it('should format date in long format', () => {
+    const result = formatDate(testDate, { format: 'long' })
+    expect(result).toContain('janeiro')
+    expect(result).toContain('2024')
+  })
+
+  it('should format date in ISO format', () => {
+    const result = formatDate(testDate, { format: 'iso' })
+    expect(result).toBe(testDate.toISOString())
+  })
+
+  it('should handle string dates', () => {
+    const result = formatDate('2024-01-15', { format: 'short' })
+    expect(result).toBe('15/01/2024')
+  })
+
+  it('should throw error for invalid date', () => {
+    expect(() => formatDate('invalid-date')).toThrow('Invalid date')
+  })
+
+  it('should use custom locale', () => {
+    const result = formatDate(testDate, {
+      format: 'long',
+      locale: 'en-US'
+    })
+    expect(result).toContain('January')
+  })
+})
+```
+
+```typescript
+// index.ts
+export { formatDate } from './format-date'
+export { DATE_FORMATS, DEFAULT_LOCALE, RELATIVE_TIME_UNITS } from './format-date.const'
+export type { TDateFormat, IFormatDateOptions } from './format-date.type'
+```
+
+### 🎣 Criando Hook Global
+
+#### 1. Estrutura do Hook Global
+
+```bash
+# Crie o diretório do hook
+mkdir app/hooks/use-local-storage
+cd app/hooks/use-local-storage
+```
+
+#### 2. Arquivos do Hook
+
+```typescript
+// use-local-storage.type.ts
+export interface IUseLocalStorageOptions {
+  serializer?: (value: unknown) => string
+  deserializer?: (value: string) => unknown
+  syncData?: boolean
+}
+
+export type TSetValue<T> = T | ((prevValue: T) => T)
+```
+
+```typescript
+// use-local-storage.ts
+import { useState, useEffect, useCallback } from 'react'
+import { IUseLocalStorageOptions, TSetValue } from './use-local-storage.type'
+
+export const useLocalStorage = <T>(
+  key: string,
+  initialValue: T,
+  options: IUseLocalStorageOptions = {}
+) => {
+  const {
+    serializer = JSON.stringify,
+    deserializer = JSON.parse,
+    syncData = true,
+  } = options
+
+  // Estado inicial
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    if (typeof window === 'undefined') {
+      return initialValue
+    }
+
+    try {
+      const item = window.localStorage.getItem(key)
+      return item ? deserializer(item) : initialValue
+    } catch (error) {
+      console.error(`Error reading localStorage key "${key}":`, error)
+      return initialValue
+    }
+  })
+
+  // Função para atualizar o valor
+  const setValue = useCallback(
+    (value: TSetValue<T>) => {
+      try {
+        const valueToStore = value instanceof Function ? value(storedValue) : value
+
+        setStoredValue(valueToStore)
+
+        if (typeof window !== 'undefined') {
+          window.localStorage.setItem(key, serializer(valueToStore))
+        }
+      } catch (error) {
+        console.error(`Error setting localStorage key "${key}":`, error)
+      }
+    },
+    [key, serializer, storedValue]
+  )
+
+  // Função para remover o item
+  const removeValue = useCallback(() => {
+    try {
+      setStoredValue(initialValue)
+
+      if (typeof window !== 'undefined') {
+        window.localStorage.removeItem(key)
+      }
+    } catch (error) {
+      console.error(`Error removing localStorage key "${key}":`, error)
+    }
+  }, [key, initialValue])
+
+  // Sincronizar entre abas
+  useEffect(() => {
+    if (!syncData || typeof window === 'undefined') return
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key !== key || e.storageArea !== window.localStorage) return
+
+      try {
+        const newValue = e.newValue ? deserializer(e.newValue) : initialValue
+        setStoredValue(newValue)
+      } catch (error) {
+        console.error(`Error syncing localStorage key "${key}":`, error)
+      }
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    return () => window.removeEventListener('storage', handleStorageChange)
+  }, [key, initialValue, deserializer, syncData])
+
+  return [storedValue, setValue, removeValue] as const
+}
+```
+
+```typescript
+// use-local-storage.test.ts
+import { renderHook, act } from '@testing-library/react'
+import { useLocalStorage } from './use-local-storage'
+
+// Mock localStorage
+const localStorageMock = (() => {
+  let store: Record<string, string> = {}
+
+  return {
+    getItem: (key: string) => store[key] || null,
+    setItem: (key: string, value: string) => {
+      store[key] = value
+    },
+    removeItem: (key: string) => {
+      delete store[key]
+    },
+    clear: () => {
+      store = {}
+    },
+  }
+})()
+
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock,
+})
+
+describe('useLocalStorage', () => {
+  beforeEach(() => {
+    localStorageMock.clear()
+  })
+
+  it('should initialize with initial value', () => {
+    const { result } = renderHook(() =>
+      useLocalStorage('test-key', 'initial')
+    )
+
+    expect(result.current[0]).toBe('initial')
+  })
+
+  it('should update localStorage when value changes', () => {
+    const { result } = renderHook(() =>
+      useLocalStorage('test-key', 'initial')
+    )
+
+    act(() => {
+      result.current[1]('updated')
+    })
+
+    expect(result.current[0]).toBe('updated')
+    expect(localStorageMock.getItem('test-key')).toBe('"updated"')
+  })
+
+  it('should handle objects', () => {
+    const { result } = renderHook(() =>
+      useLocalStorage('test-object', { name: 'John', age: 30 })
+    )
+
+    act(() => {
+      result.current[1]({ name: 'Jane', age: 25 })
+    })
+
+    expect(result.current[0]).toEqual({ name: 'Jane', age: 25 })
+  })
+
+  it('should remove value from localStorage', () => {
+    const { result } = renderHook(() =>
+      useLocalStorage('test-key', 'initial')
+    )
+
+    act(() => {
+      result.current[1]('value')
+    })
+
+    expect(localStorageMock.getItem('test-key')).toBe('"value"')
+
+    act(() => {
+      result.current[2]() // removeValue
+    })
+
+    expect(result.current[0]).toBe('initial')
+    expect(localStorageMock.getItem('test-key')).toBeNull()
+  })
+
+  it('should accept function updates', () => {
+    const { result } = renderHook(() =>
+      useLocalStorage('test-counter', 0)
+    )
+
+    act(() => {
+      result.current[1]((prev) => prev + 1)
+    })
+
+    expect(result.current[0]).toBe(1)
+  })
+})
+```
+
+```typescript
+// index.ts
+export { useLocalStorage } from './use-local-storage'
+export type { IUseLocalStorageOptions, TSetValue } from './use-local-storage.type'
 ```
 
 ### 📱 Criando View de Página
@@ -1215,39 +2133,22 @@ describe('ViewHome', () => {
 })
 ```
 
-#### Teste de Store Global (Zustand)
+### 📁 Arquivos Estáticos e Imagens
 
-```typescript
-// user.store.test.ts
-import { act, renderHook } from '@testing-library/react'
-import { useUserStore } from './user.store'
+#### Estrutura Sugerida para /public/
 
-describe('useUserStore', () => {
-  it('should set user correctly', () => {
-    const { result } = renderHook(() => useUserStore())
+Quando precisar adicionar arquivos estáticos, organize assim:
 
-    const mockUser = { id: '1', name: 'João', email: 'joao@test.com' }
-
-    act(() => {
-      result.current.setUser(mockUser)
-    })
-
-    expect(result.current.user).toEqual(mockUser)
-  })
-
-  it('should clear user correctly', () => {
-    const { result } = renderHook(() => useUserStore())
-
-    act(() => {
-      result.current.clearUser()
-    })
-
-    expect(result.current.user).toBeNull()
-  })
-})
+```
+/public/
+├── documents/     # PDFs, downloads
+├── icons/         # Ícones e SVGs
+├── images/        # Fotos e imagens
+├── robots.txt     # SEO
+└── sitemap.xml    # SEO
 ```
 
-### 📁 Arquivos Estáticos e Imagens
+> 📝 **Nota**: O `favicon.ico` no App Router fica em `/app/favicon.ico`, não em `/public/`.
 
 #### Como Usar Imagens no Código
 
@@ -1255,6 +2156,7 @@ describe('useUserStore', () => {
 // ✅ Correto - next/image (recomendado)
 import Image from 'next/image'
 
+// Primeiro, crie a pasta /public/images/
 <Image
   src="/images/logo.png"
   alt="Logo"
@@ -1262,6 +2164,7 @@ import Image from 'next/image'
   height={100}
 />
 
+// Para ícones, crie a pasta /public/icons/
 <Image
   src="/icons/logo-dark.svg"
   alt="Logo"
@@ -1277,6 +2180,8 @@ import Image from 'next/image'
 ```
 
 #### Com Next.js Image (Recomendado)
+
+> ⚠️ **Importante**: Você precisa criar as pastas `/public/images/` e `/public/icons/` antes de adicionar arquivos.
 
 ```typescript
 import Image from 'next/image'
@@ -1392,88 +2297,3 @@ tipo(escopo): descrição breve
 
 Descrição mais detalhada (opcional)
 ```
-
-**Exemplos de commits reais do Commitizen:**
-
-```bash
-feat: add user authentication component
-
-Implements login form with email/password validation
-and session management.
-
-fix: resolve button alignment issue
-
-Fixes horizontal alignment problem in mobile viewport.
-
-docs: update component documentation
-
-Adds usage examples and API reference for Button component.
-
-# Com escopo
-feat(auth): add login form validation
-
-Implements client-side validation for email format
-and password strength requirements.
-```
-
-### 🎯 Benefícios da Convenção com Card ID
-
-**Rastreabilidade:**
-
-- ✅ Conecta código diretamente ao requisito/bug
-- ✅ Facilita code review e auditoria
-- ✅ Histórico completo do desenvolvimento
-
-**Organização:**
-
-- ✅ Branches agrupadas por projeto no Git
-- ✅ Fácil identificação do contexto
-- ✅ Navegação eficiente entre ferramentas
-
-**Automação:**
-
-- ✅ Integração com ferramentas de projeto (Jira, Azure DevOps)
-- ✅ Fechamento automático de cards via commit
-- ✅ Relatórios de deployment automatizados
-
-### 🤖 Automação com Husky
-
-O projeto está configurado com **Husky hooks** que automatizam o processo:
-
-```bash
-# Ao fazer git commit, o Husky executa automaticamente:
-git commit
-# ↓ Husky hooks executam:
-# 1. prepare-commit-msg: Abre Commitizen para commit estruturado
-# 2. pre-commit: Executa tsc + testes + lint-staged
-# 3. commit-msg: Valida formato do commit com commitlint
-```
-
-**Fluxo automatizado:**
-
-- ✅ **Testes** rodam antes do commit
-- ✅ **Linting** corrige código automaticamente
-- ✅ **Commitizen** força commits padronizados
-- ✅ **Validação** garante formato correto
-
-### 📋 Checklist de Desenvolvimento
-
-#### Antes de Commitar
-
-- [ ] `npm run lint` - sem erros
-- [ ] `npm run format` - código formatado
-- [ ] `npm run tsc` - sem erros de tipo
-- [ ] `npm test` - todos os testes passando
-
-#### Antes do PR
-
-- [ ] Testes adicionados/atualizados
-- [ ] Documentação atualizada
-- [ ] Component/View exportado corretamente
-- [ ] Tipos definidos adequadamente
-
----
-
-**📅 Última atualização**: Maio 2025
-**📦 Versão**: 1.0.0
-**👥 Mantido por**: Thiago Pereira Perez
