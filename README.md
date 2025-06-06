@@ -52,10 +52,10 @@ Focus on your features, not infrastructure setup.
 
 ## ✅ Prerequisites
 
-- **nvm** (Node Version Manager) to manage Node.js versions
-- **Node.js** (version specified in `.nvmrc`)
-- **npm** for package management
-- **Git** for version control
+- [nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- node.js
+- npm
+- git
 
 ---
 
