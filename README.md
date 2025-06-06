@@ -155,12 +155,12 @@ git commit          # Commitizen opens automatically via Husky
 
 ## 🛠 Tech Stack
 
-**Frontend:** Next.js, React, TypeScript, Tailwind CSS
-**State Management:** Zustand (global), React Hooks (local)
-**Testing:** Jest, Testing Library
-**Code Quality:** ESLint, Prettier
-**Workflow:** Husky, Commitizen
-**Tooling:** Turbopack, npm, nvm
+- **Frontend:** Next.js, React, TypeScript, Tailwind CSS
+- **State Management:** Zustand (global), React Hooks (local)
+- **Testing:** Jest, Testing Library
+- **Code Quality:** ESLint, Prettier
+- **Workflow:** Husky, Commitizen
+- **Tooling:** Turbopack, npm, nvm
 
 > 📚 **[See complete technology details →](./.docs/architecture.md)**
 
