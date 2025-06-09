@@ -1,234 +1,208 @@
 # Next.js Project Documentation
 
+> 📦 **Complete Next.js starter template with pre-configured tools and scalable architecture.** Build production-ready applications with TypeScript, Tailwind CSS, automated testing, and quality standards that scale with your team.
+
 ![Next.js](https://img.shields.io/badge/Next.js-black?logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-blue?logo=typescript)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-cyan?logo=tailwindcss)
 ![Jest](https://img.shields.io/badge/Jest-red?logo=jest)
-![License](https://img.shields.io/badge/license-MIT-green)
 
 > 📦 **See exact versions in [`package.json`](./package.json)**
 
+---
+
 ## 📋 Table of Contents
 
-- [Overview](#-overview)
-- [Prerequisites](#-prerequisites)
-- [Installation](#-installation-and-setup)
-- [Documentation](#-complete-documentation)
-- [Scripts](#-available-scripts)
-- [Tech Stack](#-tech-stack)
-- [Project Structure](#-basic-project-structure)
-- [What's Included](#-whats-included-in-this-template)
-- [Getting Started](#-getting-started-with-your-new-project)
-- [Development](#-development)
-- [Troubleshooting](#-troubleshooting)
-- [Contributing](#-contributing)
+- [🎯 Overview](#-overview)
+- [✅ Prerequisites](#-prerequisites)
+- [🚀 Quick Start](#-quick-start)
+- [📋 Complete Documentation](#-complete-documentation)
+- [🔧 Available Scripts](#-available-scripts)
+- [🛠 Tech Stack](#-tech-stack)
+- [🤝 Development](#-development)
+- [🔧 Troubleshooting](#-troubleshooting)
+- [🤝 Contributing](#-contributing)
 
 ---
 
 ## 🎯 Overview
 
-A **Next.js starter template** that eliminates boilerplate setup and provides a scalable foundation with best practices built-in.
-
-**Perfect for:**
-
-- 🚀 **Rapid project kickoff** - Skip configuration, start building
-- 👥 **Team development** - Consistent patterns and conventions
-- 📈 **Scalable applications** - Architecture designed for growth
-
-Focus on your features, not infrastructure setup.
+**Next.js starter template** with pre-configured tools and scalable architecture for building modern web applications.
 
 ### Key Features
 
-- ⚡ **Next.js** with App Router and Turbopack pre-configured
-- 🎨 **Tailwind CSS** ready for styling
-- 📱 **TypeScript** with robust typing setup
-- 🗃️ **Zustand** configured for global state management
-- 🧪 **Jest + Testing Library** ready for testing
-- 📏 **ESLint + Prettier** for code quality enforcement
-- 🎯 **Conventional Commits** with Commitizen setup
-- 🏗️ **Scalable structure** - Template prepared for growth
+- ⚡ **Next.js 15** - App Router + Turbopack for fast development
+- 🎨 **Tailwind CSS 4** - Utility-first styling with latest features
+- 📱 **TypeScript** - Complete type safety and developer experience
+- 🗃️ **Zustand** - Lightweight global state management
+- 🧪 **Jest + Testing Library** - Comprehensive testing setup
+- 📏 **ESLint + Prettier** - Automated code quality and formatting
+- 🎯 **Conventional Commits** - Commitizen for consistent git history
+- 🏗️ **Scalable Architecture** - Organized folder structure and patterns
 
 ---
 
 ## ✅ Prerequisites
 
 - [nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-- node.js
+- Node.js 22.15.1+ (see .nvmrc)
 - npm
 - git
 
 ---
 
-## 🚀 Installation and Setup
-
-### 1. Clone and Initial Setup
+## 🚀 Quick Start
 
 ```bash
-# Clone this template
+# 1. Clone and setup
 git clone [template-repository-url]
 cd [your-new-project-name]
-
-# Use the correct Node.js version
 nvm use
-```
 
-### 2. Install Dependencies
-
-```bash
+# 2. Install dependencies
 npm install
+
+# 3. Start development
+npm run dev
+# Access: http://localhost:3000
 ```
 
-### 3. Environment Configuration
+### Environment Setup
 
-Create a `.env.local` file in the project root:
+Create `.env.local`:
 
 ```env
-# Public variables (accessible in browser) - must start with NEXT_PUBLIC_
+# Public variables
 NEXT_PUBLIC_API_URL="https://api.example.com"
 NEXT_PUBLIC_APP_NAME="My App"
 
-# Private variables (server-only) - no prefix needed
+# Private variables
 MY_SECRET_KEY="your-secret-here"
 MY_DATABASE_URL="your-database-connection-string"
 ```
 
-> 📖 **[Learn more about Next.js Environment Variables →](https://nextjs.org/docs/app/building-your-application/configuring/environment-variables)**
-
-### 4. Start Development
-
-```bash
-# Start the development server
-npm run dev
-
-# Access: http://localhost:3000
-```
+📚 **Learn more about environment variables:** [Next.js Environment Variables](https://nextjs.org/docs/app/building-your-application/configuring/environment-variables)
 
 ---
 
 ## 📋 Complete Documentation
 
-| File                                                   | Description                                                    |
-| ------------------------------------------------------ | -------------------------------------------------------------- |
-| **[Project Structure](./.docs/structure.md)**          | 📁 Current vs future structure, folder and module organization |
-| **[Code Conventions](./.docs/conventions.md)**         | 📝 Naming, arrow functions, custom hooks, patterns             |
-| **[Architecture & Concepts](./.docs/architecture.md)** | 🏗️ Components vs Views, data flow, technologies                |
-| **[Practical Examples](./.docs/examples.md)**          | 📚 Complete implementations of components, services, stores    |
-| **[Testing](./.docs/testing.md)**                      | 🧪 Jest configuration, strategies and test examples            |
-| **[Workflows & Best Practices](./.docs/workflows.md)** | 🔄 Git flow, conventional commits, best practices              |
+### 🎯 Core Organization & Standards
+
+| Documentation                                                  | Description                                               |
+| -------------------------------------------------------------- | --------------------------------------------------------- |
+| **[📁 Project Organization](./.docs/project-organization.md)** | **WHERE** to place files, folder structure, workflow      |
+| **[📝 Code Standards](./.docs/code-standards.md)**             | **HOW** to write code, naming patterns, quality standards |
+
+### 📚 Implementation & Processes
+
+| Documentation                                             | Description                                       |
+| --------------------------------------------------------- | ------------------------------------------------- |
+| **[🏗️ Architecture & Concepts](./.docs/architecture.md)** | Components vs Views, data flow, design principles |
+| **[📚 Practical Examples](./.docs/examples.md)**          | Complete implementation examples for all patterns |
+| **[🧪 Testing](./.docs/testing.md)**                      | Jest setup, testing strategies, examples          |
+| **[🔄 Workflows & Best Practices](./.docs/workflows.md)** | Git flow, commits, team collaboration             |
+
+### 🚀 Quick Start Guide
+
+**New to this template?** Follow this reading order:
+
+1. **[📁 Project Organization](./.docs/project-organization.md)** → Learn **WHERE** to put your code
+2. **[📝 Code Standards](./.docs/code-standards.md)** → Learn **HOW** to write quality code
+3. **[📚 Practical Examples](./.docs/examples.md)** → See complete implementation patterns
+4. **[🧪 Testing](./.docs/testing.md)** → Set up testing for your features
+
+### 💡 Quick Reference
+
+- 🤔 **"Where should I put this file?"** → [Project Organization](./.docs/project-organization.md)
+- 🤔 **"How should I name this?"** → [Code Standards](./.docs/code-standards.md)
+- 🤔 **"How do I implement this pattern?"** → [Practical Examples](./.docs/examples.md)
 
 ---
 
 ## 🔧 Available Scripts
 
-### 🚀 Development
+### Development
 
 ```bash
-npm run dev          # Start development server (Turbopack)
-npm run build        # Generate production build
+npm run dev          # Start dev server (Turbopack)
+npm run build        # Production build
 npm start           # Start production server
 ```
 
-### 🧹 Code Quality
+### Code Quality
 
 ```bash
-npm run lint         # Check code issues
-npm run lint:fix     # Fix issues automatically
+npm run lint         # Check issues
+npm run lint:fix     # Fix issues
 npm run format       # Check formatting
-npm run format:fix   # Format code automatically
-npm run tsc         # Check TypeScript types
+npm run format:fix   # Format code
+npm run tsc         # TypeScript check
 ```
 
-### 🧪 Testing
+### Testing
 
 ```bash
-npm test            # Run all tests
-npm run test:watch  # Run tests in watch mode (development)
+npm test            # Run tests
+npm run test:watch  # Watch mode
 ```
 
-### 🔄 Git and Commits
+### Git and Commits
 
 ```bash
-git commit          # Commitizen opens automatically via Husky
+git commit          # Commitizen opens (Husky)
 ```
 
 ---
 
 ## 🛠 Tech Stack
 
-- **Frontend:** Next.js, React, TypeScript, Tailwind CSS
-- **State Management:** Zustand (global), React Hooks (local)
-- **Testing:** Jest, Testing Library
-- **Code Quality:** ESLint, Prettier
-- **Workflow:** Husky, Commitizen
-- **Tooling:** Turbopack, npm, nvm
+### Core
 
-> 📚 **[See complete technology details →](./.docs/architecture.md)**
+- **Next.js 15** - React framework with App Router
+- **React 19** - UI library with latest features
+- **TypeScript 5** - Type safety and better DX
+- **Tailwind CSS 4** - Utility-first styling
 
----
+### State & Data
 
-## 📁 Basic Project Structure
+- **Zustand** - Global state management
+- **React Hooks** - Local component state
 
-```
-/app
-├── (routes)/                    # 🗂️ Application routes
-│   ├── (auth)/                  # 🔒 Authenticated routes
-│   ├── api/                     # 🔌 API Routes
-│   └── (public)/                # 🌐 Public routes
-├── components/                  # 🧩 Reusable components
-│   ├── structure/              # 🏗️ Structural components
-│   └── ui/                     # 🎨 Interface components
-├── services/                    # 🔧 Services and APIs
-├── stores/                      # 🗃️ Global state stores
-├── views/                       # 📱 Views/page structures
-├── hooks/                       # 🎣 Global custom hooks
-├── utils/                       # 🛠️ Utility functions
-└── styles/                      # 🎨 Global styles
+### Quality & Testing
 
-/public/                         # 📁 Static files
-```
+- **ESLint** - Code linting and conventions
+- **Prettier** - Code formatting
+- **Jest** - Unit testing framework
+- **Testing Library** - React component testing
 
-> 📚 **[See complete and detailed structure →](./.docs/structure.md)**
+### Development
 
----
-
-## 🎯 What's Included in This Template
-
-- ✅ **2 sample pages** - Home and Sample-1 as examples
-- ✅ **Basic layout structure** - Public routes setup
-- ✅ **2 complete views** - With tests and exports as examples
-- ✅ **Prepared folder structure** - Organized folders with `.gitkeep`
-- ✅ **Complete configurations** - ESLint, Prettier, Jest, Husky pre-configured
-- ✅ **TypeScript setup** - With path aliases (@/) configured
-- ✅ **Tailwind CSS** - With custom configuration ready
-
-### 📋 Getting Started with Your New Project
-
-1. **Remove sample content** and `.gitkeep` files as you add your own content
-2. **Create your pages** in `/app/(routes)/(public)/your-page-name/page.tsx` for new routes
-3. **Build your views** in `/views/your-view-name/` for your page structures
-4. **Create your components** in `/components/ui/` and `/components/structure/`
-5. **Implement global stores** in `/stores/` using the pre-configured Zustand
-6. **Add your services** in `/services/` for API integrations
-7. **Organize your assets** in `/public/` with proper subfolders
-8. **Update this README.md** with your project-specific information
-
-> 📚 **[See detailed implementation guides →](./.docs/examples.md)**
+- **Husky** - Git hooks automation
+- **Commitizen** - Conventional commits
+- **Turbopack** - Fast Next.js bundler
 
 ---
 
 ## 🤝 Development
 
-This starter template enforces **strict conventions** to maintain quality and consistency in your new projects:
+This template enforces consistent patterns:
 
-- 🏹 **Mandatory arrow functions** (pre-configured in ESLint)
-- 📝 **Standardized naming** (kebab-case, PascalCase, I/T prefixes)
-- 🎣 **Custom hooks recommended** for business logic
-- 🧪 **Unit tests** for components and views
-- 🔄 **Conventional commits** via Commitizen (ready to use)
-- 🌿 **Git flow** with branches named `[CARD-ID]_[description]`
+- 🏹 **Arrow functions only** (ESLint enforced)
+- 📝 **Strict naming conventions** (kebab-case, PascalCase, I/T prefixes)
+- 🎣 **Custom hooks for logic** (global in `/hooks/`, specific as `.hook.ts`)
+- 🧪 **Comprehensive testing** (all modules tested)
+- 🔄 **Conventional commits** (Commitizen + Husky)
+- 🌿 **Structured git flow** (`[CARD-ID]_[description]`)
 
-> 📝 **[See all conventions →](./.docs/conventions.md)**
-> 🔄 **[See complete workflow →](./.docs/workflows.md)**
+### Code Organization
+
+| **WHERE** to place code                                    | **HOW** to write code                          |
+| ---------------------------------------------------------- | ---------------------------------------------- |
+| [📁 Project Organization](./.docs/project-organization.md) | [📝 Code Standards](./.docs/code-standards.md) |
+| Folder structure, module placement                         | Naming conventions, implementation patterns    |
+
+> 📚 **Learn the patterns:** See [Code Standards](./.docs/code-standards.md) and [Practical Examples](./.docs/examples.md)
 
 ---
 
@@ -236,57 +210,45 @@ This starter template enforces **strict conventions** to maintain quality and co
 
 ### Common Issues
 
-**Node version problems:**
+**Node version:**
 
 ```bash
-# Make sure you're using the correct version
 nvm use
 ```
 
-**Permission/cache issues:**
+**Cache issues:**
 
 ```bash
-# Clean install
-rm -rf node_modules package-lock.json
+rm -rf node_modules package-lock.json .next .turbo
 npm install
-
-# Clear Next.js cache
-rm -rf .next .turbo
 npm run dev
 ```
 
-**Port already in use:**
+**Port in use:**
 
 ```bash
-# Use different port
 npm run dev -- -p 3001
 ```
 
 **TypeScript errors:**
 
 ```bash
-# Check types
 npm run tsc
 ```
-
-> 💡 **Still having issues?** [Open an issue](https://github.com/your-repo/issues) and we'll help you out.
 
 ---
 
 ## 🤝 Contributing
 
-Found an issue or want to improve this template?
+**Found issues or want to improve?**
 
 - 🐛 **[Report bugs](https://github.com/your-repo/issues)**
 - 💡 **[Suggest features](https://github.com/your-repo/issues)**
-- 🔧 **[Submit pull requests](https://github.com/your-repo/pulls)**
+- 🔧 **[Submit PRs](https://github.com/your-repo/pulls)**
 
 **Before contributing:**
 
-1. Read our [conventions](./.docs/conventions.md)
-2. Follow our [workflows](./.docs/workflows.md)
-3. Add tests for new features
-
----
-
-**Starter template created for agile and scalable development** ⚡
+1. Read [Project Organization](./.docs/project-organization.md) - **WHERE** to place code
+2. Read [Code Standards](./.docs/code-standards.md) - **HOW** to write code
+3. Follow [Workflows](./.docs/workflows.md) - Git flow and collaboration
+4. Add tests for features - See [Testing Guide](./.docs/testing.md)
