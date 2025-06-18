@@ -2,18 +2,15 @@
 
 > 📦 **Base template for creating new Next.js applications.** Pre-configured with TypeScript, Tailwind CSS, testing setup, and development tools.
 
-![Next.js](https://img.shields.io/badge/Next.js-black?logo=next.js)
-![TypeScript](https://img.shields.io/badge/TypeScript-blue?logo=typescript)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-cyan?logo=tailwindcss)
-![Jest](https://img.shields.io/badge/Jest-red?logo=jest)
-
 ---
 
 ## 📋 Table of Contents
 
 - [📋 Overview](#-overview)
-- [⚡ Setup](#-setup)
+- [⚡ Quick Start](#-quick-start)
 - [💻 Development](#-development)
+- [🔄 Git](#-git)
+- [🤝 Contributing](#-contributing)
 - [📚 Reference](#-reference)
 
 ---
@@ -22,51 +19,43 @@
 
 ### Tech Stack
 
-#### Core Framework
+**Core Framework**
 
-- **Next.js** - React framework with App Router
-- **React** - UI library with latest features
-- **TypeScript** - Type safety and enhanced DX
-- **Tailwind CSS** - Utility-first styling
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
 
-#### State Management
+**State Management**
 
-- **Zustand** - Global state management (lightweight)
-- **React Hooks** - Local component state (useState, useReducer)
+- Zustand
+- React Hooks
 
-#### Quality & Testing
+**Quality & Testing**
 
-- **ESLint** - Code linting and quality rules
-- **Prettier** - Automated code formatting
-- **Jest** - Unit testing framework
-- **React Testing Library** - Component testing utilities
+- ESLint
+- Prettier
+- Jest
+- React Testing Library
 
-#### Development Tools
+**Development Tools**
 
-- **Husky** - Git hooks automation
-- **Commitizen** - Conventional commits wizard
-- **Lint-staged** - Run linters on staged files
-- **Turbopack** - Fast Next.js bundler
-
-### Essential Documentation
-
-| Documentation                                                  | Description                                                        |
-| -------------------------------------------------------------- | ------------------------------------------------------------------ |
-| **[📁 Project Organization](./.docs/project-organization.md)** | **WHERE** to place files, folder structure, architectural overview |
-| **[📝 Code Standards](./.docs/code-standards.md)**             | **HOW** to write code, naming patterns, quality standards          |
+- Husky
+- Commitizen
+- Lint-staged
 
 ---
 
-## ⚡ Setup
+## ⚡ Quick Start
 
 ### Prerequisites
 
-- [nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-- Node.js 22.15.1+ (see .nvmrc)
+- [NVM](https://github.com/nvm-sh/nvm#installing-and-updating)
+- Node.js
 - npm
 - git
 
-### Quick Start
+### Setup & Run
 
 ```bash
 # 1. Clone and setup
@@ -82,73 +71,78 @@ npm run dev
 # Access: http://localhost:3000
 ```
 
-### Environment Setup
+### Environment Configuration
 
 Create `.env.local`:
 
 ```env
-# Public variables (accessible in browser)
-NEXT_PUBLIC_API_URL="https://api.example.com"
-NEXT_PUBLIC_APP_NAME="My App"
+# public variables (accessible in browser)
+NEXT_PUBLIC_API_URL = "https://api.example.com"
+NEXT_PUBLIC_APP_NAME = "My App"
 
-# Private variables (server-only)
-MY_SECRET_KEY="your-secret-here"
-MY_DATABASE_URL="your-database-connection-string"
-```
-
-📚 **Learn more:** [Next.js Environment Variables](https://nextjs.org/docs/app/building-your-application/configuring/environment-variables)
-
-### Available Scripts
-
-#### Development
-
-```bash
-npm run dev          # Start dev server with Turbopack
-npm run build        # Production build
-npm start           # Start production server
-```
-
-#### Code Quality
-
-```bash
-npm run lint         # Check linting issues
-npm run lint:fix     # Fix linting issues automatically
-npm run format       # Check code formatting
-npm run format:fix   # Format code automatically
-npm run tsc         # TypeScript type checking
-```
-
-#### Testing
-
-```bash
-npm test            # Run all tests
-npm run test:watch  # Run tests in watch mode
+# private variables (accessible only in server)
+MY_SECRET_KEY = "your-secret-here"
+MY_DATABASE_URL = "your-database-connection-string"
 ```
 
 ---
 
 ## 💻 Development
 
-### Testing
+### Available Scripts
 
-Jest comes pre-configured with React Testing Library.
+**Development**
 
 ```bash
-# Run tests
-npm test
-
-# Watch mode for development
-npm run test:watch
-
-# Coverage report
-npm test -- --coverage
+npm run dev   # start dev server with turbopack
+npm run build # production build
+npm start     # start production server
 ```
 
-**Learn more:** [Jest Documentation](https://jestjs.io/docs/getting-started) | [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
+**Code Quality**
 
-### Git Workflow
+```bash
+npm run lint       # check linting issues
+npm run lint:fix   # fix linting issues automatically
+npm run format     # check code formatting
+npm run format:fix # format code automatically
+npm run tsc        # typescript type checking
+```
 
-#### Basic Workflow
+**Testing**
+
+```bash
+npm test              # run all tests
+npm run test:watch    # run tests in watch mode
+npm run test:coverage # generate coverage report
+```
+
+### Essential Documentation
+
+| Guide                                                          | Description                                                        |
+| -------------------------------------------------------------- | ------------------------------------------------------------------ |
+| **[📁 Project Organization](./.docs/project-organization.md)** | **WHERE** to place files, folder structure, architectural overview |
+| **[📝 Code Standards](./.docs/code-standards.md)**             | **HOW** to write code, naming patterns, quality standards          |
+
+---
+
+## 🔄 Git
+
+### Branch Naming
+
+Use descriptive names with prefix:
+
+```bash
+card-123_user-authentication
+card-456_dashboard-ui
+card-789_payment-integration
+```
+
+**Pattern:** `card-xx_descriptive-name` (always lowercase)
+
+> 💡 **No card?** Use initials: `jq_feature-name` (Jose Quispe)
+
+### Development Workflow
 
 ```bash
 # 1. Create feature branch
@@ -162,68 +156,53 @@ git commit  # Interactive wizard opens via Husky
 git push origin card-123_your-feature-name
 ```
 
-#### Branch Naming Convention
+---
 
-Use descriptive names with `card-xx_` prefix:
+## 🤝 Contributing
+
+**Improve this template:**
 
 ```bash
-card-123_user-authentication
-card-456_dashboard-ui
-card-789_payment-integration
+# 1. Fork and clone
+git clone https://github.com/your-username/your-fork.git
+cd your-fork && nvm use && npm install
+
+# 2. Create feature branch
+git checkout -b card-456_your-contribution
+
+# 3. Make changes and commit
+git add . && git commit  # Commitizen opens
+git push origin card-456_your-contribution
 ```
 
-**Pattern:** `card-xx_descriptive-name` (always lowercase)
+**Pull Request Guidelines:**
 
-> 💡 **No card available?** Use your initials: `js_feature-name` (João Silva)
+- Update documentation when adding new features or changing existing behavior
 
-#### Commit Types
+Every commit automatically runs automated quality checks:
 
-This template uses **Conventional Commits** standard for consistent commit messages.
-
-**Learn more:** [Conventional Commits](https://www.conventionalcommits.org/) | [Commitizen](https://github.com/commitizen/cz-cli)
-
-#### Automated Quality Checks
-
-Husky runs these checks on every commit:
-
-- ✅ **TypeScript** - Type checking (`npm run tsc`)
-- ✅ **Tests** - All tests must pass (`npm test`)
-- ✅ **ESLint** - Code quality and linting (`npx lint-staged`)
-- ✅ **Prettier** - Code formatting (via lint-staged)
-- ✅ **Commit message** - Conventional format (`commitlint`)
+- ✅ **typescript** type checking
+- ✅ **all tests** must pass
+- ✅ **eslint** fixes and validates code
+- ✅ **prettier** formats code
+- ✅ **commitlint** validates commit messages
 
 ---
 
 ## 📚 Reference
 
-### Contributing
+### External Resources
 
-**Want to improve the template?**
+- [Next.js Documentation](https://nextjs.org/docs)
+- [TypeScript Documentation](https://www.typescriptlang.org/docs/)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [Zustand Documentation](https://zustand-demo.pmnd.rs/)
+- [Jest Documentation](https://jestjs.io/docs/getting-started)
+- [Testing Library Documentation](https://testing-library.com/docs/)
+- [Conventional Commits](https://www.conventionalcommits.org/)
+
+### Support
 
 - 🐛 **[Report bugs](https://github.com/your-repo/issues)**
 - 💡 **[Suggest features](https://github.com/your-repo/issues)**
 - 🔧 **[Submit PRs](https://github.com/your-repo/pulls)**
-
-#### Quick Setup for Contributors
-
-```bash
-# Fork and clone
-git clone https://github.com/your-username/your-fork.git
-cd your-fork && nvm use && npm install
-
-# Create feature branch
-git checkout -b card-456_your-contribution
-
-# Make changes and commit
-git add . && git commit  # Commitizen opens
-git push origin card-456_your-contribution
-```
-
-#### Pull Request Checklist
-
-- ✅ **Tests pass** - `npm test`
-- ✅ **Types check** - `npm run tsc`
-- ✅ **Linting passes** - `npm run lint`
-- ✅ **Code formatted** - `npm run format`
-- ✅ **Conventional commits** - Use `git commit` (Commitizen)
-- ✅ **Documentation updated** - If adding new patterns or features

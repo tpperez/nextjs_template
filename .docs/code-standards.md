@@ -27,8 +27,7 @@
 
 1. **Always use arrow functions** → No function declarations allowed
 2. **Use explicit returns** → Always return explicitly, even for simple functions
-3. **Follow import order** → React → External → Internal → Relative → CSS
-4. **Apply TypeScript strictly** → Interfaces with `I`, Types with `T`, no `any`
+3. **Apply TypeScript strictly** → Interfaces with `I`, Types with `T`, no `any`
 
 ### 🧩 Naming Conventions
 
@@ -42,7 +41,7 @@
 1. **Structure components properly** → Props typing, logic separation, clean JSX
 2. **Handle state correctly** → Local vs global state decisions
 3. **Write clean logic** → Custom hooks for business logic, utility functions for helpers
-4. **Organize imports properly** → React → External → Internal (@/) → Relative (./) → CSS (ESLint enforced)
+4. **Organize imports properly** → React → External → Internal (@/) → Relative (./) → CSS (automated by ESLint)
 
 ### 🎯 Quality Assurance
 
@@ -112,7 +111,7 @@ When the same state logic is used across multiple components, extract to custom 
 - ✅ **Use arrow functions** with explicit returns
 - ✅ **Follow naming conventions** (kebab-case files, PascalCase components)
 - ✅ **Apply proper prefixes** (I for interfaces, T for types)
-- ✅ **Organize imports correctly** (React → External → Internal (@/) → Relative (./) → CSS)
+- ✅ **Organize imports correctly** (automated by ESLint)
 - ✅ **Write comprehensive tests** (behavior-focused)
 - ✅ **Use TypeScript strictly** (no any, proper interfaces/types)
 - ✅ **Structure code cleanly** (hooks → state → handlers → JSX)
