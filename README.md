@@ -36,7 +36,7 @@
 
 #### Quality & Testing
 
-- **ESLint** - Code linting and quality rules
+- **ESLint** - Code linting and automated import sorting
 - **Prettier** - Automated code formatting
 - **Jest** - Unit testing framework
 - **React Testing Library** - Component testing utilities
