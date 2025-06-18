@@ -1,6 +1,8 @@
-import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
+
 import ViewPage1 from './sample-1'
+
+import '@testing-library/jest-dom'
 
 describe('Component Page Home', () => {
   it('renders a heading', () => {

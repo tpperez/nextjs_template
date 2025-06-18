@@ -1,5 +1,7 @@
-import type { Metadata } from 'next'
 import { Roboto } from 'next/font/google'
+
+import type { Metadata } from 'next'
+
 import '@/app/styles/globals.css'
 
 export type TRootLayout = Readonly<{
