@@ -36,3 +36,7 @@ export interface RadarConfig {
   links_in_new_tabs?: boolean
   entries: RadarEntry[]
 }
+
+export interface TechRadarProps {
+  config?: RadarConfig
+}
