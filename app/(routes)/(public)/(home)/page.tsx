@@ -1,5 +1,5 @@
-import ViewTechRadar from '@/app/views/tech-radar'
+import ViewHome from '@/app/views/home'
 
 export default function TechRadarPage() {
-  return <ViewTechRadar />
+  return <ViewHome />
 }
