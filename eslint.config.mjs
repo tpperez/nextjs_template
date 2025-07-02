@@ -1,9 +1,10 @@
-import { dirname } from 'path'
-import { fileURLToPath } from 'url'
 import { FlatCompat } from '@eslint/eslintrc'
 import eslintPluginPreferArrowFunctions from 'eslint-plugin-prefer-arrow-functions'
-import eslintPluginReact from 'eslint-plugin-react'
 import eslintPluginPrettier from 'eslint-plugin-prettier'
+import eslintPluginReact from 'eslint-plugin-react'
+import eslintPluginSimpleImportSort from 'eslint-plugin-simple-import-sort'
+import { dirname } from 'path'
+import { fileURLToPath } from 'url'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -25,6 +26,7 @@ const eslintConfig = [
       'eslint-plugin-prefer-arrow-functions': eslintPluginPreferArrowFunctions,
       'eslint-plugin-react': eslintPluginReact,
       'eslint-plugin-prettier': eslintPluginPrettier,
+      'simple-import-sort': eslintPluginSimpleImportSort,
     },
     rules: {
       'eslint-plugin-prettier/prettier': ['error'],
@@ -49,6 +51,22 @@ const eslintConfig = [
           prop: 'parens-new-line',
         },
       ],
+      'simple-import-sort/imports': [
+        'error',
+        {
+          groups: [
+            ['^react$', '^react/'],
+            ['^next/'],
+            ['^node:'],
+            ['^@?\\w'],
+            ['^@/'],
+            ['^\\.\\.'],
+            ['^\\.'],
+            ['^.+\\.(css|scss|sass|less)$'],
+          ],
+        },
+      ],
+      'simple-import-sort/exports': 'error',
     },
   },
 ]

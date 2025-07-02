@@ -1,7 +1,10 @@
-import type { Metadata } from 'next'
 import { Roboto } from 'next/font/google'
-import '@/app/styles/globals.css'
+
+import type { Metadata } from 'next'
+
 import { HttpProvider } from './services/http'
+
+import '@/app/styles/globals.css'
 
 export type TRootLayout = Readonly<{
   children: React.ReactNode
