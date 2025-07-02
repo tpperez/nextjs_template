@@ -1,7 +1,5 @@
-import ViewHome from '@/app/views/home'
+import ViewTechRadar from '@/app/views/tech-radar'
 
-const PageHome = () => {
-  return <ViewHome />
+export default function TechRadarPage() {
+  return <ViewTechRadar />
 }
-
-export default PageHome

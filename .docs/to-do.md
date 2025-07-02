@@ -7,6 +7,7 @@
 ```markdown
 # Common Issues
 
+- Add tech radar tool to the homepage – https://opensource.zalando.com/tech-radar/
 - Build failures and solutions
 - Environment setup problems
 - Testing issues and fixes
