@@ -7,8 +7,9 @@ export const middleware = (request: NextRequest) => {
     default-src 'self';
     script-src 'self' 'nonce-${nonce}' 'strict-dynamic';
     style-src 'self' 'unsafe-inline';
-    img-src 'self' blob: data:;
+    img-src 'self' blob: data: https://raw.githubusercontent.com https://graphql-pokeapi.graphcdn.app https://pokeapi.co;
     font-src 'self' data:;
+    connect-src 'self' https://api.open-meteo.com https://graphqlpokemon.favware.tech https://graphql-pokeapi.graphcdn.app https://pokeapi.co;
     object-src 'none';
     base-uri 'self';
     form-action 'self';

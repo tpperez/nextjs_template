@@ -1,5 +1,5 @@
 {
-  "name": "app-next-template",
+  "name": "app-next-template-demo",
   "private": true,
   "version": "1.0.0",
   "scripts": {
@@ -13,11 +13,14 @@
     "start": "next start",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "tsc": "tsc"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.4",
+    "@tanstack/react-query": "^5.62.8",
+    "axios": "^1.10.0",
+    "graphql-request": "^6.1.0",
     "next": "^15.3.3",
     "postcss": "^8.5.3",
     "react-dom": "^19.1.0",

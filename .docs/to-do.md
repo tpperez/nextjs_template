@@ -7,6 +7,7 @@
 ```markdown
 # Common Issues
 
+- Organize and structure tech radar
 - Build failures and solutions
 - Environment setup problems
 - Testing issues and fixes

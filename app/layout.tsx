@@ -2,6 +2,8 @@ import { Roboto } from 'next/font/google'
 
 import type { Metadata } from 'next'
 
+import { HttpProvider } from './services/http'
+
 import '@/app/styles/globals.css'
 
 export type TRootLayout = Readonly<{
@@ -22,8 +24,11 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: TRootLayout) => {
   return (
     <html lang='es-PE'>
-      <body className={`${roboto.variable} font-roboto antialiased`}>
-        {children}
+      <body
+        className={`${roboto.variable} font-roboto antialiased`}
+        suppressHydrationWarning={true}
+      >
+        <HttpProvider>{children}</HttpProvider>
       </body>
     </html>
   )
