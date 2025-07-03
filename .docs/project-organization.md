@@ -53,6 +53,12 @@ This is exactly what you'll find when cloning:
 ├── hooks/                       # 🎣 custom hooks
 │   └── .gitkeep
 ├── services/                    # 🔧 services and apis
+│   ├── http/                    # 📡 HTTP clients (REST + GraphQL)
+│   │   ├── core/                # 🎯 configuration and adapters
+│   │   ├── rest/                # 🌐 REST client
+│   │   ├── graphql/             # 📊 GraphQL client
+│   │   ├── providers/           # 🎛️ React Query provider
+│   │   └── index.ts
 │   └── .gitkeep
 ├── stores/                      # 🗃️ state stores
 │   └── .gitkeep
@@ -210,37 +216,27 @@ When you need to add static files, organize like this:
 
 ## 🗺️ Route Organization
 
-**Route folders** follow Next.js App Router conventions:
-
 ### 📄 Page Routes
 
 ```
-your-page-name/
-├── page.tsx                     # main page component (required)
-├── layout.tsx                   # page layout (optional)
-├── loading.tsx                  # loading UI (optional)
-├── error.tsx                    # error UI (optional)
-├── not-found.tsx                # 404 UI (optional)
-└── query.ts                     # data fetching logic (optional)
+(public)/your-page/
+├── page.tsx                     # page component
+└── query.ts                     # data fetching logic
 ```
 
 **Example:**
 
 ```
-user-profile/
-├── page.tsx                     # main page component
-├── layout.tsx                   # page layout
-├── loading.tsx                  # loading UI
-├── error.tsx                    # error UI
-├── not-found.tsx                # 404 UI
-└── query.ts                     # data fetching logic
+(public)/products/
+├── page.tsx                     # renders product list
+└── query.ts                     # fetches products from API
 ```
 
 ### 🔌 API Routes
 
 ```
-your-api-endpoint/
-└── route.ts                     # API handler (GET, POST, PUT, DELETE, etc.)
+api/your-endpoint/
+└── route.ts                     # handles /api/your-endpoint requests
 ```
 
 **Example:**
@@ -553,7 +549,7 @@ This is a **reference example** for when the project is more complete:
 │   │   └── index.ts
 │   └── use-local-storage/
 ├── services/                     # 🔧 services and apis
-│   ├── auth/
+│   ├── auth/                     # 🔒 authentication service
 │   │   ├── auth.test.ts
 │   │   ├── auth.ts
 │   │   ├── auth.type.ts
@@ -561,7 +557,33 @@ This is a **reference example** for when the project is more complete:
 │   │   ├── auth.const.ts
 │   │   ├── auth.util.ts
 │   │   └── index.ts
-│   └── api/
+│   ├── http/                     # 📡 HTTP clients (REST + GraphQL)
+│   │   ├── core/                 # 🎯 configuration and adapters
+│   │   │   ├── core.ts           # HTTP_CONFIG and adapter factories
+│   │   │   ├── core.type.ts      # shared interfaces and types
+│   │   │   ├── core.utils.ts     # request utilities
+│   │   │   └── index.ts
+│   │   ├── rest/                 # 🌐 REST client
+│   │   │   ├── adapters/
+│   │   │   │   ├── fetch-rest.ts # native fetch adapter (default)
+│   │   │   │   ├── axios-rest.ts # axios adapter (optional)
+│   │   │   │   └── index.ts
+│   │   │   ├── rest.ts           # main REST client
+│   │   │   ├── rest.type.ts      # REST-specific types
+│   │   │   └── index.ts
+│   │   ├── graphql/              # 📊 GraphQL client
+│   │   │   ├── adapters/
+│   │   │   │   ├── fetch-graphql.ts      # native fetch GraphQL adapter
+│   │   │   │   ├── graphql-request.ts    # graphql-request adapter
+│   │   │   │   └── index.ts
+│   │   │   ├── graphql.ts        # main GraphQL client
+│   │   │   ├── graphql.type.ts   # GraphQL-specific types
+│   │   │   └── index.ts
+│   │   ├── providers/            # 🎛️ React integration
+│   │   │   ├── react-query.tsx   # HttpProvider component
+│   │   │   └── index.ts
+│   │   └── index.ts              # main entry point
+│   └── payment/                  # 💳 payment service
 ├── stores/                       # 🗃️ state stores
 │   └── user/
 │       ├── user.test.ts
@@ -619,5 +641,7 @@ This is a **reference example** for when the project is more complete:
 
 ### Related Documentation
 
+- 📊 **[Data Fetching Strategy](./data-fetching-strategy.md)** - WHEN and WHY to use server vs client data fetching
+- 🔧 **[HTTP Service Guide](./http-service.md)** - HOW to use REST and GraphQL clients (technical implementation)
 - 📝 **[Code Standards](./code-standards.md)** - HOW to write code, naming patterns, quality standards
 - 📚 **[README](../README.md)** - Project setup and overview

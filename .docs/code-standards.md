@@ -12,6 +12,7 @@
 - [🏗️ Implementation Patterns](#️-implementation-patterns)
   - [📝 Naming Conventions](#-naming-conventions-1)
   - [📘 TypeScript Conventions](#-typescript-conventions)
+  - [📊 Data Fetching Patterns](#-data-fetching-patterns)
   - [🗃️ State Management Patterns](#️-state-management-patterns)
 - [✅ Code Standards Summary](#-code-standards-summary)
   - [Implementation Checklist](#implementation-checklist)
@@ -84,6 +85,25 @@
 | **Function types**    | `type`      | `type THandler = (id: string) => void`        |
 | **Generic utilities** | `type`      | `type TApiResponse<T> = { data: T }`          |
 
+### 📊 Data Fetching Patterns
+
+> 📊 **For detailed data fetching strategies, see:** [Data Fetching Strategy](./data-fetching-strategy.md)
+
+#### Server-Side vs Client-Side Decision
+
+| Data Type                      | Use Server-Side | Use Client-Side |
+| ------------------------------ | --------------- | --------------- |
+| **SEO-critical data**          | ✅ Always       | ❌              |
+| **Above-the-fold content**     | ✅ Always       | ❌              |
+| **Static/semi-static content** | ✅ Always       | ❌              |
+| **Real-time data**             | ❌              | ✅ Always       |
+| **User interactions**          | ❌              | ✅ Always       |
+| **Pagination/filtering**       | ❌              | ✅ Always       |
+
+#### HTTP Client Usage for Data Fetching
+
+Use `restClient` and `graphqlClient` consistently across server and client contexts.
+
 ### 🗃️ State Management Patterns
 
 #### React State vs Zustand Decision
@@ -116,7 +136,15 @@ When the same state logic is used across multiple components, extract to custom 
 - ✅ **Use TypeScript strictly** (no any, proper interfaces/types)
 - ✅ **Structure code cleanly** (hooks → state → handlers → JSX)
 
+**For HTTP client usage:**
+
+- ✅ **Import HTTP clients consistently** (from @/app/services/http)
+- ✅ **Type API responses properly** (Promise<IResponseType>)
+- ✅ **Handle errors appropriately** (try/catch with meaningful messages)
+
 ### Related Documentation
 
+- 📊 **[Data Fetching Strategy](./data-fetching-strategy.md)** - WHEN and WHY to use server vs client data fetching
+- 🔧 **[HTTP Service Guide](./http-service.md)** - HOW to use REST and GraphQL clients (technical implementation)
 - 📁 **[Project Organization](./project-organization.md)** - WHERE to organize files and folders
 - 📚 **[README](../README.md)** - Project setup and overview
