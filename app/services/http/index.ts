@@ -1,21 +1,16 @@
-export { restClient } from './rest'
-
-export type { RestRequestOptions, RestResponse } from './rest'
-
-export { graphqlClient } from './graphql'
-
 export type {
-  GraphQLRequestOptions,
+  BaseRequestConfig,
+  CacheConfig,
+  GraphQLError,
+  HttpError,
+  HttpMethod,
+} from './core/core.type'
+export type {
   GraphQLRequest,
+  GraphQLRequestOptions,
   GraphQLResponse,
 } from './graphql'
-
+export { graphqlClient } from './graphql'
 export { HttpProvider } from './providers'
-
-export type {
-  HttpMethod,
-  HttpError,
-  GraphQLError,
-  CacheConfig,
-  BaseRequestConfig,
-} from './core/core.type'
+export type { RestRequestOptions, RestResponse } from './rest'
+export { restClient } from './rest'

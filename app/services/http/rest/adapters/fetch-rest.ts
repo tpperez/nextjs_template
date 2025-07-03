@@ -1,8 +1,8 @@
 import { HttpRequestConfig, RestHttpAdapter } from '../../core'
 import {
   createHeaders,
-  processResponse,
   createTimeoutSignal,
+  processResponse,
 } from '../../core/core.utils'
 
 export class FetchRestAdapter implements RestHttpAdapter {

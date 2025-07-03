@@ -2,14 +2,14 @@
 
 import { Spinner } from '@/app/components/ui/spinner'
 
-import type { IPokemonSpeciesInfoProps } from '../../pokemon-detail.type'
-import { usePokemonSpecies } from '../../pokemon-detail.hook'
 import { ERROR_MESSAGES } from '../../pokemon-detail.const'
+import { usePokemonSpecies } from '../../pokemon-detail.hook'
+import type { IPokemonSpeciesInfoProps } from '../../pokemon-detail.type'
 import {
-  getEnglishDescription,
-  getEnglishGenus,
   formatGenderRate,
   formatName,
+  getEnglishDescription,
+  getEnglishGenus,
 } from '../../pokemon-detail.util'
 
 export const PokemonSpeciesInfo = ({ pokemonId }: IPokemonSpeciesInfoProps) => {

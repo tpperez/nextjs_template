@@ -1,5 +1,6 @@
 import { FetchGraphQLAdapter } from '../graphql/adapters'
 import { FetchRestAdapter } from '../rest/adapters'
+
 import { GraphQLAdapterFactory, RestAdapterFactory } from './core.type'
 
 export const HTTP_CONFIG = {

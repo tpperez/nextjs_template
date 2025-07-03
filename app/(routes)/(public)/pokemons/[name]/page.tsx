@@ -1,6 +1,8 @@
 import { notFound } from 'next/navigation'
-import { getPokemonDetailData } from './query'
+
 import { ViewPokemonDetail } from '@/app/views/pokemon-detail'
+
+import { getPokemonDetailData } from './query'
 
 interface PokemonPageProps {
   params: Promise<{
@@ -8,7 +10,7 @@ interface PokemonPageProps {
   }>
 }
 
-const PokemonDetailPage = async ({ params }: PokemonPageProps) => {
+const PagePokemonDetail = async ({ params }: PokemonPageProps) => {
   const { name } = await params
   const pokemonData = await getPokemonDetailData(name)
 
@@ -19,4 +21,4 @@ const PokemonDetailPage = async ({ params }: PokemonPageProps) => {
   return <ViewPokemonDetail data={pokemonData.data} />
 }
 
-export default PokemonDetailPage
+export default PagePokemonDetail

@@ -1,9 +1,7 @@
+export { FetchGraphQLAdapter, GraphQLRequestAdapter } from './adapters'
 export { graphqlClient } from './graphql'
-
 export type {
-  GraphQLRequestOptions,
   GraphQLRequest,
+  GraphQLRequestOptions,
   GraphQLResponse,
 } from './graphql.type'
-
-export { FetchGraphQLAdapter, GraphQLRequestAdapter } from './adapters'

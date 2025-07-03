@@ -1,7 +1,7 @@
 export { ViewPokemons } from './pokemons'
+export { POKEMON_GALLERY_CONFIG } from './pokemons.const'
 export type {
-  IPokemonsViewProps,
   IPokemonCardProps,
+  IPokemonsViewProps,
   Pokemon,
 } from './pokemons.type'
-export { POKEMON_GALLERY_CONFIG } from './pokemons.const'

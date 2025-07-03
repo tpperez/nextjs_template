@@ -1,9 +1,9 @@
 import {
-  HTTP_CONFIG,
-  HTTP_ADAPTER_CONFIG,
-  resolveBaseUrl,
   buildUrl,
   type GraphQLHttpAdapter,
+  HTTP_ADAPTER_CONFIG,
+  HTTP_CONFIG,
+  resolveBaseUrl,
 } from '../core'
 
 import type { GraphQLRequestOptions, GraphQLResponse } from './graphql.type'

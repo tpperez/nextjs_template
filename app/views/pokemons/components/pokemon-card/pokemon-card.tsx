@@ -1,4 +1,6 @@
+import Image from 'next/image'
 import Link from 'next/link'
+
 import type { IPokemonCardProps } from '../../pokemons.type'
 
 export const PokemonCard = ({ pokemon }: IPokemonCardProps) => {
@@ -10,7 +12,10 @@ export const PokemonCard = ({ pokemon }: IPokemonCardProps) => {
     >
       <div className='flex aspect-square items-center justify-center bg-gray-50'>
         {pokemon.image ? (
-          <img
+          <Image
+            width={220}
+            height={220}
+            loading='lazy'
             src={pokemon.image}
             alt={pokemon.name}
             className='h-full w-full object-contain p-6'

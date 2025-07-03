@@ -1,21 +1,23 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import { restClient, graphqlClient } from '@/app/services/http'
-import type {
-  PokemonSpecies,
-  UsePokemonSpeciesOptions,
-  UsePokemonSpeciesReturn,
-  UsePokemonMovesGraphQLOptions,
-  UsePokemonMovesGraphQLReturn,
-  GraphQLPokemonMovesResponse,
-} from './pokemon-detail.type'
+
+import { graphqlClient, restClient } from '@/app/services/http'
+
 import {
+  GET_POKEMON_MOVES_GRAPHQL,
   POKEMON_DETAIL_CONFIG,
   POKEMON_DETAIL_QUERY_KEY,
   POKEMON_MOVES_GRAPHQL_QUERY_KEY,
-  GET_POKEMON_MOVES_GRAPHQL,
 } from './pokemon-detail.const'
+import type {
+  GraphQLPokemonMovesResponse,
+  PokemonSpecies,
+  UsePokemonMovesGraphQLOptions,
+  UsePokemonMovesGraphQLReturn,
+  UsePokemonSpeciesOptions,
+  UsePokemonSpeciesReturn,
+} from './pokemon-detail.type'
 
 const fetchPokemonSpecies = async (
   pokemonId: number,

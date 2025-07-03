@@ -1,10 +1,11 @@
 import { GraphQLClient, Variables } from 'graphql-request'
-import { createHeaders, createTimeoutSignal } from '../../core/core.utils'
+
 import type {
   GraphQLHttpAdapter,
   GraphQLRequestConfig,
   GraphQLResponse,
 } from '../../core/core.type'
+import { createHeaders, createTimeoutSignal } from '../../core/core.utils'
 
 export class GraphQLRequestAdapter implements GraphQLHttpAdapter {
   readonly name = 'graphql-request'

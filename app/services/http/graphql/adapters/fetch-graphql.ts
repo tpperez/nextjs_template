@@ -1,13 +1,13 @@
-import {
-  createHeaders,
-  processResponse,
-  createTimeoutSignal,
-} from '../../core/core.utils'
 import type {
   GraphQLHttpAdapter,
   GraphQLRequestConfig,
   GraphQLResponse,
 } from '../../core/core.type'
+import {
+  createHeaders,
+  createTimeoutSignal,
+  processResponse,
+} from '../../core/core.utils'
 
 interface GraphQLRequestPayload {
   query: string

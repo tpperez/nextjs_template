@@ -1,9 +1,10 @@
 import {
-  resolveBaseUrl,
   buildUrl,
   HTTP_ADAPTER_CONFIG,
+  resolveBaseUrl,
   type RestHttpAdapter,
 } from '../core'
+
 import type { RestRequestOptions, RestResponse } from './rest.type'
 
 class RestClient {

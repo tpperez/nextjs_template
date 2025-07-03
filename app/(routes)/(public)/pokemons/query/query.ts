@@ -1,6 +1,7 @@
 import { graphqlClient } from '@/app/services/http'
-import { PokemonsResponse } from './query.type'
+
 import { GET_POKEMONS } from './query.const'
+import { PokemonsResponse } from './query.type'
 
 export const getPokemonsData = async (
   limit: number = 8,

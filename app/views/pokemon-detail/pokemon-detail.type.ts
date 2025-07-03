@@ -1,10 +1,10 @@
 import type {
-  PokemonDetail,
   PokemonAbility,
-  PokemonType,
-  PokemonStat,
-  PokemonSprites,
+  PokemonDetail,
   PokemonMove,
+  PokemonSprites,
+  PokemonStat,
+  PokemonType,
 } from '@/app/(routes)/(public)/pokemons/[name]/query'
 
 export interface IPokemonDetailViewProps {
@@ -167,10 +167,10 @@ export interface IPokemonMovesGraphQLProps {
 }
 
 export type {
-  PokemonDetail,
   PokemonAbility,
-  PokemonType,
-  PokemonStat,
-  PokemonSprites,
+  PokemonDetail,
   PokemonMove,
+  PokemonSprites,
+  PokemonStat,
+  PokemonType,
 }

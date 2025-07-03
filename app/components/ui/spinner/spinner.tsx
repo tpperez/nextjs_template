@@ -1,5 +1,5 @@
+import { SPINNER_COLOR_CLASSES, SPINNER_SIZE_CLASSES } from './spinner.const'
 import type { ISpinnerProps } from './spinner.type'
-import { SPINNER_SIZE_CLASSES, SPINNER_COLOR_CLASSES } from './spinner.const'
 
 export const Spinner = ({
   size = 'md',

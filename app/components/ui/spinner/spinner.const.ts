@@ -1,4 +1,4 @@
-import type { TSpinnerSize, TSpinnerColor } from './spinner.type'
+import type { TSpinnerColor, TSpinnerSize } from './spinner.type'
 
 export const SPINNER_SIZE_CLASSES: Record<TSpinnerSize, string> = {
   sm: 'h-4 w-4',

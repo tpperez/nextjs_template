@@ -1,5 +1,7 @@
 import ViewHome from '@/app/views/home'
 
-export default function TechRadarPage() {
+const PageHome = () => {
   return <ViewHome />
 }
+
+export default PageHome

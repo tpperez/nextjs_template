@@ -1,30 +1,27 @@
-export { HTTP_CONFIG, HTTP_ADAPTER_CONFIG } from './core'
 export type { HttpConfig } from './core'
-
+export { HTTP_ADAPTER_CONFIG, HTTP_CONFIG } from './core'
 export type {
-  HttpMethod,
   BaseRequestConfig,
   CacheConfig,
-  HttpError,
+  CoreRequestOptions,
   GraphQLError,
   GraphQLResponse,
-  CoreRequestOptions,
+  HttpError,
+  HttpMethod,
 } from './core.type'
-
-export {
-  resolveBaseUrl,
-  createHeaders,
-  processResponse,
-  createTimeoutSignal,
-  buildUrl,
-} from './core.utils'
-
 export type {
-  RestHttpAdapter,
-  GraphQLHttpAdapter,
   AdapterConfig,
-  HttpRequestConfig,
-  GraphQLRequestConfig,
-  RestAdapterFactory,
   GraphQLAdapterFactory,
+  GraphQLHttpAdapter,
+  GraphQLRequestConfig,
+  HttpRequestConfig,
+  RestAdapterFactory,
+  RestHttpAdapter,
 } from './core.type'
+export {
+  buildUrl,
+  createHeaders,
+  createTimeoutSignal,
+  processResponse,
+  resolveBaseUrl,
+} from './core.utils'

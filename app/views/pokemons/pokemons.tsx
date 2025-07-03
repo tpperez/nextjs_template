@@ -1,6 +1,6 @@
-import type { IPokemonsViewProps } from './pokemons.type'
-import { POKEMON_GALLERY_CONFIG } from './pokemons.const'
 import { PokemonCard } from './components/pokemon-card'
+import { POKEMON_GALLERY_CONFIG } from './pokemons.const'
+import type { IPokemonsViewProps } from './pokemons.type'
 
 export const ViewPokemons = ({ success, data, error }: IPokemonsViewProps) => {
   const {

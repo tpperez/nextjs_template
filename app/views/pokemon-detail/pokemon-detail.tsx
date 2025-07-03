@@ -1,10 +1,11 @@
+import Image from 'next/image'
 import Link from 'next/link'
 
-import type { IPokemonDetailViewProps } from './pokemon-detail.type'
-import { POKEMON_DETAIL_CONFIG } from './pokemon-detail.const'
-import { formatStatName, formatName } from './pokemon-detail.util'
-import { PokemonSpeciesInfo } from './components/pokemon-species-info'
 import { PokemonMoves } from './components/pokemon-moves'
+import { PokemonSpeciesInfo } from './components/pokemon-species-info'
+import { POKEMON_DETAIL_CONFIG } from './pokemon-detail.const'
+import type { IPokemonDetailViewProps } from './pokemon-detail.type'
+import { formatName, formatStatName } from './pokemon-detail.util'
 
 export const ViewPokemonDetail = ({
   data: pokemon,
@@ -47,7 +48,10 @@ export const ViewPokemonDetail = ({
               <div className='lg:col-span-1'>
                 <div className='mb-3 flex aspect-square items-center justify-center rounded-lg border border-gray-300 bg-gray-50'>
                   {pokemon.sprites.front_default ? (
-                    <img
+                    <Image
+                      width={220}
+                      height={220}
+                      loading='lazy'
                       src={pokemon.sprites.front_default}
                       alt={pokemon.name}
                       className='h-full w-full object-contain p-4'
