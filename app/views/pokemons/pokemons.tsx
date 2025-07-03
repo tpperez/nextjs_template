@@ -1,6 +1,14 @@
 'use client'
 
+import { useState } from 'react'
+
+import { Spinner } from '@/app/components/ui/spinner'
+
 import { PokemonCard } from './components/pokemon-card'
+import {
+  PokemonSearch,
+  usePokemonNameSearch,
+} from './components/pokemon-search'
 import { POKEMON_GALLERY_CONFIG } from './pokemons.const'
 import { useMorePokemons } from './pokemons.hook'
 import type { IPokemonsViewProps } from './pokemons.type'
@@ -8,7 +16,7 @@ import type { IPokemonsViewProps } from './pokemons.type'
 export const ViewPokemons = ({
   success,
   data,
-  error,
+  error: viewError,
   count,
 }: IPokemonsViewProps) => {
   const {
@@ -36,8 +44,44 @@ export const ViewPokemons = ({
     }) || []),
   ]
 
+  const [searchValue, setSearchValue] = useState('')
+
+  const {
+    result: searchResult,
+    isLoading: isSearching,
+    error: searchError,
+  } = usePokemonNameSearch(searchValue)
+
+  const handleSearch = (value: string) => {
+    setSearchValue(value)
+  }
+
+  const hasSearch = !!searchValue.trim()
+
+  const getDisplayPokemons = () => {
+    if (!hasSearch) return allPokemons
+    if (!searchResult) return []
+
+    return [
+      {
+        name: searchResult.name,
+        image: searchResult.sprites?.front_default || '',
+        url: `/pokemons/${searchResult.name}`,
+      },
+    ]
+  }
+
+  const displayPokemons = getDisplayPokemons()
+  const isLoading = hasSearch && isSearching
+  const filterError = hasSearch ? searchError : null
+
+  const showSearchResults = hasSearch
+  const showAllPokemons = !hasSearch
+  const hasSearchError = filterError && !isLoading
+  const hasNoResults = displayPokemons.length === 0 && !isLoading
+
   const shouldShowLoadMoreButton =
-    hasNextPage || (data.length >= 8 && data.length < count)
+    !hasSearch && (hasNextPage || (data.length >= 8 && data.length < count))
 
   if (!success) {
     return (
@@ -60,7 +104,9 @@ export const ViewPokemons = ({
                   {ERROR_TITLE}
                 </h3>
                 <p className='text-gray-600'>{ERROR_MESSAGE}</p>
-                {error && <p className='mt-2 text-sm text-gray-500'>{error}</p>}
+                {viewError && (
+                  <p className='mt-2 text-sm text-gray-500'>{viewError}</p>
+                )}
               </div>
             </div>
           </div>
@@ -93,18 +139,48 @@ export const ViewPokemons = ({
             </p>
           </div>
 
-          <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
-            {allPokemons.map((pokemon) => {
-              return (
-                <PokemonCard
-                  key={pokemon.name}
-                  pokemon={pokemon}
-                />
-              )
-            })}
-          </div>
+          <PokemonSearch
+            onSearch={handleSearch}
+            isLoading={isLoading}
+          />
 
-          {allPokemons.length === 0 && (
+          {showSearchResults && (
+            <div className='mb-8'>
+              {isLoading && <Spinner text='Searching...' />}
+              {hasSearchError && (
+                <div className='text-center text-red-500'>
+                  {filterError?.message || 'No Pokémon found.'}
+                </div>
+              )}
+              {displayPokemons.length > 0 && (
+                <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
+                  {displayPokemons.map((pokemon) => {
+                    return (
+                      <PokemonCard
+                        key={pokemon.name}
+                        pokemon={pokemon}
+                      />
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+
+          {showAllPokemons && (
+            <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
+              {allPokemons.map((pokemon) => {
+                return (
+                  <PokemonCard
+                    key={pokemon.name}
+                    pokemon={pokemon}
+                  />
+                )
+              })}
+            </div>
+          )}
+
+          {hasNoResults && (
             <div className='mt-12 text-center text-gray-500'>
               <div className='mb-4 text-6xl'>🔍</div>
               <p className='text-xl'>{NO_RESULTS_MESSAGE}</p>
@@ -123,7 +199,7 @@ export const ViewPokemons = ({
                 {isFetchingNextPage ? (
                   <>
                     <div className='mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent'></div>
-                    Loading more...
+                    <span className='ml-2'>Loading more...</span>
                   </>
                 ) : (
                   <>
