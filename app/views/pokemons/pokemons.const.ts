@@ -8,3 +8,10 @@ export const POKEMON_GALLERY_CONFIG = {
   ERROR_MESSAGE: 'Please try again later.',
   NO_RESULTS_MESSAGE: 'No Pokémon found.',
 }
+
+export const POKEMONS_PER_PAGE = 8
+
+export const POKEMONS_QUERY_CONFIG = {
+  STALE_TIME: 5 * 60 * 1000,
+  QUERY_KEY: ['pokemons', 'infinite'],
+}

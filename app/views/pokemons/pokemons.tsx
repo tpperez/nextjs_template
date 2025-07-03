@@ -1,8 +1,16 @@
+'use client'
+
 import { PokemonCard } from './components/pokemon-card'
 import { POKEMON_GALLERY_CONFIG } from './pokemons.const'
+import { useMorePokemons } from './pokemons.hook'
 import type { IPokemonsViewProps } from './pokemons.type'
 
-export const ViewPokemons = ({ success, data, error }: IPokemonsViewProps) => {
+export const ViewPokemons = ({
+  success,
+  data,
+  error,
+  count,
+}: IPokemonsViewProps) => {
   const {
     TITLE,
     SUBTITLE,
@@ -13,6 +21,23 @@ export const ViewPokemons = ({ success, data, error }: IPokemonsViewProps) => {
     ERROR_MESSAGE,
     NO_RESULTS_MESSAGE,
   } = POKEMON_GALLERY_CONFIG
+
+  const {
+    data: infiniteData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useMorePokemons()
+
+  const allPokemons = [
+    ...data,
+    ...(infiniteData?.pages.flatMap((page) => {
+      return page.data
+    }) || []),
+  ]
+
+  const shouldShowLoadMoreButton =
+    hasNextPage || (data.length >= 8 && data.length < count)
 
   if (!success) {
     return (
@@ -69,7 +94,7 @@ export const ViewPokemons = ({ success, data, error }: IPokemonsViewProps) => {
           </div>
 
           <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
-            {data.map((pokemon) => {
+            {allPokemons.map((pokemon) => {
               return (
                 <PokemonCard
                   key={pokemon.name}
@@ -79,10 +104,34 @@ export const ViewPokemons = ({ success, data, error }: IPokemonsViewProps) => {
             })}
           </div>
 
-          {data.length === 0 && (
+          {allPokemons.length === 0 && (
             <div className='mt-12 text-center text-gray-500'>
               <div className='mb-4 text-6xl'>🔍</div>
               <p className='text-xl'>{NO_RESULTS_MESSAGE}</p>
+            </div>
+          )}
+
+          {shouldShowLoadMoreButton && (
+            <div className='mt-8 text-center'>
+              <button
+                onClick={() => {
+                  fetchNextPage()
+                }}
+                disabled={isFetchingNextPage}
+                className='inline-flex items-center rounded-lg bg-blue-600 px-6 py-3 font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
+              >
+                {isFetchingNextPage ? (
+                  <>
+                    <div className='mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent'></div>
+                    Loading more...
+                  </>
+                ) : (
+                  <>
+                    <span className='mr-2'>🔽</span>
+                    Show more pokemons
+                  </>
+                )}
+              </button>
             </div>
           )}
 
@@ -95,6 +144,10 @@ export const ViewPokemons = ({ success, data, error }: IPokemonsViewProps) => {
               <div className='flex items-center space-x-2'>
                 <span>⚡</span>
                 <span>Server-side rendered</span>
+              </div>
+              <div className='flex items-center space-x-2'>
+                <span>📱</span>
+                <span>Client-side pagination</span>
               </div>
             </div>
           </div>
