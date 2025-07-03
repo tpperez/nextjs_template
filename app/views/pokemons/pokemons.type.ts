@@ -1,4 +1,4 @@
-import type { Pokemon } from '@/app/(routes)/(public)/pokemons/query'
+import type { Pokemon } from '@/app/(routes)/(public)/(examples)/pokemons/query'
 
 export interface IPokemonsViewProps {
   success: boolean
