@@ -1,13 +1,24 @@
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
+
+import { usePokemonHistoryStore } from '@/app/stores/pokemon-history'
 
 import type { IPokemonCardProps } from '../../pokemons.type'
 
 export const PokemonCard = ({ pokemon }: IPokemonCardProps) => {
+  const { addToHistory } = usePokemonHistoryStore()
+
+  const handlePokemonClick = () => {
+    addToHistory(pokemon)
+  }
+
   return (
     <Link
       key={pokemon.name}
       href={`/pokemons/${pokemon.name}`}
+      onClick={handlePokemonClick}
       className='block overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl'
     >
       <div className='flex aspect-square items-center justify-center bg-gray-50'>
