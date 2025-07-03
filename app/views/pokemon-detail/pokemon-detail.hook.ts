@@ -13,10 +13,10 @@ import {
 import type {
   GraphQLPokemonMovesResponse,
   PokemonSpecies,
-  UsePokemonMovesGraphQLOptions,
-  UsePokemonMovesGraphQLReturn,
-  UsePokemonSpeciesOptions,
-  UsePokemonSpeciesReturn,
+  TUsePokemonMovesGraphQLOptions,
+  TUsePokemonMovesGraphQLReturn,
+  TUsePokemonSpeciesOptions,
+  TUsePokemonSpeciesReturn,
 } from './pokemon-detail.type'
 
 const fetchPokemonSpecies = async (
@@ -42,8 +42,8 @@ const fetchPokemonMovesGraphQL = async (
 
 export const usePokemonSpecies = (
   pokemonId: number | undefined,
-  options: UsePokemonSpeciesOptions = {},
-): UsePokemonSpeciesReturn => {
+  options: TUsePokemonSpeciesOptions = {},
+): TUsePokemonSpeciesReturn => {
   const { enabled = true } = options
 
   const {
@@ -76,8 +76,8 @@ export const usePokemonSpecies = (
 
 export const usePokemonMovesGraphQL = (
   pokemonName: string,
-  options?: UsePokemonMovesGraphQLOptions,
-): UsePokemonMovesGraphQLReturn => {
+  options?: TUsePokemonMovesGraphQLOptions,
+): TUsePokemonMovesGraphQLReturn => {
   const { data, isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: [POKEMON_MOVES_GRAPHQL_QUERY_KEY, pokemonName],
     queryFn: () => {

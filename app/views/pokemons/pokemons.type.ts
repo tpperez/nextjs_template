@@ -12,7 +12,7 @@ export interface IPokemonCardProps {
   pokemon: Pokemon
 }
 
-export interface UseMorePokemonsOptions {
+export type TUseMorePokemonsOptions = {
   initialOffset?: number
 }
 

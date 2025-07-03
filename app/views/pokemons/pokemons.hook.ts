@@ -5,11 +5,11 @@ import type { PokemonsResponse } from '@/app/(routes)/(public)/(examples)/pokemo
 import { graphqlClient } from '@/app/services/http'
 
 import { POKEMONS_PER_PAGE, POKEMONS_QUERY_CONFIG } from './pokemons.const'
-import type { UseMorePokemonsOptions } from './pokemons.type'
+import type { TUseMorePokemonsOptions } from './pokemons.type'
 
 export const useMorePokemons = ({
   initialOffset = 8,
-}: UseMorePokemonsOptions = {}) => {
+}: TUseMorePokemonsOptions = {}) => {
   return useInfiniteQuery({
     queryKey: POKEMONS_QUERY_CONFIG.QUERY_KEY,
     queryFn: async ({ pageParam = initialOffset }) => {

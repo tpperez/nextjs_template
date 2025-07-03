@@ -7,7 +7,7 @@ export type {
   IPokemonSpeciesInfoProps,
   PokemonDetail,
   PokemonSpecies,
-  UsePokemonSpeciesReturn,
+  TUsePokemonSpeciesReturn,
 } from './pokemon-detail.type'
 export {
   formatGenderRate,

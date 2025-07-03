@@ -117,11 +117,11 @@ export interface IPokemonSpeciesResponse {
   species: PokemonSpecies
 }
 
-export interface UsePokemonSpeciesOptions {
+export type TUsePokemonSpeciesOptions = {
   enabled?: boolean
 }
 
-export interface UsePokemonSpeciesReturn {
+export type TUsePokemonSpeciesReturn = {
   species: PokemonSpecies | undefined
   isLoading: boolean
   isError: boolean
@@ -149,11 +149,11 @@ export interface GraphQLPokemonMovesResponse {
   pokemon: GraphQLPokemonMoves
 }
 
-export interface UsePokemonMovesGraphQLOptions {
+export type TUsePokemonMovesGraphQLOptions = {
   enabled?: boolean
 }
 
-export interface UsePokemonMovesGraphQLReturn {
+export type TUsePokemonMovesGraphQLReturn = {
   pokemonMoves: GraphQLPokemonMoves | undefined
   isLoading: boolean
   isError: boolean
