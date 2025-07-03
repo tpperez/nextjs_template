@@ -1,22 +1,22 @@
 export type { HttpConfig } from './core'
 export { HTTP_ADAPTER_CONFIG, HTTP_CONFIG } from './core'
 export type {
-  BaseRequestConfig,
-  CacheConfig,
-  CoreRequestOptions,
-  GraphQLError,
-  GraphQLResponse,
-  HttpError,
-  HttpMethod,
+  IBaseRequestConfig,
+  ICacheConfig,
+  ICoreRequestOptions,
+  IGraphQLError,
+  IGraphQLResponse,
+  IHttpError,
+  THttpMethod,
 } from './core.type'
 export type {
-  AdapterConfig,
-  GraphQLAdapterFactory,
-  GraphQLHttpAdapter,
-  GraphQLRequestConfig,
-  HttpRequestConfig,
-  RestAdapterFactory,
-  RestHttpAdapter,
+  IAdapterConfig,
+  IGraphQLHttpAdapter,
+  IGraphQLRequestConfig,
+  IHttpRequestConfig,
+  IRestHttpAdapter,
+  TGraphQLAdapterFactory,
+  TRestAdapterFactory,
 } from './core.type'
 export {
   buildUrl,

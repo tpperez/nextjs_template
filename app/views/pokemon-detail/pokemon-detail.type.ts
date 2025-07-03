@@ -1,17 +1,17 @@
 import type {
-  PokemonAbility,
-  PokemonDetail,
-  PokemonMove,
-  PokemonSprites,
-  PokemonStat,
-  PokemonType,
-} from '@/app/(routes)/(public)/pokemons/[name]/query'
+  IPokemonAbility,
+  IPokemonDetail,
+  IPokemonMove,
+  IPokemonSprites,
+  IPokemonStat,
+  IPokemonType,
+} from '@/app/(routes)/(public)/(examples)/pokemons/[name]/query'
 
 export interface IPokemonDetailViewProps {
-  data: PokemonDetail
+  data: IPokemonDetail
 }
 
-export interface FlavorTextEntry {
+export interface IFlavorTextEntry {
   flavor_text: string
   language: {
     name: string
@@ -23,7 +23,7 @@ export interface FlavorTextEntry {
   }
 }
 
-export interface Genus {
+export interface IGenus {
   genus: string
   language: {
     name: string
@@ -31,7 +31,7 @@ export interface Genus {
   }
 }
 
-export interface PokemonSpecies {
+export interface IPokemonSpecies {
   id: number
   name: string
   base_happiness: number
@@ -114,15 +114,15 @@ export interface IPokemonSpeciesInfoProps {
 }
 
 export interface IPokemonSpeciesResponse {
-  species: PokemonSpecies
+  species: IPokemonSpecies
 }
 
-export interface UsePokemonSpeciesOptions {
+export type TUsePokemonSpeciesOptions = {
   enabled?: boolean
 }
 
-export interface UsePokemonSpeciesReturn {
-  species: PokemonSpecies | undefined
+export type TUsePokemonSpeciesReturn = {
+  species: IPokemonSpecies | undefined
   isLoading: boolean
   isError: boolean
   error: Error | null
@@ -130,31 +130,31 @@ export interface UsePokemonSpeciesReturn {
   isFetching: boolean
 }
 
-export interface GraphQLMove {
+export interface IGraphQLMove {
   move: {
     name: string
     url: string
   }
 }
 
-export interface GraphQLPokemonMoves {
+export interface IGraphQLPokemonMoves {
   id: number
   name: string
-  moves: GraphQLMove[]
+  moves: IGraphQLMove[]
   message: string
   status: boolean
 }
 
-export interface GraphQLPokemonMovesResponse {
-  pokemon: GraphQLPokemonMoves
+export interface IGraphQLPokemonMovesResponse {
+  pokemon: IGraphQLPokemonMoves
 }
 
-export interface UsePokemonMovesGraphQLOptions {
+export type TUsePokemonMovesGraphQLOptions = {
   enabled?: boolean
 }
 
-export interface UsePokemonMovesGraphQLReturn {
-  pokemonMoves: GraphQLPokemonMoves | undefined
+export type TUsePokemonMovesGraphQLReturn = {
+  pokemonMoves: IGraphQLPokemonMoves | undefined
   isLoading: boolean
   isError: boolean
   error: Error | null
@@ -167,10 +167,10 @@ export interface IPokemonMovesGraphQLProps {
 }
 
 export type {
-  PokemonAbility,
-  PokemonDetail,
-  PokemonMove,
-  PokemonSprites,
-  PokemonStat,
-  PokemonType,
+  IPokemonAbility,
+  IPokemonDetail,
+  IPokemonMove,
+  IPokemonSprites,
+  IPokemonStat,
+  IPokemonType,
 }

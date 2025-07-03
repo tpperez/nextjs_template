@@ -1,16 +1,16 @@
-export interface Pokemon {
+export interface IPokemon {
   url: string
   name: string
   image: string
 }
 
-export interface PokemonsResponse {
+export interface IPokemonsResponse {
   pokemons: {
     count: number
     next: string | null
     previous: string | null
     status: boolean
     message: string
-    results: Pokemon[]
+    results: IPokemon[]
   }
 }

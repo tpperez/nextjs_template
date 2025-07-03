@@ -1,10 +1,10 @@
 import { restClient } from '@/app/services/http'
 
-import { PokemonDetail } from './query.type'
+import { IPokemonDetail } from './query.type'
 
 export const getPokemonDetailData = async (name: string) => {
   try {
-    const response = await restClient.get<PokemonDetail>(
+    const response = await restClient.get<IPokemonDetail>(
       `/pokemon/${name.toLowerCase()}`,
       {
         baseUrl: 'https://pokeapi.co/api/v2',

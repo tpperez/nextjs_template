@@ -1,5 +1,5 @@
 import { HTTP_CONFIG } from './core'
-import type { HttpError } from './core.type'
+import type { IHttpError } from './core.type'
 
 export const resolveBaseUrl = (baseUrl?: string): string => {
   return baseUrl || HTTP_CONFIG.BASE_URL
@@ -14,7 +14,7 @@ export const createHeaders = (customHeaders?: HeadersInit): HeadersInit => {
 
 export const processResponse = async <T>(response: Response): Promise<T> => {
   if (!response.ok) {
-    const error: HttpError = {
+    const error: IHttpError = {
       message: response.statusText || 'Request failed',
       status: response.status,
     }

@@ -1,8 +1,8 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios'
 
-import { HttpRequestConfig, RestHttpAdapter } from '../../core'
+import { IHttpRequestConfig, IRestHttpAdapter } from '../../core'
 
-export class AxiosRestAdapter implements RestHttpAdapter {
+export class AxiosRestAdapter implements IRestHttpAdapter {
   readonly name = 'axios-rest'
   private axiosInstance: AxiosInstance
 
@@ -17,7 +17,7 @@ export class AxiosRestAdapter implements RestHttpAdapter {
 
   async request<TResponse>(
     url: string,
-    config: HttpRequestConfig,
+    config: IHttpRequestConfig,
   ): Promise<TResponse> {
     const { method, body, headers, timeout, signal, ...restOptions } = config
 

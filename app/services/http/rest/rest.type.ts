@@ -1,8 +1,8 @@
-import type { CoreRequestOptions } from '../core'
+import type { ICoreRequestOptions } from '../core'
 
-export interface RestRequestOptions<TBody = unknown>
-  extends CoreRequestOptions {
+export interface IRestRequestOptions<TBody = unknown>
+  extends ICoreRequestOptions {
   body?: TBody
 }
 
-export type RestResponse<T> = T
+export type TRestResponse<T> = T

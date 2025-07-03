@@ -1,14 +1,14 @@
 import {
   buildUrl,
   HTTP_ADAPTER_CONFIG,
+  type IRestHttpAdapter,
   resolveBaseUrl,
-  type RestHttpAdapter,
 } from '../core'
 
-import type { RestRequestOptions, RestResponse } from './rest.type'
+import type { IRestRequestOptions, TRestResponse } from './rest.type'
 
 class RestClient {
-  private adapter: RestHttpAdapter
+  private adapter: IRestHttpAdapter
 
   constructor() {
     const adapterFactory = HTTP_ADAPTER_CONFIG.restAdapter
@@ -17,8 +17,8 @@ class RestClient {
 
   async request<TResponse, TBody = unknown>(
     path: string,
-    options: RestRequestOptions<TBody> = {},
-  ): Promise<RestResponse<TResponse>> {
+    options: IRestRequestOptions<TBody> = {},
+  ): Promise<TRestResponse<TResponse>> {
     const {
       method = 'GET',
       body,
@@ -47,7 +47,7 @@ class RestClient {
 
   get<TResponse>(
     path: string,
-    options?: Omit<RestRequestOptions, 'method' | 'body'>,
+    options?: Omit<IRestRequestOptions, 'method' | 'body'>,
   ) {
     return this.request<TResponse>(path, { ...options, method: 'GET' })
   }
@@ -55,7 +55,7 @@ class RestClient {
   post<TResponse, TBody = unknown>(
     path: string,
     body?: TBody,
-    options?: Omit<RestRequestOptions<TBody>, 'method' | 'body'>,
+    options?: Omit<IRestRequestOptions<TBody>, 'method' | 'body'>,
   ) {
     return this.request<TResponse, TBody>(path, {
       ...options,
@@ -67,7 +67,7 @@ class RestClient {
   put<TResponse, TBody = unknown>(
     path: string,
     body?: TBody,
-    options?: Omit<RestRequestOptions<TBody>, 'method' | 'body'>,
+    options?: Omit<IRestRequestOptions<TBody>, 'method' | 'body'>,
   ) {
     return this.request<TResponse, TBody>(path, {
       ...options,
@@ -79,7 +79,7 @@ class RestClient {
   patch<TResponse, TBody = unknown>(
     path: string,
     body?: TBody,
-    options?: Omit<RestRequestOptions<TBody>, 'method' | 'body'>,
+    options?: Omit<IRestRequestOptions<TBody>, 'method' | 'body'>,
   ) {
     return this.request<TResponse, TBody>(path, {
       ...options,
@@ -90,7 +90,7 @@ class RestClient {
 
   delete<TResponse>(
     path: string,
-    options?: Omit<RestRequestOptions, 'method' | 'body'>,
+    options?: Omit<IRestRequestOptions, 'method' | 'body'>,
   ) {
     return this.request<TResponse>(path, { ...options, method: 'DELETE' })
   }

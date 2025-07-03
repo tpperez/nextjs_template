@@ -1,6 +1,6 @@
-import { RadarConfig } from './tech-radar.type'
+import { IRadarConfig } from './tech-radar.type'
 
-export const TECH_RADAR_CONFIG: RadarConfig = {
+export const TECH_RADAR_CONFIG: IRadarConfig = {
   repo_url: 'https://github.com/zalando/tech-radar',
   svg_id: 'radar',
   width: 1450,

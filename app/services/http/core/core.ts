@@ -1,7 +1,7 @@
 import { FetchGraphQLAdapter } from '../graphql/adapters'
 import { FetchRestAdapter } from '../rest/adapters'
 
-import { GraphQLAdapterFactory, RestAdapterFactory } from './core.type'
+import { TGraphQLAdapterFactory, TRestAdapterFactory } from './core.type'
 
 export const HTTP_CONFIG = {
   BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api',
@@ -15,8 +15,8 @@ export const HTTP_CONFIG = {
 export type HttpConfig = typeof HTTP_CONFIG
 
 export const HTTP_ADAPTER_CONFIG: {
-  restAdapter: RestAdapterFactory
-  graphqlAdapter: GraphQLAdapterFactory
+  restAdapter: TRestAdapterFactory
+  graphqlAdapter: TGraphQLAdapterFactory
 } = {
   restAdapter: () => {
     return new FetchRestAdapter()

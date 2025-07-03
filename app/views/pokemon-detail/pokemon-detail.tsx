@@ -1,5 +1,11 @@
+'use client'
+
+import { useEffect } from 'react'
+
 import Image from 'next/image'
 import Link from 'next/link'
+
+import { usePokemonHistoryStore } from '@/app/stores/pokemon-history'
 
 import { PokemonMoves } from './components/pokemon-moves'
 import { PokemonSpeciesInfo } from './components/pokemon-species-info'
@@ -10,6 +16,17 @@ import { formatName, formatStatName } from './pokemon-detail.util'
 export const ViewPokemonDetail = ({
   data: pokemon,
 }: IPokemonDetailViewProps) => {
+  const { addToHistory } = usePokemonHistoryStore()
+
+  useEffect(() => {
+    const pokemonForHistory = {
+      name: pokemon.name,
+      url: `https://pokeapi.co/api/v2/pokemon/${pokemon.name}`,
+      image: pokemon.sprites.front_default || '',
+    }
+    addToHistory(pokemonForHistory)
+  }, [pokemon.name, pokemon.sprites.front_default, addToHistory])
+
   return (
     <div className='min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-6'>
       <div className='container mx-auto px-4'>

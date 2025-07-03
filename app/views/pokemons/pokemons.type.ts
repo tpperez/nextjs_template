@@ -1,16 +1,19 @@
-import type { Pokemon } from '@/app/(routes)/(public)/pokemons/query'
+import type { IPokemon } from '@/app/(routes)/(public)/(examples)/pokemons/query'
 
 export interface IPokemonsViewProps {
   success: boolean
-  data: Pokemon[]
+  data: IPokemon[]
   count: number
-  next: string | null
   previous: string | null
   error?: string
 }
 
 export interface IPokemonCardProps {
-  pokemon: Pokemon
+  pokemon: IPokemon
 }
 
-export type { Pokemon }
+export type TUseMorePokemonsOptions = {
+  initialOffset?: number
+}
+
+export type { IPokemon }

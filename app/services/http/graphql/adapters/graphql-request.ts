@@ -1,20 +1,20 @@
 import { GraphQLClient, Variables } from 'graphql-request'
 
 import type {
-  GraphQLHttpAdapter,
-  GraphQLRequestConfig,
-  GraphQLResponse,
+  IGraphQLHttpAdapter,
+  IGraphQLRequestConfig,
+  IGraphQLResponse,
 } from '../../core/core.type'
 import { createHeaders, createTimeoutSignal } from '../../core/core.utils'
 
-export class GraphQLRequestAdapter implements GraphQLHttpAdapter {
+export class GraphQLRequestAdapter implements IGraphQLHttpAdapter {
   readonly name = 'graphql-request'
 
   async request<TResponse>(
     endpoint: string,
     query: string,
-    config: GraphQLRequestConfig,
-  ): Promise<GraphQLResponse<TResponse>> {
+    config: IGraphQLRequestConfig,
+  ): Promise<IGraphQLResponse<TResponse>> {
     const {
       variables,
       operationName,
@@ -55,14 +55,14 @@ export class GraphQLRequestAdapter implements GraphQLHttpAdapter {
 
       return {
         data,
-      } as GraphQLResponse<TResponse>
+      } as IGraphQLResponse<TResponse>
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (error.response?.errors) {
         return {
           data: error.response.data,
           errors: error.response.errors,
-        } as GraphQLResponse<TResponse>
+        } as IGraphQLResponse<TResponse>
       }
 
       throw error

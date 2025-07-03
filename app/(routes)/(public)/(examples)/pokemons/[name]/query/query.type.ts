@@ -1,4 +1,4 @@
-export interface PokemonAbility {
+export interface IPokemonAbility {
   ability: {
     name: string
     url: string
@@ -7,7 +7,7 @@ export interface PokemonAbility {
   slot: number
 }
 
-export interface PokemonType {
+export interface IPokemonType {
   slot: number
   type: {
     name: string
@@ -15,7 +15,7 @@ export interface PokemonType {
   }
 }
 
-export interface PokemonStat {
+export interface IPokemonStat {
   base_stat: number
   effort: number
   stat: {
@@ -24,7 +24,7 @@ export interface PokemonStat {
   }
 }
 
-export interface PokemonSprites {
+export interface IPokemonSprites {
   back_default: string | null
   back_female: string | null
   back_shiny: string | null
@@ -35,7 +35,7 @@ export interface PokemonSprites {
   front_shiny_female: string | null
 }
 
-export interface PokemonMove {
+export interface IPokemonMove {
   move: {
     name: string
     url: string
@@ -53,7 +53,7 @@ export interface PokemonMove {
   }>
 }
 
-export interface PokemonDetail {
+export interface IPokemonDetail {
   id: number
   name: string
   base_experience: number
@@ -61,11 +61,11 @@ export interface PokemonDetail {
   weight: number
   order: number
   is_default: boolean
-  abilities: PokemonAbility[]
-  types: PokemonType[]
-  stats: PokemonStat[]
-  sprites: PokemonSprites
-  moves: PokemonMove[]
+  abilities: IPokemonAbility[]
+  types: IPokemonType[]
+  stats: IPokemonStat[]
+  sprites: IPokemonSprites
+  moves: IPokemonMove[]
   species: {
     name: string
     url: string
