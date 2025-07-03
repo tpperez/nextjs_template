@@ -19,7 +19,7 @@
   - [🔗 Route-View Integration](#-route-view-integration)
 - [🏗️ Module Organization Standards](#️-module-organization-standards)
   - [📁 Standard Module Structure](#-standard-module-structure)
-  - [📋 Module Examples](#-module-examples)
+  - [📋 Real Module Examples](#-real-module-examples)
   - [📤 Export Examples](#-export-examples)
   - [📍 Placement Guidelines](#-placement-guidelines)
 - [🚀 Complete Project Example](#-complete-project-example)
@@ -28,7 +28,7 @@
 
 ## 📁 Project Structure Overview
 
-This is exactly what you'll find when cloning:
+This is the **current implemented structure** of the project:
 
 ```
 /app
@@ -40,14 +40,30 @@ This is exactly what you'll find when cloning:
 │   └── (public)/                # 🌐 public routes
 │       ├── (home)/              # 🏠 homepage
 │       │   └── page.tsx
-│       ├── sample-1/            # 📄 sample page 1
-│       │   └── page.tsx
+│       ├── pokemons/            # 📄 pokemon gallery & detail
+│       │   ├── [name]/          # 🔄 dynamic pokemon detail
+│       │   │   ├── page.tsx
+│       │   │   ├── not-found.tsx
+│       │   │   └── query/
+│       │   │       ├── index.ts
+│       │   │       ├── query.ts
+│       │   │       └── query.type.ts
+│       │   ├── page.tsx
+│       │   └── query/
+│       │       ├── index.ts
+│       │       ├── query.const.ts
+│       │       ├── query.ts
+│       │       └── query.type.ts
 │       └── layout.tsx
 ├── components/                  # 🧩 reusable components
 │   ├── structure/               # 🏗️ structural components
 │   │   └── .gitkeep
 │   └── ui/                      # 🎨 interface components
-│       └── .gitkeep
+│       └── spinner/             # ✨ loading spinner component
+│           ├── index.ts
+│           ├── spinner.const.ts
+│           ├── spinner.tsx
+│           └── spinner.type.ts
 ├── constants/                   # 📊 application constants
 │   └── .gitkeep
 ├── hooks/                       # 🎣 custom hooks
@@ -55,9 +71,29 @@ This is exactly what you'll find when cloning:
 ├── services/                    # 🔧 services and apis
 │   ├── http/                    # 📡 HTTP clients (REST + GraphQL)
 │   │   ├── core/                # 🎯 configuration and adapters
-│   │   ├── rest/                # 🌐 REST client
+│   │   │   ├── core.ts
+│   │   │   ├── core.type.ts
+│   │   │   ├── core.utils.ts
+│   │   │   └── index.ts
 │   │   ├── graphql/             # 📊 GraphQL client
+│   │   │   ├── adapters/
+│   │   │   │   ├── fetch-graphql.ts
+│   │   │   │   ├── graphql-request.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── graphql.ts
+│   │   │   ├── graphql.type.ts
+│   │   │   └── index.ts
 │   │   ├── providers/           # 🎛️ React Query provider
+│   │   │   ├── react-query.tsx
+│   │   │   └── index.ts
+│   │   ├── rest/                # 🌐 REST client
+│   │   │   ├── adapters/
+│   │   │   │   ├── axios-rest.ts
+│   │   │   │   ├── fetch-rest.ts
+│   │   │   │   └── index.ts
+│   │   │   ├── rest.ts
+│   │   │   ├── rest.type.ts
+│   │   │   └── index.ts
 │   │   └── index.ts
 │   └── .gitkeep
 ├── stores/                      # 🗃️ state stores
@@ -69,22 +105,50 @@ This is exactly what you'll find when cloning:
 ├── utils/                       # 🛠️ utility functions
 │   └── .gitkeep
 ├── views/                       # 📱 views/page structures
-│   ├── home/                    # 🏠 homepage
-│   │   ├── home.test.tsx
+│   ├── home/                    # 🏠 homepage view
+│   │   ├── components/
+│   │   │   └── tech-radar/      # 📊 tech radar visualization
+│   │   │       ├── index.ts
+│   │   │       ├── tech-radar.const.ts
+│   │   │       ├── tech-radar.tsx
+│   │   │       └── tech-radar.type.ts
 │   │   ├── home.tsx
 │   │   └── index.ts
-│   └── sample-1/                # 📄 sample page 1
+│   ├── pokemon-detail/          # 🐾 pokemon detail view
+│   │   ├── components/
+│   │   │   ├── pokemon-moves/
+│   │   │   │   ├── index.ts
+│   │   │   │   └── pokemon-moves.tsx
+│   │   │   └── pokemon-species-info/
+│   │   │       ├── index.ts
+│   │   │       └── pokemon-species-info.tsx
+│   │   ├── index.ts
+│   │   ├── pokemon-detail.const.ts
+│   │   ├── pokemon-detail.hook.ts
+│   │   ├── pokemon-detail.tsx
+│   │   ├── pokemon-detail.type.ts
+│   │   └── pokemon-detail.util.ts
+│   └── pokemons/                # 🎯 pokemon gallery view
+│       ├── components/
+│       │   └── pokemon-card/
+│       │       ├── index.ts
+│       │       └── pokemon-card.tsx
 │       ├── index.ts
-│       ├── sample-1.test.tsx
-│       └── sample-1.tsx
+│       ├── pokemons.const.ts
+│       ├── pokemons.tsx
+│       └── pokemons.type.ts
 ├── favicon.ico
 └── layout.tsx
 
 /public/                         # 📁 static files
+├── utils/                       # 🛠️ external scripts
+│   └── tech-radar.js            # 📊 D3.js tech radar library
 └── .gitkeep
+
+/middleware.ts                   # 🛡️ security & CSP configuration
 ```
 
-> 📝 **About `.gitkeep` files**: These are conventional files to keep empty folders in Git. Remove them when you start adding real content to the folders.
+> 📝 **About `.gitkeep` files**: These are conventional files to keep empty folders in Git. They remain in folders that don't have implemented content yet.
 
 ---
 
@@ -129,7 +193,7 @@ This template follows a **layered architecture** with clear separation of concer
 | Architecture Layer    | Directories                                                    | Purpose                                 |
 | --------------------- | -------------------------------------------------------------- | --------------------------------------- |
 | **Routes**            | `/app/(routes)/`                                               | Server Components, pages, layouts       |
-| **Queries**           | `query.ts` files                                               | Route-specific data fetching            |
+| **Queries**           | `query/` folders                                               | Route-specific data fetching            |
 | **Views**             | `/app/views/`                                                  | Page structures and orchestration       |
 | **Components**        | `/app/components/`                                             | Reusable UI building blocks             |
 | **Services & Stores** | `/app/services/`, `/app/stores/`                               | Business logic and state management     |
@@ -140,19 +204,20 @@ This template follows a **layered architecture** with clear separation of concer
 
 ```typescript
 // 1. Route (Server Component) - Fetches data
-const PageHome = async () => {
-  const data = await getHomeData()  // Query
-  return <ViewHome data={data} />   // Pass to View
+const PagePokemons = async () => {
+  const pokemonsData = await getPokemonsData()  // Query
+  return <ViewPokemons {...pokemonsData} />    // Pass to View
 }
 
 // 2. Query - Abstracts API calls
-const getHomeData = async () => {
-  return await fetch('/api/home').then(r => r.json())
+const getPokemonsData = async () => {
+  const response = await graphqlClient.query(GET_POKEMONS, { limit: 8 })
+  return { success: true, data: response.data?.pokemons?.results || [] }
 }
 
 // 3. View - Renders with the data
-const ViewHome = ({ data }) => {
-  return <div>{data.title}</div>
+const ViewPokemons = ({ success, data }) => {
+  return <div>{data.map(pokemon => <PokemonCard pokemon={pokemon} />)}</div>
 }
 ```
 
@@ -173,7 +238,7 @@ const ViewHome = ({ data }) => {
 ### 🔥 Getting Started
 
 1. **Create new page** → `/app/(routes)/(public)/your-page-name/page.tsx`
-2. **Add data fetching** → `/app/(routes)/(public)/your-page-name/query.ts` (if needed)
+2. **Add data fetching** → `/app/(routes)/(public)/your-page-name/query/` (if needed)
 3. **Build page structure** → `/views/your-view-name/`
 
 ### 🧩 Adding Features
@@ -200,12 +265,22 @@ const ViewHome = ({ data }) => {
 
 ## 📂 Static Files Organization
 
-When you need to add static files, organize like this:
+Current static files structure:
+
+```
+/public/
+├── utils/         # external scripts and libraries
+│   └── tech-radar.js  # D3.js tech radar visualization
+└── .gitkeep       # placeholder for future static files
+```
+
+**Recommended organization for additional static files:**
 
 ```
 /public/
 ├── documents/     # pdfs, downloads
 ├── images/        # photos and images
+├── utils/         # external scripts
 ├── robots.txt     # seo
 └── sitemap.xml    # seo
 ```
@@ -218,18 +293,36 @@ When you need to add static files, organize like this:
 
 ### 📄 Page Routes
 
+**Implemented pattern:**
+
 ```
-(public)/your-page/
+(public)/page-name/
 ├── page.tsx                     # page component
-└── query.ts                     # data fetching logic
+└── query/                       # data fetching logic
+    ├── index.ts                 # exports
+    ├── query.ts                 # fetch functions
+    ├── query.const.ts           # GraphQL queries (optional)
+    └── query.type.ts            # type definitions
 ```
 
-**Example:**
+**Real examples:**
 
 ```
-(public)/products/
-├── page.tsx                     # renders product list
-└── query.ts                     # fetches products from API
+(public)/pokemons/
+├── page.tsx                     # renders pokemon gallery
+└── query/
+    ├── index.ts                 # exports getPokemonsData and types
+    ├── query.ts                 # GraphQL pokemon fetching
+    ├── query.const.ts           # GET_POKEMONS GraphQL query
+    └── query.type.ts            # Pokemon, PokemonsResponse types
+
+(public)/pokemons/[name]/
+├── page.tsx                     # renders pokemon detail
+├── not-found.tsx                # custom 404 for pokemon
+└── query/
+    ├── index.ts                 # exports getPokemonDetailData
+    ├── query.ts                 # REST pokemon detail fetching
+    └── query.type.ts            # PokemonDetail types
 ```
 
 ### 🔌 API Routes
@@ -248,22 +341,38 @@ api/users/
 
 ### 🔄 Dynamic Routes
 
+**Current implementations:**
+
 ```
 [param]/
 ├── page.tsx                     # captures dynamic segments
-└── query.ts                     # receives params object
+├── not-found.tsx                # custom 404 (optional)
+└── query/                       # receives params object
+    ├── query.ts                 # params.param = "value"
+    └── query.type.ts
 ```
 
 **Examples:**
 
 ```
+pokemons/[name]/
+├── page.tsx                     # /pokemons/pikachu, /pokemons/charizard
+├── not-found.tsx                # custom pokemon not found page
+└── query/
+    ├── query.ts                 # params.name = "pikachu"
+    └── query.type.ts
+
 user/[id]/
 ├── page.tsx                     # /user/123, /user/456
-└── query.ts                     # params.id = "123"
+└── query/
+    ├── query.ts                 # params.id = "123"
+    └── query.type.ts
 
 products/[category]/[slug]/
 ├── page.tsx                     # /products/electronics/phone
-└── query.ts                     # params.category, params.slug
+└── query/
+    ├── query.ts                 # params.category, params.slug
+    └── query.type.ts
 
 api/users/[id]/
 └── route.ts                     # /api/users/123
@@ -275,17 +384,18 @@ api/users/[id]/
 
 The route structure has direct correspondence with views, and queries stay with the routes:
 
-| Route                                     | View                              | Query               | Type             |
-| ----------------------------------------- | --------------------------------- | ------------------- | ---------------- |
-| `app/(routes)/(public)/(home)/page.tsx`   | `views/home/` → `ViewHome`        | `(home)/query.ts`   | 🌐 Public        |
-| `app/(routes)/(public)/sample-1/page.tsx` | `views/sample-1/` → `ViewSample1` | `sample-1/query.ts` | 🌐 Public        |
-| `app/(routes)/(auth)/sample-3/page.tsx`   | `views/sample-3/` → `ViewSample3` | `sample-3/query.ts` | 🔒 Authenticated |
+| Route                                            | View                                          | Query                    | Type             |
+| ------------------------------------------------ | --------------------------------------------- | ------------------------ | ---------------- |
+| `app/(routes)/(public)/(home)/page.tsx`          | `views/home/` → `ViewHome`                    | None (static)            | 🌐 Public        |
+| `app/(routes)/(public)/pokemons/page.tsx`        | `views/pokemons/` → `ViewPokemons`            | `pokemons/query/`        | 🌐 Public        |
+| `app/(routes)/(public)/pokemons/[name]/page.tsx` | `views/pokemon-detail/` → `ViewPokemonDetail` | `pokemons/[name]/query/` | 🌐 Public        |
+| `app/(routes)/(auth)/sample-3/page.tsx`          | `views/sample-3/` → `ViewSample3`             | `sample-3/query/`        | 🔒 Authenticated |
 
 **Pattern:**
 
 ```
-(routes)/[group]/[sample]/page.tsx    →  views/[sample]/  →  View[Sample]
-(routes)/[group]/[sample]/query.ts    →  Route-specific queries
+(routes)/[group]/[page]/page.tsx    →  views/[page]/  →  View[Page]
+(routes)/[group]/[page]/query/      →  Route-specific data fetching
 ```
 
 ---
@@ -307,6 +417,8 @@ The route structure has direct correspondence with views, and queries stay with 
 ├── [module-name].const.ts       # 📊 module constants (optional)
 ├── [module-name].service.ts     # 🔧 module services (optional)
 ├── [module-name].util.ts        # 🛠️ module utilities (optional)
+├── components/                  # 🧩 internal components (optional)
+│   └── sub-component/
 └── index.ts                     # 📤 export file
 ```
 
@@ -314,113 +426,149 @@ The route structure has direct correspondence with views, and queries stay with 
 
 This structure applies to:
 
-- 🧩 **components/** (button, modal, card)
-- 📱 **views/** (home, profile, dashboard)
-- 🔧 **services/** (auth, api, payment)
+- 🧩 **components/** (spinner, modal, card)
+- 📱 **views/** (home, pokemon-detail, pokemons)
+- 🔧 **services/** (http, auth, payment)
 - 🗃️ **stores/** (user, cart, theme)
 - 🎣 **hooks/** (use-api, use-debounce)
 - 🛠️ **utils/** (format-date, validate)
 
-### 📋 Module Examples
+### 📋 Real Module Examples
 
-#### 🧩 Component Module
-
-```
-button/
-├── button.test.tsx              # 🧪 unit tests
-├── button.tsx                   # 📄 react component
-├── button.type.ts               # 📝 IButtonProps, TButtonVariant
-├── button.hook.ts               # 🎣 useButton (optional)
-├── button.const.ts              # 📊 BUTTON_VARIANTS, BUTTON_SIZES (optional)
-├── button.service.ts            # 🔧 button API calls (optional)
-├── button.util.ts               # 🛠️ button helpers (optional)
-└── index.ts                     # 📤 exports
-```
-
-#### 🔧 Service Module
+#### 🧩 UI Component Module (Implemented)
 
 ```
-auth/
-├── auth.test.ts                 # 🧪 service tests
-├── auth.ts                      # 📄 authentication logic
-├── auth.type.ts                 # 📝 IAuthResponse, TAuthStatus
-├── auth.hook.ts                 # 🎣 useAuth (optional)
-├── auth.const.ts                # 📊 AUTH_ENDPOINTS, TOKEN_EXPIRY (optional)
-├── auth.util.ts                 # 🛠️ auth helpers (optional)
-└── index.ts                     # 📤 exports
+spinner/
+├── index.ts                     # 📤 exports
+├── spinner.const.ts             # 📊 SPINNER_SIZE_CLASSES, SPINNER_COLOR_CLASSES
+├── spinner.tsx                  # 📄 React component
+└── spinner.type.ts              # 📝 ISpinnerProps, TSpinnerSize, TSpinnerColor
 ```
 
-#### 🗃️ Store Module
+#### 📱 View Module (Implemented)
 
 ```
-user/
-├── user.test.ts                 # 🧪 store tests
-├── user.ts                      # 📄 zustand store
-├── user.type.ts                 # 📝 IUserState, TUserActions
-├── user.hook.ts                 # 🎣 useUserSelector (optional)
-├── user.const.ts                # 📊 USER_ROLES, DEFAULT_USER (optional)
-├── user.service.ts              # 🔧 user API calls (optional)
-├── user.util.ts                 # 🛠️ user transformations (optional)
-└── index.ts                     # 📤 exports
+pokemon-detail/
+├── components/                  # 🧩 view-internal components
+│   ├── pokemon-moves/
+│   │   ├── index.ts
+│   │   └── pokemon-moves.tsx
+│   └── pokemon-species-info/
+│       ├── index.ts
+│       └── pokemon-species-info.tsx
+├── index.ts                     # 📤 exports
+├── pokemon-detail.const.ts      # 📊 POKEMON_DETAIL_CONFIG, ERROR_MESSAGES
+├── pokemon-detail.hook.ts       # 🎣 usePokemonSpecies, usePokemonMovesGraphQL
+├── pokemon-detail.tsx           # 📄 main view component
+├── pokemon-detail.type.ts       # 📝 interfaces and types
+└── pokemon-detail.util.ts       # 🛠️ formatStatName, getEnglishDescription
 ```
 
-#### 🎣 Hook Module
+#### 📱 Simple View Module (Implemented)
 
 ```
-use-api/
-├── use-api.test.ts              # 🧪 hook tests
-├── use-api.ts                   # 📄 custom hook
-├── use-api.type.ts              # 📝 hook types
-├── use-api.const.ts             # 📊 API_ENDPOINTS, DEFAULT_CONFIG (optional)
-├── use-api.util.ts              # 🛠️ API helpers (optional)
-└── index.ts                     # 📤 exports
+pokemons/
+├── components/
+│   └── pokemon-card/
+│       ├── index.ts
+│       └── pokemon-card.tsx
+├── index.ts                     # 📤 exports
+├── pokemons.const.ts            # 📊 POKEMON_GALLERY_CONFIG
+├── pokemons.tsx                 # 📄 main view component
+└── pokemons.type.ts             # 📝 IPokemonsViewProps, IPokemonCardProps
 ```
 
-#### 🛠️ Utils Module
-
-```
-format-date/
-├── format-date.test.ts          # 🧪 utility tests
-├── format-date.ts               # 📄 utility functions
-├── format-date.type.ts          # 📝 utility types
-├── format-date.const.ts         # 📊 DATE_FORMATS, LOCALES (optional)
-└── index.ts                     # 📤 exports
-```
-
-#### 📱 View Module (with internal components)
+#### 🏠 View with Internal Components (Implemented)
 
 ```
 home/
-├── components/                  # 🧩 view-internal components
-│   └── hero-section/
-│       ├── hero-section.test.tsx
-│       ├── hero-section.tsx
-│       ├── hero-section.type.ts
-│       ├── hero-section.hook.ts # 🎣 specific hook (optional)
-│       ├── hero-section.const.ts # 📊 component constants (optional)
-│       ├── hero-section.service.ts # 🔧 API calls (optional)
-│       ├── hero-section.util.ts # 🛠️ helpers (optional)
-│       └── index.ts
-├── home.test.tsx                # 🧪 unit tests
+├── components/
+│   └── tech-radar/              # 📊 tech radar visualization
+│       ├── index.ts
+│       ├── tech-radar.const.ts  # 📊 TECH_RADAR_CONFIG
+│       ├── tech-radar.tsx       # 📄 D3.js tech radar component
+│       └── tech-radar.type.ts   # 📝 RadarConfig, TechRadarProps
 ├── home.tsx                     # 📄 main view
-├── home.type.ts                 # 📝 specific types
-├── home.hook.ts                 # 🎣 specific hook (optional)
-├── home.const.ts                # 📊 view constants (optional)
-├── home.service.ts              # 🔧 view API calls (optional)
-├── home.util.ts                 # 🛠️ view helpers (optional)
-└── index.ts                     # 📤 export file
+└── index.ts                     # 📤 exports
+```
+
+#### 🔧 Service Module (Implemented)
+
+```
+http/
+├── core/                        # 🎯 shared configuration
+│   ├── core.ts                  # HTTP_CONFIG, adapter factories
+│   ├── core.type.ts             # shared interfaces
+│   ├── core.utils.ts            # request utilities
+│   └── index.ts
+├── graphql/                     # 📊 GraphQL client
+│   ├── adapters/
+│   │   ├── fetch-graphql.ts     # native fetch adapter
+│   │   ├── graphql-request.ts   # graphql-request adapter
+│   │   └── index.ts
+│   ├── graphql.ts               # main GraphQL client
+│   ├── graphql.type.ts          # GraphQL types
+│   └── index.ts
+├── providers/
+│   ├── react-query.tsx          # HttpProvider component
+│   └── index.ts
+├── rest/                        # 🌐 REST client
+│   ├── adapters/
+│   │   ├── axios-rest.ts        # Axios adapter
+│   │   ├── fetch-rest.ts        # native fetch adapter
+│   │   └── index.ts
+│   ├── rest.ts                  # main REST client
+│   ├── rest.type.ts             # REST types
+│   └── index.ts
+└── index.ts                     # main exports
+```
+
+#### 📄 Query Module (Implemented)
+
+```
+pokemons/query/
+├── index.ts                     # 📤 exports
+├── query.const.ts               # 📊 GET_POKEMONS GraphQL query
+├── query.ts                     # 📄 getPokemonsData function
+└── query.type.ts                # 📝 Pokemon, PokemonsResponse types
+
+pokemons/[name]/query/
+├── index.ts                     # 📤 exports
+├── query.ts                     # 📄 getPokemonDetailData function
+└── query.type.ts                # 📝 PokemonDetail types
 ```
 
 ### 📤 Export Examples
 
-**Standard export pattern:**
+**Standard export patterns from implemented modules:**
 
 ```typescript
-// components/ui/button/index.ts
-export { Button } from './button'
-export { useButton } from './button.hook'
-export { BUTTON_VARIANTS } from './button.const'
-export type { IButtonProps, TButtonVariant } from './button.type'
+// components/ui/spinner/index.ts
+export { Spinner } from './spinner'
+export { SPINNER_COLOR_CLASSES, SPINNER_SIZE_CLASSES } from './spinner.const'
+export type { ISpinnerProps, TSpinnerColor, TSpinnerSize } from './spinner.type'
+
+// views/pokemon-detail/index.ts
+export { PokemonSpeciesInfo } from './components/pokemon-species-info'
+export { ViewPokemonDetail } from './pokemon-detail'
+export { ERROR_MESSAGES, POKEMON_DETAIL_CONFIG } from './pokemon-detail.const'
+export { usePokemonSpecies } from './pokemon-detail.hook'
+export type {
+  IPokemonDetailViewProps,
+  PokemonDetail,
+  PokemonSpecies,
+  UsePokemonSpeciesReturn,
+} from './pokemon-detail.type'
+
+// services/http/index.ts
+export type {
+  BaseRequestConfig,
+  GraphQLError,
+  HttpError,
+} from './core/core.type'
+export { graphqlClient } from './graphql'
+export { restClient } from './rest'
+export { HttpProvider } from './providers'
 ```
 
 ### 📍 Placement Guidelines
@@ -432,6 +580,7 @@ export type { IButtonProps, TButtonVariant } from './button.type'
 | ✅ Reusable across app     | ✅ App structural elements    | ✅ Specific to one view only    |
 | ✅ Design system elements  | ✅ Headers, footers, sidebars | ✅ Complex view-internal logic  |
 | ✅ Buttons, inputs, modals | ✅ Navigation components      | ✅ Not reusable elsewhere       |
+| **Example**: `spinner`     | **Example**: `header`         | **Example**: `pokemon-moves`    |
 
 #### 🎣 Custom Hooks
 
@@ -441,6 +590,7 @@ export type { IButtonProps, TButtonVariant } from './button.type'
 | ---------------------- | -------------------------------------- |
 | ✅ Reusable across app | ✅ Specific to one module only         |
 | ✅ Used in 3+ places   | ✅ Business logic encapsulation        |
+| **Example**: `use-api` | **Example**: `pokemon-detail.hook.ts`  |
 
 #### 📊 Constants
 
@@ -450,6 +600,7 @@ export type { IButtonProps, TButtonVariant } from './button.type'
 | -------------------------- | --------------------------------------- |
 | ✅ Shared across app       | ✅ Module-specific values               |
 | ✅ App configurations      | ✅ Component variants/sizes             |
+| **Example**: `API_URLS`    | **Example**: `POKEMON_DETAIL_CONFIG`    |
 
 #### 🗃️ State Management
 
@@ -468,15 +619,17 @@ export type { IButtonProps, TButtonVariant } from './button.type'
 | --------------------------- | ----------------------------------------- |
 | ✅ Business domain services | ✅ Module-specific API calls              |
 | ✅ Reusable across app      | ✅ Component data fetching                |
+| **Example**: `http service` | **Example**: `pokemon-detail.service.ts`  |
 
 #### 🛠️ Utils
 
 > 📝 **For detailed utilities patterns, see:** [Code Standards](./code-standards.md)
 
-| Use `/utils/[utility]/` | Use `[module-name].util.ts` (Specific) |
-| ----------------------- | -------------------------------------- |
-| ✅ Reusable across app  | ✅ Module-specific helpers             |
-| ✅ Used in 3+ places    | ✅ Single-use calculations             |
+| Use `/utils/[utility]/`    | Use `[module-name].util.ts` (Specific) |
+| -------------------------- | -------------------------------------- |
+| ✅ Reusable across app     | ✅ Module-specific helpers             |
+| ✅ Used in 3+ places       | ✅ Single-use calculations             |
+| **Example**: `format-date` | **Example**: `pokemon-detail.util.ts`  |
 
 #### 📝 Types
 
@@ -486,6 +639,7 @@ export type { IButtonProps, TButtonVariant } from './button.type'
 | ------------------------ | -------------------------------------- |
 | ✅ Shared across app     | ✅ Module-specific interfaces          |
 | ✅ API response types    | ✅ Component props                     |
+| **Example**: `User`      | **Example**: `pokemon-detail.type.ts`  |
 
 #### 🎨 Styles
 
@@ -498,78 +652,52 @@ export type { IButtonProps, TButtonVariant } from './button.type'
 
 ## 🚀 Complete Project Example
 
-This is a **reference example** for when the project is more complete:
+This is the **current implemented state** of the project:
 
 ```
 /app
 ├── (routes)/                     # 🗂️ application routes
 │   ├── api/                      # 🔌 api routes
-│   │   └── example/
-│   │       └── route.ts
+│   │   └── .gitkeep              # placeholder for future API routes
 │   ├── (auth)/                   # 🔒 authenticated routes
-│   │   ├── sample-3/             # 📄 sample page 3 (requires auth)
-│   │   │   ├── page.tsx
-│   │   │   └── query.ts
-│   │   └── layout.tsx
+│   │   └── .gitkeep              # placeholder for auth pages
 │   └── (public)/                 # 🌐 public routes
 │       ├── (home)/               # 🏠 homepage
-│       │   ├── error.tsx
-│       │   ├── loading.tsx
+│       │   └── page.tsx
+│       ├── pokemons/             # 📄 pokemon pages
+│       │   ├── [name]/           # 🔄 dynamic pokemon detail
+│       │   │   ├── page.tsx
+│       │   │   ├── not-found.tsx
+│       │   │   └── query/
+│       │   │       ├── index.ts
+│       │   │       ├── query.ts
+│       │   │       └── query.type.ts
 │       │   ├── page.tsx
-│       │   └── query.ts
-│       ├── sample-1/             # 📄 sample page 1
-│       │   ├── page.tsx
-│       │   └── query.ts
+│       │   └── query/
+│       │       ├── index.ts
+│       │       ├── query.const.ts
+│       │       ├── query.ts
+│       │       └── query.type.ts
 │       └── layout.tsx
 ├── components/                   # 🧩 reusable components
 │   ├── structure/                # 🏗️ structural components
-│   │   ├── footer/
-│   │   ├── header/
-│   │   └── sidebar/
+│   │   └── .gitkeep              # placeholder for header, footer, etc.
 │   └── ui/                       # 🎨 interface components
-│       ├── button/
-│       │   ├── button.test.tsx
-│       │   ├── button.tsx
-│       │   ├── button.type.ts
-│       │   ├── button.hook.ts
-│       │   ├── button.const.ts
-│       │   ├── button.service.ts
-│       │   ├── button.util.ts
-│       │   └── index.ts
-│       ├── input/
-│       └── modal/
+│       └── spinner/              # ✨ loading spinner
+│           ├── index.ts
+│           ├── spinner.const.ts
+│           ├── spinner.tsx
+│           └── spinner.type.ts
 ├── constants/                    # 📊 application constants
+│   └── .gitkeep                  # placeholder for global constants
 ├── hooks/                        # 🎣 custom hooks
-│   ├── use-api/
-│   │   ├── use-api.test.ts
-│   │   ├── use-api.ts
-│   │   ├── use-api.type.ts
-│   │   ├── use-api.const.ts
-│   │   ├── use-api.util.ts
-│   │   └── index.ts
-│   └── use-local-storage/
+│   └── .gitkeep                  # placeholder for global hooks
 ├── services/                     # 🔧 services and apis
-│   ├── auth/                     # 🔒 authentication service
-│   │   ├── auth.test.ts
-│   │   ├── auth.ts
-│   │   ├── auth.type.ts
-│   │   ├── auth.hook.ts
-│   │   ├── auth.const.ts
-│   │   ├── auth.util.ts
-│   │   └── index.ts
 │   ├── http/                     # 📡 HTTP clients (REST + GraphQL)
 │   │   ├── core/                 # 🎯 configuration and adapters
 │   │   │   ├── core.ts           # HTTP_CONFIG and adapter factories
 │   │   │   ├── core.type.ts      # shared interfaces and types
 │   │   │   ├── core.utils.ts     # request utilities
-│   │   │   └── index.ts
-│   │   ├── rest/                 # 🌐 REST client
-│   │   │   ├── adapters/
-│   │   │   │   ├── fetch-rest.ts # native fetch adapter (default)
-│   │   │   │   ├── axios-rest.ts # axios adapter (optional)
-│   │   │   │   └── index.ts
-│   │   │   ├── rest.ts           # main REST client
-│   │   │   ├── rest.type.ts      # REST-specific types
 │   │   │   └── index.ts
 │   │   ├── graphql/              # 📊 GraphQL client
 │   │   │   ├── adapters/
@@ -582,57 +710,66 @@ This is a **reference example** for when the project is more complete:
 │   │   ├── providers/            # 🎛️ React integration
 │   │   │   ├── react-query.tsx   # HttpProvider component
 │   │   │   └── index.ts
+│   │   ├── rest/                 # 🌐 REST client
+│   │   │   ├── adapters/
+│   │   │   │   ├── axios-rest.ts # axios adapter (optional)
+│   │   │   │   ├── fetch-rest.ts # native fetch adapter (default)
+│   │   │   │   └── index.ts
+│   │   │   ├── rest.ts           # main REST client
+│   │   │   ├── rest.type.ts      # REST-specific types
+│   │   │   └── index.ts
 │   │   └── index.ts              # main entry point
-│   └── payment/                  # 💳 payment service
+│   └── .gitkeep                  # placeholder for other services
 ├── stores/                       # 🗃️ state stores
-│   └── user/
-│       ├── user.test.ts
-│       ├── user.ts
-│       ├── user.type.ts
-│       ├── user.hook.ts
-│       ├── user.const.ts
-│       ├── user.service.ts
-│       ├── user.util.ts
-│       └── index.ts
+│   └── .gitkeep                  # placeholder for Zustand stores
 ├── styles/                       # 🎨 global styles
+│   └── globals.css
 ├── typings/                      # 📝 global types
+│   └── .gitkeep                  # placeholder for global types
 ├── utils/                        # 🛠️ utility functions
-│   └── format-date/
-│       ├── format-date.test.ts
-│       ├── format-date.ts
-│       ├── format-date.type.ts
-│       ├── format-date.const.ts
-│       └── index.ts
+│   └── .gitkeep                  # placeholder for global utilities
 ├── views/                        # 📱 views/page structures
-│   ├── home/                     # 🏠 homepage
+│   ├── home/                     # 🏠 homepage view
 │   │   ├── components/
-│   │   │   └── hero-section/
-│   │   │       ├── hero-section.test.tsx
-│   │   │       ├── hero-section.tsx
-│   │   │       ├── hero-section.type.ts
-│   │   │       ├── hero-section.hook.ts
-│   │   │       ├── hero-section.const.ts
-│   │   │       ├── hero-section.service.ts
-│   │   │       ├── hero-section.util.ts
-│   │   │       └── index.ts
-│   │   ├── home.test.tsx
+│   │   │   └── tech-radar/       # 📊 tech radar visualization
+│   │   │       ├── index.ts
+│   │   │       ├── tech-radar.const.ts
+│   │   │       ├── tech-radar.tsx
+│   │   │       └── tech-radar.type.ts
 │   │   ├── home.tsx
-│   │   ├── home.type.ts
-│   │   ├── home.hook.ts
-│   │   ├── home.const.ts
-│   │   ├── home.service.ts
-│   │   ├── home.util.ts
 │   │   └── index.ts
-│   ├── sample-1/                 # 📄 sample page 1
-│   └── sample-3/                 # 📄 sample page 3 (requires auth)
+│   ├── pokemon-detail/           # 🐾 pokemon detail view
+│   │   ├── components/
+│   │   │   ├── pokemon-moves/
+│   │   │   │   ├── index.ts
+│   │   │   │   └── pokemon-moves.tsx
+│   │   │   └── pokemon-species-info/
+│   │   │       ├── index.ts
+│   │   │       └── pokemon-species-info.tsx
+│   │   ├── index.ts
+│   │   ├── pokemon-detail.const.ts
+│   │   ├── pokemon-detail.hook.ts
+│   │   ├── pokemon-detail.tsx
+│   │   ├── pokemon-detail.type.ts
+│   │   └── pokemon-detail.util.ts
+│   └── pokemons/                 # 🎯 pokemon gallery view
+│       ├── components/
+│       │   └── pokemon-card/
+│       │       ├── index.ts
+│       │       └── pokemon-card.tsx
+│       ├── index.ts
+│       ├── pokemons.const.ts
+│       ├── pokemons.tsx
+│       └── pokemons.type.ts
 ├── favicon.ico
 └── layout.tsx
 
 /public/                          # 📁 static files
-├── documents/
-├── images/
-├── robots.txt
-└── sitemap.xml
+├── utils/                        # 🛠️ external scripts
+│   └── tech-radar.js             # 📊 D3.js tech radar library
+└── .gitkeep                      # placeholder for other static files
+
+/middleware.ts                    # 🛡️ security & CSP configuration
 ```
 
 📚 **Learn more about Next.js project organization:** [App Router Documentation](https://nextjs.org/docs/app)

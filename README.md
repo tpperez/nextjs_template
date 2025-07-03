@@ -1,6 +1,6 @@
-# Next.js Project Documentation
+# Next.js Base Template
 
-> 📦 **Base template for creating new Next.js applications.** Pre-configured with TypeScript, Tailwind CSS, testing setup, and development tools.
+> 📦 **Base template for creating new Next.js applications.** Pre-configured with TypeScript, Tailwind CSS, HTTP clients, testing setup, and development tools.
 
 ---
 
@@ -26,10 +26,16 @@
 - TypeScript
 - Tailwind CSS
 
+**HTTP Clients**
+
+- REST Client (Fetch + Axios adapters)
+- GraphQL Client (Fetch + GraphQL-Request adapters)
+- React Query (@tanstack/react-query)
+
 **State Management**
 
-- Zustand
-- React Hooks
+- Zustand (global state)
+- React Hooks (local state)
 
 **Quality & Testing**
 
@@ -40,9 +46,9 @@
 
 **Development Tools**
 
-- Husky
-- Commitizen
-- Lint-staged
+- Husky (Git hooks)
+- Commitizen (standardized commits)
+- Lint-staged (automated linting)
 
 ---
 
@@ -71,19 +77,23 @@ npm run dev
 # Access: http://localhost:3000
 ```
 
+> 💡 **Next:** Check out the [Project Organization guide](./.docs/project-organization.md) to understand the template structure.
+
 ### Environment Configuration
 
 Create `.env.local`:
 
 ```env
-# public variables (accessible in browser)
-NEXT_PUBLIC_API_URL = "https://api.example.com"
-NEXT_PUBLIC_APP_NAME = "My App"
+# Public variables (accessible in browser)
+NEXT_PUBLIC_API_URL="https://api.example.com"
+NEXT_PUBLIC_APP_NAME="My App"
 
-# private variables (accessible only in server)
-MY_SECRET_KEY = "your-secret-here"
-MY_DATABASE_URL = "your-database-connection-string"
+# Private variables (accessible only in server)
+MY_SECRET_KEY="your-secret-here"
+MY_DATABASE_URL="your-database-connection-string"
 ```
+
+> 💡 **Tip:** HTTP clients automatically use `NEXT_PUBLIC_API_URL` as base URL if configured
 
 ---
 
@@ -117,12 +127,18 @@ npm run test:watch    # run tests in watch mode
 npm run test:coverage # generate coverage report
 ```
 
-### Essential Documentation
+### Getting Started with HTTP Clients
 
-| Guide                                                          | Description                                                        |
-| -------------------------------------------------------------- | ------------------------------------------------------------------ |
-| **[📁 Project Organization](./.docs/project-organization.md)** | **WHERE** to place files, folder structure, architectural overview |
-| **[📝 Code Standards](./.docs/code-standards.md)**             | **HOW** to write code, naming patterns, quality standards          |
+The template includes pre-configured REST and GraphQL clients. For detailed usage examples, see the [HTTP Service Guide](./.docs/http-service.md).
+
+### Documentation
+
+For detailed technical guidance, explore these comprehensive guides:
+
+- 📁 **[Project Organization](./.docs/project-organization.md)** - File structure and architectural patterns
+- 📝 **[Code Standards](./.docs/code-standards.md)** - Coding conventions and quality standards
+- 📊 **[Data Fetching Strategy](./.docs/data-fetching-strategy.md)** - Server vs client-side data strategies
+- 🔧 **[HTTP Service Guide](./.docs/http-service.md)** - REST and GraphQL implementation details
 
 ---
 
@@ -178,6 +194,9 @@ git push origin card-456_your-contribution
 **Pull Request Guidelines:**
 
 - Update documentation when adding new features or changing existing behavior
+- Maintain test coverage above recommended levels
+- Follow established code conventions
+- Test across different browsers/devices
 
 Every commit automatically runs automated quality checks:
 
@@ -196,6 +215,7 @@ Every commit automatically runs automated quality checks:
 - [Next.js Documentation](https://nextjs.org/docs)
 - [TypeScript Documentation](https://www.typescriptlang.org/docs/)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [React Query Documentation](https://tanstack.com/query/latest)
 - [Zustand Documentation](https://zustand-demo.pmnd.rs/)
 - [Jest Documentation](https://jestjs.io/docs/getting-started)
 - [Testing Library Documentation](https://testing-library.com/docs/)
