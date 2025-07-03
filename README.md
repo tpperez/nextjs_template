@@ -1,228 +1,294 @@
 # Next.js Base Template
 
-> 📦 **Base template for creating new Next.js applications.** Pre-configured with TypeScript, Tailwind CSS, HTTP clients, testing setup, and development tools.
+Production-ready template for building scalable Next.js applications with TypeScript, unified HTTP clients, and development best practices.
+
+**Navigation:** [Architecture Guide](.docs/ARCHITECTURE.md) | [Development Guide](.docs/DEVELOPMENT.md)
 
 ---
 
-## 📋 Table of Contents
+## Overview
 
-- [📋 Overview](#-overview)
-- [⚡ Quick Start](#-quick-start)
-- [💻 Development](#-development)
-- [🔄 Git](#-git)
-- [🤝 Contributing](#-contributing)
-- [📚 Reference](#-reference)
+This template provides a complete foundation for Next.js applications with established patterns for data fetching, state management, and code organization. It includes comprehensive tooling for development quality assurance and follows industry best practices for scalability and maintainability.
 
----
+## Technology Stack
 
-## 📋 Overview
+### Core Framework
 
-### Tech Stack
+- **Next.js 15** - React framework with App Router for server-side rendering and routing
+- **React 19** - Component-based user interface library
+- **TypeScript 5** - Static type checking and enhanced developer experience
 
-**Core Framework**
+### Styling & UI
 
-- Next.js
-- React
-- TypeScript
-- Tailwind CSS
+- **Tailwind CSS 4** - Utility-first CSS framework for rapid UI development
+- **PostCSS** - CSS processing and optimization
 
-**HTTP Clients**
+### Data Management
 
-- REST Client (Fetch + Axios adapters)
-- GraphQL Client (Fetch + GraphQL-Request adapters)
-- React Query (@tanstack/react-query)
+- **Unified HTTP Service** - Abstracted REST and GraphQL clients with adapter pattern
+- **TanStack Query** - Server state management, caching, and background updates
+- **Zustand** - Lightweight global state management for client-side state
 
-**State Management**
+### Development & Quality
 
-- Zustand (global state)
-- React Hooks (local state)
+- **ESLint + Prettier** - Code linting and formatting with strict TypeScript rules
+- **Jest + Testing Library** - Unit and integration testing framework
+- **Husky + Commitizen** - Git hooks and standardized commit messages
 
-**Quality & Testing**
-
-- ESLint
-- Prettier
-- Jest
-- React Testing Library
-
-**Development Tools**
-
-- Husky (Git hooks)
-- Commitizen (standardized commits)
-- Lint-staged (automated linting)
-
----
-
-## ⚡ Quick Start
+## Quick Start
 
 ### Prerequisites
 
-- [NVM](https://github.com/nvm-sh/nvm#installing-and-updating)
-- Node.js
-- npm
-- git
+- Node.js (see `.nvmrc` for version)
+- npm or yarn
 
-### Setup & Run
+### Setup Instructions
 
 ```bash
-# 1. Clone and setup
-git clone git@github.com:username/repository-name.git
-cd [your-new-project-name]
+git clone <repository-url>
+cd <project-name>
 nvm use
-
-# 2. Install dependencies
 npm install
-
-# 3. Start development
 npm run dev
-# Access: http://localhost:3000
 ```
 
-> 💡 **Next:** Check out the [Project Organization guide](./.docs/project-organization.md) to understand the template structure.
+Access application at `http://localhost:3000`
 
 ### Environment Configuration
 
 Create `.env.local`:
 
 ```env
-# Public variables (accessible in browser)
 NEXT_PUBLIC_API_URL="https://api.example.com"
-NEXT_PUBLIC_APP_NAME="My App"
-
-# Private variables (accessible only in server)
-MY_SECRET_KEY="your-secret-here"
-MY_DATABASE_URL="your-database-connection-string"
 ```
 
-> 💡 **Tip:** HTTP clients automatically use `NEXT_PUBLIC_API_URL` as base URL if configured
+## Getting Started Guide
 
----
+### Phase 1: Initial Setup (Day 1)
 
-## 💻 Development
+1. Complete setup instructions above
+2. Review project structure below
+3. Explore live Pokemon examples at `/pokemons`
+4. Verify development environment functionality
+
+### Phase 2: Understanding Patterns (Day 2)
+
+1. Study [Architecture Guide](.docs/ARCHITECTURE.md) for system design
+2. Review [Development Guide](.docs/DEVELOPMENT.md) for coding standards
+3. Examine `app/views/pokemon-detail/` for complete implementation patterns
+4. Understand data flow through routes, queries, and views
+
+### Phase 3: Development Mastery (Week 1)
+
+1. Master HTTP service patterns for API integration
+2. Apply testing strategies using provided examples
+3. Follow established development workflow
+4. Implement first feature using existing patterns
+
+## Project Structure
+
+```
+app/
+├── (routes)/               # Application routes and pages
+│   ├── (public)/           # Public accessible pages
+│   ├── (auth)/             # Authentication-protected pages
+│   └── api/                # API endpoints
+├── components/             # Reusable UI components
+│   ├── ui/                 # Basic interface elements
+│   └── structure/          # Layout and navigation components
+├── views/                  # Complete page views
+├── services/               # Global business services
+├── stores/                 # Global state management
+├── hooks/                  # Shared custom hooks
+├── utils/                  # Utility functions
+├── constants/              # Application constants
+├── typings/                # Global type definitions
+└── styles/                 # Global stylesheets
+
+public/                     # Static assets
+├── utils/                  # External scripts
+└── (assets)/               # Images, documents, etc.
+
+Configuration Files:
+├── middleware.ts           # Security and routing middleware
+├── next.config.ts          # Next.js configuration
+└── package.json            # Dependencies and scripts
+```
+
+## Implementation Examples
+
+### Data Fetching Patterns
+
+**Server-side Rendering**
+
+- Implementation: `app/(routes)/(public)/pokemons/page.tsx`
+- Query organization: `app/(routes)/(public)/pokemons/query/`
+- Pattern: Route calls query function, passes data to view
+
+**Client-side Data Fetching**
+
+- Implementation: `app/views/pokemon-detail/pokemon-detail.hook.ts`
+- Usage: `app/views/pokemon-detail/components/pokemon-species-info/`
+- Pattern: Custom hooks with TanStack Query integration
+
+### HTTP Service Usage
+
+**REST Client Integration**
+
+- Basic usage: `app/(routes)/(public)/pokemons/[name]/query/query.ts`
+- Error handling: Structured response format with success/error states
+- Configuration: `app/services/http/core/core.ts`
+
+**GraphQL Client Integration**
+
+- Implementation: `app/(routes)/(public)/pokemons/query/query.ts`
+- Advanced usage: `app/views/pokemon-detail/pokemon-detail.hook.ts`
+- Query definitions: `app/(routes)/(public)/pokemons/query/query.const.ts`
+
+### Component Organization
+
+**Reusable UI Components**
+
+- Location: `app/components/ui/spinner/`
+- Structure: Complete module with types, styles, and tests
+- Usage: Imported across multiple views and components
+
+**View-specific Components**
+
+- Location: `app/views/pokemon-detail/components/`
+- Purpose: Components used only within specific views
+- Organization: Grouped by view context
+
+**Complete Module Example**
+
+- Reference: `app/views/pokemon-detail/`
+- Includes: Main component, types, constants, hooks, utilities, and sub-components
+- Demonstrates: Full module organization pattern
+
+## Quick Actions Reference
+
+### Creating a New View
+
+1. Create directory: `app/views/my-view/`
+2. Follow module structure: See [Development Guide](.docs/DEVELOPMENT.md#module-structure)
+3. Reference pattern: `app/views/pokemon-detail/`
+
+### Adding API Integration
+
+1. Create query directory: `app/(routes)/my-route/query/`
+2. Implement data fetching: Follow existing query patterns
+3. Handle errors: Use structured response format
+
+### Component Placement Decision
+
+- **Global usage (3+ modules)**: Place in `app/components/ui/`
+- **View-specific usage**: Place in `app/views/[view]/components/`
+- **Uncertain**: Start local, promote when reused
+
+## Development Workflow
 
 ### Available Scripts
 
-**Development**
-
 ```bash
-npm run dev   # start dev server with turbopack
-npm run build # production build
-npm start     # start production server
+npm run dev          # Start development server with Turbopack
+npm run build        # Create production build
+npm run test         # Run complete test suite
+npm run test:watch   # Run tests in watch mode
+npm run test:coverage # Generate coverage report
+npm run lint         # Check code quality
+npm run lint:fix     # Fix linting issues automatically
+npm run tsc          # TypeScript compilation check
 ```
 
-**Code Quality**
+### Git Workflow
 
-```bash
-npm run lint       # check linting issues
-npm run lint:fix   # fix linting issues automatically
-npm run format     # check code formatting
-npm run format:fix # format code automatically
-npm run tsc        # typescript type checking
-```
+1. Create feature branch: `git checkout -b card-123_feature-name`
+2. Implement changes following established patterns
+3. Commit using interactive prompts: `git commit`
+4. Push and create pull request
 
-**Testing**
+All commits trigger automated quality checks including TypeScript validation, tests, linting, and formatting.
 
-```bash
-npm test              # run all tests
-npm run test:watch    # run tests in watch mode
-npm run test:coverage # generate coverage report
-```
+## Common Issues and Solutions
 
-### Getting Started with HTTP Clients
+### Setup Problems
 
-The template includes pre-configured REST and GraphQL clients. For detailed usage examples, see the [HTTP Service Guide](./.docs/http-service.md).
+**Port 3000 already in use**
 
-### Documentation
+- Solution: `npm run dev -- -p 3001`
 
-For detailed technical guidance, explore these comprehensive guides:
+**Node version mismatch**
 
-- 📁 **[Project Organization](./.docs/project-organization.md)** - File structure and architectural patterns
-- 📝 **[Code Standards](./.docs/code-standards.md)** - Coding conventions and quality standards
-- 📊 **[Data Fetching Strategy](./.docs/data-fetching-strategy.md)** - Server vs client-side data strategies
-- 🔧 **[HTTP Service Guide](./.docs/http-service.md)** - REST and GraphQL implementation details
+- Solution: Run `nvm use` and reinstall dependencies
 
----
+**TypeScript compilation errors**
 
-## 🔄 Git
+- Solution: Check `tsconfig.json` configuration and restart VS Code TypeScript service
 
-### Branch Naming
+### Development Issues
 
-Use descriptive names with prefix:
+**Import path errors**
 
-```bash
-card-123_user-authentication
-card-456_dashboard-ui
-card-789_payment-integration
-```
+- Solution: Verify paths start with `@/` and check `tsconfig.json` path mappings
 
-**Pattern:** `card-xx_descriptive-name` (always lowercase)
+**Test failures**
 
-> 💡 **No card?** Use initials: `jq_feature-name` (Jose Quispe)
+- Solution: Review `jest.config.ts` and examine working test examples in `app/components/ui/spinner/`
 
-### Development Workflow
+**API integration problems**
 
-```bash
-# 1. Create feature branch
-git checkout -b card-123_your-feature-name
+- Solution: Check middleware configuration and environment variables
 
-# 2. Make changes and commit (Commitizen opens automatically)
-git add .
-git commit  # Interactive wizard opens via Husky
+## Documentation Structure
 
-# 3. Push and create PR
-git push origin card-123_your-feature-name
-```
+### Architecture Guide
 
----
+- **Purpose**: System design and architectural decisions
+- **Content**: Layer separation, data flow patterns, module organization
+- **Audience**: Developers seeking to understand system structure
 
-## 🤝 Contributing
+### Development Guide
 
-**Improve this template:**
+- **Purpose**: Coding standards, workflows, and technical reference
+- **Content**: TypeScript conventions, testing strategies, HTTP service details
+- **Audience**: Developers implementing features and maintaining code
 
-```bash
-# 1. Fork and clone
-git clone https://github.com/your-username/your-fork.git
-cd your-fork && nvm use && npm install
+## Success Metrics
 
-# 2. Create feature branch
-git checkout -b card-456_your-contribution
+### New Team Member Onboarding
 
-# 3. Make changes and commit
-git add . && git commit  # Commitizen opens
-git push origin card-456_your-contribution
-```
+- [ ] Complete project setup in under 15 minutes
+- [ ] Create first component following established patterns
+- [ ] Understand data flow architecture
+- [ ] Successfully implement basic feature
 
-**Pull Request Guidelines:**
+### Team Efficiency Indicators
 
-- Update documentation when adding new features or changing existing behavior
-- Maintain test coverage above recommended levels
-- Follow established code conventions
-- Test across different browsers/devices
+- [ ] Consistent file placement decisions
+- [ ] Code reviews focus on logic rather than structure
+- [ ] New features follow established patterns
+- [ ] Self-service problem resolution
 
-Every commit automatically runs automated quality checks:
+## Contributing Guidelines
 
-- ✅ **typescript** type checking
-- ✅ **all tests** must pass
-- ✅ **eslint** fixes and validates code
-- ✅ **prettier** formats code
-- ✅ **commitlint** validates commit messages
+1. Fork repository and create feature branch
+2. Follow naming convention: `card-123_descriptive-name`
+3. Implement changes maintaining existing patterns
+4. Ensure all quality checks pass
+5. Submit pull request with clear description
 
----
+### Code Quality Requirements
 
-## 📚 Reference
+- TypeScript strict mode compliance
+- Test coverage minimum 80%
+- Zero ESLint errors
+- Prettier formatting applied
+- All automated checks passing
 
-### External Resources
+## Next Steps
 
-- [Next.js Documentation](https://nextjs.org/docs)
-- [TypeScript Documentation](https://www.typescriptlang.org/docs/)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-- [React Query Documentation](https://tanstack.com/query/latest)
-- [Zustand Documentation](https://zustand-demo.pmnd.rs/)
-- [Jest Documentation](https://jestjs.io/docs/getting-started)
-- [Testing Library Documentation](https://testing-library.com/docs/)
-- [Conventional Commits](https://www.conventionalcommits.org/)
+**For immediate development**: Continue to [Development Guide](.docs/DEVELOPMENT.md) for coding standards and workflows.
 
-### Support
+**For system understanding**: Review [Architecture Guide](.docs/ARCHITECTURE.md) for design decisions and patterns.
 
-- 🐛 **[Report bugs](https://github.com/your-repo/issues)**
-- 💡 **[Suggest features](https://github.com/your-repo/issues)**
-- 🔧 **[Submit PRs](https://github.com/your-repo/pulls)**
+**For specific implementation**: Examine the Pokemon examples throughout the codebase for real-world usage patterns.
