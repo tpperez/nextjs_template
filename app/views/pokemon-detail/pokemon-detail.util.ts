@@ -1,4 +1,4 @@
-import type { PokemonSpecies } from './pokemon-detail.type'
+import type { IPokemonSpecies } from './pokemon-detail.type'
 
 export const formatStatName = (statName: string): string => {
   return statName.replace('-', ' ').replace(/\b\w/g, (l) => {
@@ -7,7 +7,7 @@ export const formatStatName = (statName: string): string => {
 }
 
 export const getEnglishDescription = (
-  species: PokemonSpecies,
+  species: IPokemonSpecies,
 ): string | undefined => {
   return species.flavor_text_entries
     .find((entry) => {
@@ -18,7 +18,7 @@ export const getEnglishDescription = (
 }
 
 export const getEnglishGenus = (
-  species: PokemonSpecies,
+  species: IPokemonSpecies,
 ): string | undefined => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const genera = (species as any).genera

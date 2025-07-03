@@ -1,9 +1,9 @@
 export { getPokemonDetailData } from './query'
 export type {
-  PokemonAbility,
-  PokemonDetail,
-  PokemonMove,
-  PokemonSprites,
-  PokemonStat,
-  PokemonType,
+  IPokemonAbility,
+  IPokemonDetail,
+  IPokemonMove,
+  IPokemonSprites,
+  IPokemonStat,
+  IPokemonType,
 } from './query.type'

@@ -3,7 +3,7 @@ export interface IPokemonSearchProps {
   isLoading?: boolean
 }
 
-export interface PokemonSearchResult {
+export interface IPokemonSearchResult {
   id: number
   name: string
   sprites: {
@@ -20,6 +20,6 @@ export interface PokemonSearchResult {
   }>
 }
 
-export interface PokemonSearchResponse {
-  pokemon: PokemonSearchResult
+export interface IPokemonSearchResponse {
+  pokemon: IPokemonSearchResult
 }

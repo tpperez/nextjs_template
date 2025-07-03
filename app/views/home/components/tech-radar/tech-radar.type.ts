@@ -1,4 +1,4 @@
-export interface RadarEntry {
+export interface IRadarEntry {
   label: string
   quadrant: number
   ring: number
@@ -6,37 +6,37 @@ export interface RadarEntry {
   active?: boolean
 }
 
-export interface RadarQuadrant {
+export interface IRadarQuadrant {
   name: string
 }
 
-export interface RadarRing {
+export interface IRadarRing {
   name: string
   color: string
 }
 
-export interface RadarColors {
+export interface IRadarColors {
   background: string
   grid: string
   inactive: string
 }
 
-export interface RadarConfig {
+export interface IRadarConfig {
   repo_url?: string
   svg_id: string
   width?: number
   height?: number
   scale?: number
-  colors?: RadarColors
+  colors?: IRadarColors
   font_family?: string
   title?: string
-  quadrants: RadarQuadrant[]
-  rings: RadarRing[]
+  quadrants: IRadarQuadrant[]
+  rings: IRadarRing[]
   print_layout?: boolean
   links_in_new_tabs?: boolean
-  entries: RadarEntry[]
+  entries: IRadarEntry[]
 }
 
-export interface TechRadarProps {
-  config?: RadarConfig
+export interface ITechRadarProps {
+  config?: IRadarConfig
 }

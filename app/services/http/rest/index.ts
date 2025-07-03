@@ -1,2 +1,2 @@
 export { restClient } from './rest'
-export type { RestRequestOptions, RestResponse } from './rest.type'
+export type { IRestRequestOptions, TRestResponse } from './rest.type'

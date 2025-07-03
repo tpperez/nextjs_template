@@ -8,14 +8,14 @@ import {
   POKEMON_SEARCH_STALE_TIME,
 } from './pokemon-search.const'
 import type {
-  PokemonSearchResponse,
-  PokemonSearchResult,
+  IPokemonSearchResponse,
+  IPokemonSearchResult,
 } from './pokemon-search.type'
 
 const searchPokemonByName = async (
   name: string,
-): Promise<PokemonSearchResult> => {
-  const response = await graphqlClient.query<PokemonSearchResponse>(
+): Promise<IPokemonSearchResult> => {
+  const response = await graphqlClient.query<IPokemonSearchResponse>(
     GET_POKEMON_BY_NAME,
     { name: name.toLowerCase() },
     {

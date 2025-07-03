@@ -1,15 +1,15 @@
 import {
   buildUrl,
-  type GraphQLHttpAdapter,
   HTTP_ADAPTER_CONFIG,
   HTTP_CONFIG,
+  type IGraphQLHttpAdapter,
   resolveBaseUrl,
 } from '../core'
 
-import type { GraphQLRequestOptions, GraphQLResponse } from './graphql.type'
+import type { IGraphQLRequestOptions, IGraphQLResponse } from './graphql.type'
 
 class GraphQLClient {
-  private adapter: GraphQLHttpAdapter
+  private adapter: IGraphQLHttpAdapter
 
   constructor() {
     const adapterFactory = HTTP_ADAPTER_CONFIG.graphqlAdapter
@@ -18,8 +18,8 @@ class GraphQLClient {
 
   async request<TResponse, TVariables = Record<string, unknown>>(
     query: string,
-    options: GraphQLRequestOptions<TVariables> = {},
-  ): Promise<GraphQLResponse<TResponse>> {
+    options: IGraphQLRequestOptions<TVariables> = {},
+  ): Promise<IGraphQLResponse<TResponse>> {
     const {
       variables,
       operationName,
@@ -49,7 +49,7 @@ class GraphQLClient {
   query<TResponse, TVariables = Record<string, unknown>>(
     query: string,
     variables?: TVariables,
-    options?: Omit<GraphQLRequestOptions<TVariables>, 'variables'>,
+    options?: Omit<IGraphQLRequestOptions<TVariables>, 'variables'>,
   ) {
     return this.request<TResponse, TVariables>(query, { ...options, variables })
   }
@@ -57,7 +57,7 @@ class GraphQLClient {
   mutation<TResponse, TVariables = Record<string, unknown>>(
     mutation: string,
     variables?: TVariables,
-    options?: Omit<GraphQLRequestOptions<TVariables>, 'variables'>,
+    options?: Omit<IGraphQLRequestOptions<TVariables>, 'variables'>,
   ) {
     return this.request<TResponse, TVariables>(mutation, {
       ...options,
@@ -68,7 +68,7 @@ class GraphQLClient {
   subscription<TResponse, TVariables = Record<string, unknown>>(
     subscription: string,
     variables?: TVariables,
-    options?: Omit<GraphQLRequestOptions<TVariables>, 'variables'>,
+    options?: Omit<IGraphQLRequestOptions<TVariables>, 'variables'>,
   ) {
     return this.request<TResponse, TVariables>(subscription, {
       ...options,

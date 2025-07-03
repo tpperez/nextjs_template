@@ -1,12 +1,12 @@
 /**
  * HTTP methods supported by the clients
  */
-export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+export type THttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
 /**
  * Base configuration for HTTP requests
  */
-export interface BaseRequestConfig {
+export interface IBaseRequestConfig {
   baseUrl?: string
   headers?: HeadersInit
   timeout?: number
@@ -15,7 +15,7 @@ export interface BaseRequestConfig {
 /**
  * Cache configuration for Next.js requests
  */
-export interface CacheConfig {
+export interface ICacheConfig {
   tags?: string[]
   revalidate?: number | false
 }
@@ -23,7 +23,7 @@ export interface CacheConfig {
 /**
  * Standard error response structure
  */
-export interface HttpError {
+export interface IHttpError {
   message: string
   status: number
   code?: string
@@ -33,7 +33,7 @@ export interface HttpError {
 /**
  * GraphQL specific types
  */
-export interface GraphQLError {
+export interface IGraphQLError {
   message: string
   locations?: Array<{
     line: number
@@ -43,30 +43,30 @@ export interface GraphQLError {
   extensions?: Record<string, unknown>
 }
 
-export interface GraphQLResponse<TData> {
+export interface IGraphQLResponse<TData> {
   data?: TData
-  errors?: GraphQLError[]
+  errors?: IGraphQLError[]
 }
 
 /**
  * Generic request options that can be extended by specific clients
  */
-export interface CoreRequestOptions extends BaseRequestConfig, CacheConfig {
-  method?: HttpMethod
+export interface ICoreRequestOptions extends IBaseRequestConfig, ICacheConfig {
+  method?: THttpMethod
 }
 
 /**
  * Base adapter configuration
  */
-export interface AdapterConfig extends BaseRequestConfig {
+export interface IAdapterConfig extends IBaseRequestConfig {
   timeout?: number
 }
 
 /**
  * HTTP request configuration for adapters
  */
-export interface HttpRequestConfig extends AdapterConfig, CacheConfig {
-  method: HttpMethod
+export interface IHttpRequestConfig extends IAdapterConfig, ICacheConfig {
+  method: THttpMethod
   body?: unknown
   signal?: AbortSignal
 }
@@ -75,8 +75,11 @@ export interface HttpRequestConfig extends AdapterConfig, CacheConfig {
  * REST HTTP Adapter Interface
  * Defines the contract that any REST implementation must follow
  */
-export interface RestHttpAdapter {
-  request<TResponse>(url: string, config: HttpRequestConfig): Promise<TResponse>
+export interface IRestHttpAdapter {
+  request<TResponse>(
+    url: string,
+    config: IHttpRequestConfig,
+  ): Promise<TResponse>
 
   readonly name: string
 }
@@ -84,7 +87,7 @@ export interface RestHttpAdapter {
 /**
  * GraphQL request configuration for adapters
  */
-export interface GraphQLRequestConfig extends AdapterConfig, CacheConfig {
+export interface IGraphQLRequestConfig extends IAdapterConfig, ICacheConfig {
   variables?: Record<string, unknown>
   operationName?: string
   signal?: AbortSignal
@@ -94,12 +97,12 @@ export interface GraphQLRequestConfig extends AdapterConfig, CacheConfig {
  * GraphQL HTTP Adapter Interface
  * Defines the contract that any GraphQL implementation must follow
  */
-export interface GraphQLHttpAdapter {
+export interface IGraphQLHttpAdapter {
   request<TResponse>(
     endpoint: string,
     query: string,
-    config: GraphQLRequestConfig,
-  ): Promise<GraphQLResponse<TResponse>>
+    config: IGraphQLRequestConfig,
+  ): Promise<IGraphQLResponse<TResponse>>
 
   readonly name: string
 }
@@ -107,5 +110,5 @@ export interface GraphQLHttpAdapter {
 /**
  * Adapter factory type for dependency injection
  */
-export type RestAdapterFactory = () => RestHttpAdapter
-export type GraphQLAdapterFactory = () => GraphQLHttpAdapter
+export type TRestAdapterFactory = () => IRestHttpAdapter
+export type TGraphQLAdapterFactory = () => IGraphQLHttpAdapter

@@ -1,2 +1,2 @@
 export { getPokemonsData } from './query'
-export type { Pokemon, PokemonsResponse } from './query.type'
+export type { IPokemon, IPokemonsResponse } from './query.type'

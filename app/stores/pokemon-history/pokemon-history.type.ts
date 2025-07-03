@@ -1,9 +1,9 @@
-import type { Pokemon } from '@/app/(routes)/(public)/(examples)/pokemons/query'
+import type { IPokemon } from '@/app/(routes)/(public)/(examples)/pokemons/query'
 
 export interface IPokemonHistoryStore {
-  history: Pokemon[]
-  addToHistory: (pokemon: Pokemon) => void
+  history: IPokemon[]
+  addToHistory: (pokemon: IPokemon) => void
   clearHistory: () => void
 }
 
-export type TPokemonHistoryItem = Pokemon
+export type TPokemonHistoryItem = IPokemon

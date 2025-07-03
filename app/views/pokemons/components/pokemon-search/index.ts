@@ -3,6 +3,6 @@ export { GET_POKEMON_BY_NAME } from './pokemon-search.const'
 export { usePokemonNameSearch } from './pokemon-search.hook'
 export type {
   IPokemonSearchProps,
-  PokemonSearchResponse,
-  PokemonSearchResult,
+  IPokemonSearchResponse,
+  IPokemonSearchResult,
 } from './pokemon-search.type'

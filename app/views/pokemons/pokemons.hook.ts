@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
 
 import { GET_POKEMONS } from '@/app/(routes)/(public)/(examples)/pokemons/query/query.const'
-import type { PokemonsResponse } from '@/app/(routes)/(public)/(examples)/pokemons/query/query.type'
+import type { IPokemonsResponse } from '@/app/(routes)/(public)/(examples)/pokemons/query/query.type'
 import { graphqlClient } from '@/app/services/http'
 
 import { POKEMONS_PER_PAGE, POKEMONS_QUERY_CONFIG } from './pokemons.const'
@@ -13,7 +13,7 @@ export const useMorePokemons = ({
   return useInfiniteQuery({
     queryKey: POKEMONS_QUERY_CONFIG.QUERY_KEY,
     queryFn: async ({ pageParam = initialOffset }) => {
-      const response = await graphqlClient.query<PokemonsResponse>(
+      const response = await graphqlClient.query<IPokemonsResponse>(
         GET_POKEMONS,
         {
           limit: POKEMONS_PER_PAGE,

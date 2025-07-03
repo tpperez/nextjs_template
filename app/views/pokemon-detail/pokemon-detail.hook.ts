@@ -11,8 +11,8 @@ import {
   POKEMON_MOVES_GRAPHQL_QUERY_KEY,
 } from './pokemon-detail.const'
 import type {
-  GraphQLPokemonMovesResponse,
-  PokemonSpecies,
+  IGraphQLPokemonMovesResponse,
+  IPokemonSpecies,
   TUsePokemonMovesGraphQLOptions,
   TUsePokemonMovesGraphQLReturn,
   TUsePokemonSpeciesOptions,
@@ -21,15 +21,18 @@ import type {
 
 const fetchPokemonSpecies = async (
   pokemonId: number,
-): Promise<PokemonSpecies> => {
-  return await restClient.get<PokemonSpecies>(`/pokemon-species/${pokemonId}`, {
-    baseUrl: 'https://pokeapi.co/api/v2',
-  })
+): Promise<IPokemonSpecies> => {
+  return await restClient.get<IPokemonSpecies>(
+    `/pokemon-species/${pokemonId}`,
+    {
+      baseUrl: 'https://pokeapi.co/api/v2',
+    },
+  )
 }
 
 const fetchPokemonMovesGraphQL = async (
   pokemonName: string,
-): Promise<GraphQLPokemonMovesResponse> => {
+): Promise<IGraphQLPokemonMovesResponse> => {
   const response = await graphqlClient.query(
     GET_POKEMON_MOVES_GRAPHQL,
     { name: pokemonName },
@@ -37,7 +40,7 @@ const fetchPokemonMovesGraphQL = async (
       baseUrl: 'https://graphql-pokeapi.graphcdn.app/',
     },
   )
-  return response.data as GraphQLPokemonMovesResponse
+  return response.data as IGraphQLPokemonMovesResponse
 }
 
 export const usePokemonSpecies = (

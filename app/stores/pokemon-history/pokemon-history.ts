@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-import type { Pokemon } from '@/app/(routes)/(public)/(examples)/pokemons/query'
+import type { IPokemon } from '@/app/(routes)/(public)/(examples)/pokemons/query'
 
 import { POKEMON_HISTORY_CONFIG } from './pokemon-history.const'
 import { IPokemonHistoryStore } from './pokemon-history.type'
@@ -11,7 +11,7 @@ export const usePokemonHistoryStore = create<IPokemonHistoryStore>()(
     (set) => {
       return {
         history: [],
-        addToHistory: (pokemon: Pokemon) => {
+        addToHistory: (pokemon: IPokemon) => {
           return set((state) => {
             const existingIndex = state.history.findIndex((item) => {
               return item.name === pokemon.name

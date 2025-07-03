@@ -1,7 +1,7 @@
 import type {
-  GraphQLHttpAdapter,
-  GraphQLRequestConfig,
-  GraphQLResponse,
+  IGraphQLHttpAdapter,
+  IGraphQLRequestConfig,
+  IGraphQLResponse,
 } from '../../core/core.type'
 import {
   createHeaders,
@@ -9,20 +9,20 @@ import {
   processResponse,
 } from '../../core/core.utils'
 
-interface GraphQLRequestPayload {
+interface IGraphQLRequestPayload {
   query: string
   variables?: Record<string, unknown>
   operationName?: string
 }
 
-export class FetchGraphQLAdapter implements GraphQLHttpAdapter {
+export class FetchGraphQLAdapter implements IGraphQLHttpAdapter {
   readonly name = 'fetch-graphql'
 
   async request<TResponse>(
     endpoint: string,
     query: string,
-    config: GraphQLRequestConfig,
-  ): Promise<GraphQLResponse<TResponse>> {
+    config: IGraphQLRequestConfig,
+  ): Promise<IGraphQLResponse<TResponse>> {
     const {
       variables,
       operationName,
@@ -39,7 +39,7 @@ export class FetchGraphQLAdapter implements GraphQLHttpAdapter {
 
     const signal = this.combineSignals(externalSignal, timeoutSignal)
 
-    const payload: GraphQLRequestPayload = {
+    const payload: IGraphQLRequestPayload = {
       query,
       variables,
       operationName,
@@ -58,7 +58,7 @@ export class FetchGraphQLAdapter implements GraphQLHttpAdapter {
     }
 
     const response = await fetch(endpoint, requestInit)
-    return processResponse<GraphQLResponse<TResponse>>(response)
+    return processResponse<IGraphQLResponse<TResponse>>(response)
   }
 
   private combineSignals(

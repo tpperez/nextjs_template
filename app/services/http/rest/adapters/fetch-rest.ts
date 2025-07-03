@@ -1,16 +1,16 @@
-import { HttpRequestConfig, RestHttpAdapter } from '../../core'
+import { IHttpRequestConfig, IRestHttpAdapter } from '../../core'
 import {
   createHeaders,
   createTimeoutSignal,
   processResponse,
 } from '../../core/core.utils'
 
-export class FetchRestAdapter implements RestHttpAdapter {
+export class FetchRestAdapter implements IRestHttpAdapter {
   readonly name = 'fetch-rest'
 
   async request<TResponse>(
     url: string,
-    config: HttpRequestConfig,
+    config: IHttpRequestConfig,
   ): Promise<TResponse> {
     const {
       method,
