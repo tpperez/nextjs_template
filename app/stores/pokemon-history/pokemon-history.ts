@@ -4,12 +4,7 @@ import { persist } from 'zustand/middleware'
 import type { Pokemon } from '@/app/(routes)/(public)/(examples)/pokemons/query'
 
 import { POKEMON_HISTORY_CONFIG } from './pokemon-history.const'
-
-export interface IPokemonHistoryStore {
-  history: Pokemon[]
-  addToHistory: (pokemon: Pokemon) => void
-  clearHistory: () => void
-}
+import { IPokemonHistoryStore } from './pokemon-history.type'
 
 export const usePokemonHistoryStore = create<IPokemonHistoryStore>()(
   persist(
