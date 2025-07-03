@@ -28,7 +28,7 @@ const TechRadar = ({ config = TECH_RADAR_CONFIG }: TechRadarProps) => {
   }, [config])
 
   return (
-    <div style={{ width: '100%', height: '100vh', overflow: 'hidden' }}>
+    <div className='h-screen w-full overflow-hidden'>
       <Script
         src='https://d3js.org/d3.v7.min.js'
         strategy='beforeInteractive'
@@ -40,7 +40,7 @@ const TechRadar = ({ config = TECH_RADAR_CONFIG }: TechRadarProps) => {
 
       <svg
         id={config.svg_id}
-        style={{ width: '100%', height: '100%' }}
+        className='h-full w-full'
       />
     </div>
   )
