@@ -3,8 +3,10 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { POKEMON_HISTORY_CONFIG } from '@/app/stores/pokemon-history'
-import { usePokemonHistoryStore } from '@/app/stores/pokemon-history'
+import {
+  POKEMON_HISTORY_CONFIG,
+  usePokemonHistoryStore,
+} from '@/app/stores/pokemon-history'
 
 export const PokemonHistory = () => {
   const { history, clearHistory } = usePokemonHistoryStore()
