@@ -16,24 +16,29 @@ This template provides a complete foundation for Next.js applications with estab
 
 ### Foundation
 
-- Next.js
-- React
-- TypeScript
+- [Next.js](https://nextjs.org)
+- [React](https://react.dev)
+- [TypeScript](https://www.typescriptlang.org)
 
 ### Application Features
 
-- Tailwind CSS
-- React Hook Form
-- TanStack Query
-- Zustand
-- Axios & GraphQL Request
+- [Tailwind CSS](https://tailwindcss.com)
+- [React Hook Form](https://react-hook-form.com)
+- [TanStack Query](https://tanstack.com/query)
+- [Zustand](https://zustand-demo.pmnd.rs)
+- [Axios](https://axios-http.com)
+- [GraphQL Request](https://github.com/jasonkuhrt/graphql-request)
 
-### Developer Workflow
+### Development Workflow
 
-- ESLint + Prettier
-- Vitest + Testing Library
-- Husky + Lint-staged
-- Commitizen
+- [ESLint](https://eslint.org)
+- [Prettier](https://prettier.io)
+- [Vitest](https://vitest.dev)
+- [Testing Library](https://testing-library.com)
+- [Conventional Commits](https://www.conventionalcommits.org)
+- [Commitizen](https://commitizen-tools.github.io/commitizen)
+- [Husky](https://typicode.github.io/husky)
+- [Lint-staged](https://github.com/lint-staged/lint-staged)
 
 ---
 
@@ -41,8 +46,9 @@ This template provides a complete foundation for Next.js applications with estab
 
 ### Prerequisites
 
-- Node.js (see `.nvmrc` for version)
-- npm or yarn
+- [nvm](https://github.com/nvm-sh/nvm)
+- [Node.js](https://nodejs.org)
+- [npm](https://www.npmjs.com)
 
 ### Setup Instructions
 
@@ -62,35 +68,6 @@ Create `.env.local`:
 
 ```env
 NEXT_PUBLIC_API_URL="https://api.example.com"
-```
-
----
-
-## Project Structure
-
-```
-app/
-├── (routes)/               # application routes and pages
-│   ├── (public)/           # public accessible pages
-│   ├── (auth)/             # authentication-protected pages
-│   └── api/                # api endpoints
-├── components/             # reusable ui components
-│   ├── ui/                 # basic interface elements
-│   └── structure/          # layout and navigation components
-├── views/                  # complete page views
-├── services/               # global business services
-├── stores/                 # global state management
-├── hooks/                  # shared custom hooks
-├── utils/                  # utility functions
-├── constants/              # application constants
-├── typings/                # global type definitions
-└── styles/                 # global stylesheets
-
-public/                     # next.js public directory
-
-Configuration Files:
-├── middleware.ts           # security and routing middleware
-└── next.config.js          # next.js configuration
 ```
 
 ---
@@ -115,74 +92,45 @@ npm run tsc           # typescript compilation check
 
 ---
 
-## Implementation Examples
+## Project Structure
 
-### Basic Data Fetching (Beginner)
+```
+app/
+├── (routes)/               # application routes and pages
+│   ├── (auth)/             # authentication-protected pages
+│   ├── (public)/           # public accessible pages
+│   └── api/                # api endpoints
+├── components/             # global reusable components
+│   ├── structure/          # structure components
+│   └── ui/                 # ui components
+├── constants/              # global constants
+├── hooks/                  # global custom hooks
+├── services/               # global business services
+├── stores/                 # global state management
+├── styles/                 # global stylesheets
+├── typings/                # global type definitions
+├── utils/                  # global utility functions
+└── views/                  # page orchestrators
 
-**REST API Integration:** Explore `app/(routes)/(public)/(examples)/pokemons/` for server-side data fetching patterns
+public/                     # next.js public directory
+.vscode/                    # vscode configuration directory
+├── extensions.json         # recommended vscode extensions
+└── settings.json           # vscode editor settings
 
-**Key Learning Points:**
-
-- Server Component data fetching
-- Error handling and loading states
-- Type-safe API responses
-
-### Advanced State Management (Intermediate)
-
-**Global State Example:** Review `app/stores/pokemon-history/` for Zustand implementation patterns
-
-**Client-Side Integration:** Examine `app/views/pokemon-detail/pokemon-detail.tsx` for local state with global store interaction
-
-### Complete Feature Implementation (Advanced)
-
-**Full Stack Pattern:** Study `app/views/pokemon-detail/` directory structure for comprehensive module organization
-
-**Architecture Application:** See how layered architecture principles are applied in practice
-
----
-
-## Documentation Structure
-
-### [Architecture Guide](.docs/ARCHITECTURE.md)
-
-- **Purpose**: system design and architectural decisions
-- **Content**: layer separation, data flow patterns, module organization
-- **Audience**: developers seeking to understand system structure
-
-### [Development Guide](.docs/DEVELOPMENT.md)
-
-- **Purpose**: coding standards, workflows, and technical reference
-- **Content**: typescript conventions, testing strategies, http service details
-- **Audience**: developers implementing features and maintaining code
+eslint.config.mjs           # code quality and linting configuration
+middleware.ts               # security and routing middleware configuration
+next.config.ts              # next.js framework configuration
+package.json                # dependencies and scripts configuration
+tsconfig.json               # typescript compiler configuration
+vitest.config.ts            # testing framework configuration
+vitest.setup.ts             # test environment setup configuration
+.editorconfig               # editor formatting standards configuration
+.gitignore                  # git exclusions configuration
+```
 
 ---
 
-## Success Metrics
+## Documentation
 
-### Documentation Effectiveness
-
-Target metrics for measuring documentation success:
-
-- **Onboarding Time:** New team members productive within 15 minutes
-- **Self-Service Rate:** 80% of development questions answerable through documentation
-- **Pattern Consistency:** Consistent architectural patterns across all new features
-- **Code Review Efficiency:** Reviews focus on business logic rather than structural questions
-
-### Development Quality
-
-Automated quality validation ensures:
-
-- **Type Safety:** 100% TypeScript strict mode compliance
-- **Code Coverage:** Minimum 80% test coverage for new features
-- **Performance:** Core Web Vitals compliance maintained
-- **Build Reliability:** Zero-error tolerance in main branch
-
----
-
-## Next Steps
-
-**For immediate development**: Continue to [Development Guide](.docs/DEVELOPMENT.md) for coding standards and workflows.
-
-**For system understanding**: Review [Architecture Guide](.docs/ARCHITECTURE.md) for design decisions and patterns.
-
-**For specific implementation**: Examine the Pokemon examples throughout the codebase for real-world usage patterns.
+- **[Development Guide](.docs/DEVELOPMENT.md)** - coding standards and workflows
+- **[Architecture Guide](.docs/ARCHITECTURE.md)** - design decisions and patterns
