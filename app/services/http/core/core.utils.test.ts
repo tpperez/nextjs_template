@@ -8,7 +8,6 @@ import {
   resolveBaseUrl,
 } from './core.utils'
 
-// Mock the HTTP_CONFIG
 vi.mock('./core', () => {
   return {
     HTTP_CONFIG: {
@@ -164,7 +163,6 @@ describe('HTTP Core Utils', () => {
       expect(signal).toBeInstanceOf(AbortSignal)
       expect(signal?.aborted).toBe(false)
 
-      // Wait for timeout to trigger
       await new Promise((resolve) => {
         return setTimeout(resolve, timeout + 50)
       })

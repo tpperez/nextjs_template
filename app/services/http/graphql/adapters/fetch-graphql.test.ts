@@ -40,7 +40,6 @@ describe('FetchGraphQLAdapter', () => {
   let adapter: FetchGraphQLAdapter
   let mockFetch: ReturnType<typeof vi.fn>
 
-  // Helper to access private method with proper typing
   const callCombineSignals = (
     adapter: FetchGraphQLAdapter,
     ...signals: (AbortSignal | undefined)[]

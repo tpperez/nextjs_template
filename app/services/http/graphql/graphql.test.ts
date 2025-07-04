@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { graphqlClient } from './graphql'
 
-// Mock the core utilities and adapter
 vi.mock('../core', () => {
   return {
     resolveBaseUrl: vi.fn((baseUrl?: string) => {
@@ -29,7 +28,6 @@ describe('GraphQLClient', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    // Get the adapter from the singleton instance
     mockAdapter = (
       graphqlClient as unknown as {
         adapter: { request: ReturnType<typeof vi.fn> }

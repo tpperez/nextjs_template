@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { AxiosRestAdapter } from './axios-rest'
 
-// Mock axios
 vi.mock('axios', () => {
   return {
     default: {
@@ -15,7 +14,6 @@ vi.mock('axios', () => {
   }
 })
 
-// Import the mocked axios
 import axios from 'axios'
 
 const mockAxios = vi.mocked(axios)
@@ -260,7 +258,6 @@ describe('AxiosRestAdapter', () => {
 
       await adapter.request('/api/users', {
         method: 'GET',
-        // These should be passed through to axios
         withCredentials: true,
         maxRedirects: 5,
         validateStatus: (status: number) => {
