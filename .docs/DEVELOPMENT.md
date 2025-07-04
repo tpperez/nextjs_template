@@ -4,576 +4,592 @@
 
 ---
 
+## Data Fetching Patterns
+
+### Hybrid Strategy: Server-Side + Client-Side
+
+The project uses a **hybrid approach** combining server-side and client-side data fetching for optimal performance and user experience.
+
+**Server-Side First:** Initial page data loaded via `route/queries/` for SEO and fast first paint
+**Client-Side Complement:** Dynamic interactions handled via `view.hook.ts` for real-time updates
+
+### When to Use Server-Side Queries
+
+**Location:** `app/(routes)/pokemon/[id]/queries/`
+
+**Use Cases:**
+
+- Initial page data loading
+- SEO-critical content
+- Static or semi-static data
+- Above-the-fold content
+- Data needed for page rendering
+
+**Real Examples:**
+
+```typescript
+// get-pokemon-detail.query.ts
+export const getPokemonDetailData = async (name: string) => {
+  const pokemon = await restClient.get<IPokemonDetail>(`/pokemon/${name}`)
+  return { success: true, data: pokemon }
+}
+
+// page.tsx
+const pokemonData = await getPokemonDetailData(name)
+return <ViewPokemonDetail data={pokemonData.data} />
+```
+
+### When to Use Client-Side Hooks
+
+**Location:** `app/views/pokemon-detail/pokemon-detail.hook.ts`
+
+**Use Cases:**
+
+- User interactions (search, filters)
+- Real-time updates
+- Conditional data loading
+- Background data refreshing
+- Infinite scroll / pagination
+- Data that depends on user state
+
+**Real Examples:**
+
+```typescript
+// pokemon-detail.hook.ts - Species data loaded after user interaction
+export const usePokemonSpecies = (pokemonId: number) => {
+  return useQuery({
+    queryKey: [POKEMON_DETAIL_QUERY_KEY, pokemonId],
+    queryFn: () => fetchPokemonSpecies(pokemonId),
+    staleTime: POKEMON_DETAIL_CONFIG.SPECIES_CACHE_MINUTES * 60 * 1000,
+  })
+}
+
+// pokemon-search.hook.ts - Search triggered by user input
+export const usePokemonNameSearch = (searchTerm: string) => {
+  return useQuery({
+    queryKey: [POKEMON_SEARCH_QUERY_KEY, searchTerm],
+    queryFn: () => searchPokemonByName(searchTerm),
+    enabled: !!searchTerm.trim(), // Only when user types
+  })
+}
+
+// pokemons.hook.ts - Infinite scroll for more data
+export const useMorePokemons = () => {
+  return useInfiniteQuery({
+    queryKey: POKEMONS_QUERY_CONFIG.QUERY_KEY,
+    queryFn: async ({ pageParam }) => {
+      // Load more Pokemon on scroll
+    },
+    enabled: false, // Manual trigger
+  })
+}
+```
+
+### Decision Matrix
+
+| Scenario            | Server-Side Route Queries | Client-Side View Hooks      |
+| ------------------- | ------------------------- | --------------------------- |
+| Page initial load   | ✅ Fast first paint       | ❌ Loading state required   |
+| SEO requirements    | ✅ Crawlable content      | ❌ Not indexed              |
+| User search/filter  | ❌ Requires page reload   | ✅ Instant updates          |
+| Real-time data      | ❌ Static until refresh   | ✅ Background updates       |
+| Conditional loading | ❌ Always fetched         | ✅ Load when needed         |
+| Error boundaries    | ✅ Page-level handling    | ✅ Component-level handling |
+
+### Implementation Patterns
+
+**Server-Side Pattern:**
+
+```bash
+app/(routes)/pokemon/[id]/
+├── page.tsx                              # consumes query data
+└── queries/                              # server-side fetching
+    ├── get-pokemon-detail.query.ts       # main data
+    └── get-pokemon-detail.type.ts        # response types
+```
+
+**Client-Side Pattern:**
+
+```bash
+app/views/pokemon-detail/
+├── pokemon-detail.tsx                    # uses hooks
+├── pokemon-detail.hook.ts                # client queries
+└── pokemon-detail.type.ts                # hook return types
+```
+
+**Combined Usage:**
+
+```typescript
+// page.tsx - Server-side initial data
+const pokemonData = await getPokemonDetailData(name)
+
+// pokemon-detail.tsx - Client-side additional data
+export const ViewPokemonDetail = ({ data: pokemon }) => {
+  // Additional data loaded on client
+  const { species, isLoading } = usePokemonSpecies(pokemon.id)
+  const { result: searchResult } = usePokemonNameSearch(searchTerm)
+
+  return (
+    <div>
+      {/* Server data immediately available */}
+      <h1>{pokemon.name}</h1>
+
+      {/* Client data with loading states */}
+      {isLoading ? <Spinner /> : <SpeciesInfo species={species} />}
+      {searchResult && <SearchResults results={searchResult} />}
+    </div>
+  )
+}
+```
+
+**Architectural Context:** This implementation follows our [Hybrid Data Fetching Architecture](ARCHITECTURE.md#hybrid-data-fetching-architecture) design principles.
+
+---
+
 ## Overview
 
-This guide provides comprehensive development standards, workflows, and technical references for contributing to this Next.js template. It covers code conventions, testing strategies, and detailed implementation guidance to ensure consistency and quality across the codebase.
+Development standards and workflows for the Next.js template. Covers coding conventions, testing patterns, and daily development tasks to ensure consistency across the codebase.
 
-## Quick Reference
+---
 
-### Creating a New View
+## Directory Structure
 
-1. **Create directory:** `app/views/my-view/`
-2. **Follow structure:** See [Module Structure](#standard-module-structure) below
-3. **Reference example:** `app/views/pokemon-detail/` (complete implementation)
+### Core Application Directories
 
-### Adding API Integration
+| Directory                   | Purpose                       | When to Use                               | Examples                            |
+| --------------------------- | ----------------------------- | ----------------------------------------- | ----------------------------------- |
+| `app/(routes)/`             | next.js app router pages      | creating new routes and pages             | `/pokemons`, `/pokemon/[name]`      |
+| `route/queries/`            | server-side data fetching     | route-specific api calls                  | `get-pokemon-detail.query.ts`       |
+| `app/views/`                | complete page implementations | page-level components with business logic | `ViewPokemonDetail`, `ViewPokemons` |
+| `app/components/ui/`        | reusable ui elements          | shared across 3+ different modules        | `Spinner`, `Button`, `Modal`        |
+| `app/components/structure/` | layout and navigation         | app shell, headers, footers               | `Header`, `Sidebar`, `Layout`       |
+| `app/services/`             | business logic and apis       | http clients, external integrations       | `httpService`, `authService`        |
+| `app/stores/`               | global state management       | zustand stores for app-wide state         | `usePokemonHistoryStore`            |
+| `app/hooks/`                | global custom hooks           | reused across multiple views              | `useLocalStorage`, `useDebounce`    |
+| `app/utils/`                | pure utility functions        | helper functions used globally            | `formatDate`, `validateEmail`       |
+| `app/constants/`            | global configuration          | app-wide constants and config             | `API_ENDPOINTS`, `ROUTES`           |
+| `app/typings/`              | global type definitions       | shared typescript interfaces              | `IApiResponse`, `IUser`             |
 
-1. **Create query directory:** `app/(routes)/my-route/query/`
-2. **Implement data fetching:** Follow [Data Fetching Patterns](#data-fetching-patterns)
-3. **Reference examples:** REST and GraphQL patterns in respective query directories
+### Route-Specific Structure
 
-### Component Placement Decision
+```bash
+app/(routes)/(public)/(examples)/pokemons/
+├── page.tsx                              # route component
+├── loading.tsx                           # loading ui
+├── error.tsx                             # error boundary
+├── not-found.tsx                         # 404 page
+├── [name]/                               # dynamic route
+│   ├── page.tsx
+│   └── queries/                          # route-specific data fetching
+│       ├── index.ts                      # query exports
+│       ├── get-pokemon-detail.query.ts
+│       ├── get-pokemon-detail.type.ts
+│       ├── get-pokemon-species.query.ts
+│       └── get-pokemon-species.type.ts
+└── queries/                              # shared route queries
+    ├── index.ts
+    ├── get-pokemons-list.query.ts
+    └── get-pokemons-list.type.ts
+```
 
-- **Global usage (3+ modules):** Place in `app/components/ui/`
-- **View-specific usage:** Place in `app/views/[view]/components/`
-- **Uncertainty:** Start local, promote when reused across modules
+### View-Specific Structure
+
+```bash
+app/views/pokemon-detail/
+├── index.ts                              # public exports
+├── pokemon-detail.tsx                    # main view component
+├── pokemon-detail.type.ts                # view-specific types
+├── pokemon-detail.const.ts               # view constants
+├── pokemon-detail.hook.ts                # view-specific hooks
+├── pokemon-detail.util.ts                # view utilities
+└── components/                           # view-internal components
+    ├── pokemon-moves.tsx
+    └── pokemon-species-info.tsx
+```
+
+### Decision Guidelines
+
+**Place in Global Directories When:**
+
+- Used across 3+ different modules
+- Core application functionality
+- Design system components
+- Business domain services
+
+**Place in Module-Specific When:**
+
+- Used only within one view/route
+- Specific to one feature
+- Internal implementation details
+- Context-specific logic
+
+**Real Examples:**
+
+- `PokemonCard` → used in list and detail → `app/components/ui/`
+- `PokemonMoves` → only in detail view → `app/views/pokemon-detail/components/`
+- `usePokemonSpecies` → only in detail → `pokemon-detail.hook.ts`
+- `get-pokemon-detail.query.ts` → specific to pokemon detail route → `route/queries/`
+- `formatName` → used globally → could be in `app/utils/`
+
+**Architectural Context:** See [Component Architecture](ARCHITECTURE.md#component-architecture) for the rationale behind this hierarchy and placement strategy.
 
 ---
 
 ## Code Standards
 
-### TypeScript Configuration
+### TypeScript Conventions
 
-**Strict TypeScript Requirements:**
+**Required Standards:**
 
-- No `any` types permitted (enforced by ESLint)
-- Explicit return types required for all functions
-- Interface definitions mandatory for all data structures
-- Generic types used for reusable component patterns
+- no `any` types (enforced by eslint)
+- explicit return types for functions
+- interface definitions for data structures
+- component and architectural prefixes (see naming conventions below)
 
 **Type Definition Guidelines:**
 
-| Use Case            | Convention  | Example                                    |
-| ------------------- | ----------- | ------------------------------------------ |
-| Component props     | `interface` | `interface IButtonProps`                   |
-| Object structures   | `interface` | `interface IUser`                          |
-| Union types         | `type`      | `type TUserRole = 'admin' \| 'user'`       |
-| Literal unions      | `type`      | `type TVariant = 'primary' \| 'secondary'` |
-| Function signatures | `type`      | `type THandler = (id: string) => void`     |
+| Use Case            | Convention  | Example                                           |
+| ------------------- | ----------- | ------------------------------------------------- |
+| Component props     | `interface` | `interface IPokemonDetailViewProps`               |
+| Object structures   | `interface` | `interface IPokemon`, `interface IPokemonSpecies` |
+| Hook return types   | `type`      | `type TUsePokemonSpeciesReturn`                   |
+| Union types         | `type`      | `type TPokemonType = 'fire' \| 'water'`           |
+| Literal unions      | `type`      | `type TVariant = 'primary' \| 'secondary'`        |
+| Function signatures | `type`      | `type TPokemonHandler = (id: number) => void`     |
 
-### Naming Conventions
+**Naming Conventions:**
 
-| Element Type            | Convention          | Example                              |
-| ----------------------- | ------------------- | ------------------------------------ |
-| Files and directories   | `kebab-case`        | `user-profile.tsx`, `auth-service/`  |
-| Variables and functions | `camelCase`         | `userName`, `handleSubmit()`         |
-| React components        | `PascalCase`        | `Button`, `Modal`, `UserProfile`     |
-| View components         | `View + PascalCase` | `ViewHome`, `ViewUserProfile`        |
-| Page components         | `Page + PascalCase` | `PageHome`, `PageUserProfile`        |
-| Interface definitions   | `I + PascalCase`    | `IUserData`, `IButtonProps`          |
-| Type definitions        | `T + PascalCase`    | `TButtonVariant`, `TApiResponse`     |
-| Constants               | `UPPER_SNAKE_CASE`  | `API_BASE_URL`, `MAX_RETRY_ATTEMPTS` |
+| Element Type            | Convention             | Example                                   |
+| ----------------------- | ---------------------- | ----------------------------------------- |
+| Files and directories   | `kebab-case`           | `pokemon-detail`, `pokemon-search`        |
+| Components              | `PascalCase`           | `PokemonCard`, `PokemonMoves`             |
+| View components         | `View` prefix          | `ViewPokemonDetail`, `ViewPokemons`       |
+| Custom hooks            | `use` prefix           | `usePokemonHistory`, `usePokemonSpecies`  |
+| Variables and functions | `camelCase`            | `pokemonName`, `fetchPokemonData`         |
+| Constants               | `SCREAMING_SNAKE_CASE` | `POKEMON_DETAIL_CONFIG`, `ERROR_MESSAGES` |
+| GraphQL queries         | `GET_/POST_` prefix    | `GET_POKEMON_BY_NAME`, `GET_POKEMONS`     |
+| Interfaces              | `I` prefix             | `IPokemon`, `IPokemonDetailViewProps`     |
+| Types                   | `T` prefix             | `TPokemonType`, `TUsePokemonReturn`       |
 
-### Function Implementation Standards
+**Directory and File Suffix Correlation:**
 
-**Arrow Function Requirement:**
+| Directory (Plural) | File Suffix (Singular) | Example                       |
+| ------------------ | ---------------------- | ----------------------------- |
+| `app/hooks/`       | `.hook.ts`             | `use-local-storage.hook.ts`   |
+| `app/components/`  | `.tsx` (no suffix)     | `pokemon-card.tsx`            |
+| `app/utils/`       | `.util.ts`             | `format-pokemon-name.util.ts` |
+| `app/stores/`      | `.store.ts`            | `pokemon-history.store.ts`    |
+| `app/constants/`   | `.const.ts`            | `api-endpoints.const.ts`      |
+| `app/typings/`     | `.type.ts`             | `pokemon-api.type.ts`         |
+| `app/services/`    | `.service.ts`          | `pokemon-api.service.ts`      |
+| `app/views/`       | `.tsx` (no suffix)     | `pokemon-detail.tsx`          |
+| `view/components/` | `.tsx` (no suffix)     | `pokemon-moves.tsx`           |
+| `route/queries/`   | `.query.ts`            | `get-pokemon-detail.query.ts` |
 
-```typescript
-// Correct implementation
-const handleFormSubmit = (data: FormData): Promise<void> => {
-  return submitFormData(data)
-}
+**Module-Specific Files:**
 
-// Incorrect - function declarations not permitted
-function handleFormSubmit(data: FormData): Promise<void> {
-  return submitFormData(data)
-}
-```
-
-**Explicit Return Requirement:**
-
-```typescript
-// Correct - explicit return statement
-const getUserDisplayName = (user: IUser): string => {
-  return user.firstName + ' ' + user.lastName
-}
-
-// Incorrect - implicit returns not allowed
-const getUserDisplayName = (user: IUser): string =>
-  user.firstName + ' ' + user.lastName
-```
-
-## Project Organization
-
-### Standard Module Structure
-
-Every module follows this consistent organization pattern:
-
-```
-module-name/
-├── index.ts                 # Public exports and module interface
-├── module-name.tsx          # Primary component implementation
-├── module-name.type.ts      # TypeScript type definitions
-├── module-name.const.ts     # Constants and configuration (optional)
-├── module-name.hook.ts      # Custom hooks (optional)
-├── module-name.util.ts      # Utility functions (optional)
-└── components/              # Internal components (optional)
-    ├── sub-component/
-    │   ├── index.ts
-    │   ├── sub-component.tsx
-    │   └── sub-component.type.ts
-    └── ...
-```
-
-**Complete Implementation Example:** `app/views/pokemon-detail/`
-
-**Related Architecture:** [Architecture Guide - Module Organization](ARCHITECTURE.md#module-organization)
-
-### File Placement Guidelines
-
-**Global Placement Criteria:**
-
-- Resource used across 3+ different modules
-- Application-wide configuration or constants
-- Business domain services and utilities
-- Design system components
-
-**Module-Specific Placement Criteria:**
-
-- Resource used exclusively within single module
-- Module-specific business logic and utilities
-- Internal component implementations
-- Context-specific type definitions
-
-**Decision Examples:**
-
-- `app/components/ui/spinner/` - Global UI component
-- `app/views/pokemon-detail/components/` - View-specific components
-- `app/services/http/` - Global service layer
-- `pokemon-detail.hook.ts` - View-specific custom hook
+| Module File Type | Suffix Pattern         | Example                   |
+| ---------------- | ---------------------- | ------------------------- |
+| Main component   | `module-name.tsx`      | `pokemon-detail.tsx`      |
+| Component tests  | `module-name.test.tsx` | `pokemon-detail.test.tsx` |
+| Type definitions | `module-name.type.ts`  | `pokemon-detail.type.ts`  |
+| Constants        | `module-name.const.ts` | `pokemon-detail.const.ts` |
+| Custom hooks     | `module-name.hook.ts`  | `pokemon-detail.hook.ts`  |
+| Utilities        | `module-name.util.ts`  | `pokemon-detail.util.ts`  |
 
 ### Import Organization
 
-Import statements are automatically organized by ESLint in this order:
+Import statements are **automatically organized by ESLint** in this order:
 
-1. React and React-related imports
-2. Next.js framework imports
-3. External library imports
-4. Internal application imports using `@/` alias
-5. Relative imports using `./` and `../`
-6. CSS and style imports
+1. react and framework imports
+2. external libraries
+3. internal imports (@/ alias)
+4. relative imports
+5. css and style imports
 
-## Development Workflow
+**No manual intervention required** - ESLint handles sorting and formatting automatically.
 
-### Branch Management
+**Architectural Context:** These standards implement the [Design Decisions and Rationale](ARCHITECTURE.md#design-decisions-and-rationale) established for the project architecture.
 
-**Branch Naming Convention:**
+---
 
-```bash
-card-123_descriptive-feature-name
-```
+## Quick Reference
 
-**Pattern Components:**
-
-- `card-xxx`: Task or story identifier
-- `descriptive-name`: Brief feature description in kebab-case
-- Always lowercase with underscores separating card number from description
-
-**Alternative for Work Without Cards:**
+### Creating New Views
 
 ```bash
-initials_feature-description
-# Example: jd_user-authentication-refactor
+# view structure
+app/views/pokemon-list/
+├── index.ts                              # public exports
+├── pokemon-list.tsx                      # component implementation
+├── pokemon-list.test.tsx                 # component tests
+├── pokemon-list.type.ts                  # typescript definitions
+├── pokemon-list.hook.ts                  # custom hooks (optional)
+└── components/                           # view-specific components
 ```
 
-### Commit Process
-
-**Interactive Commit Workflow:**
+### Adding Routes
 
 ```bash
-git add .
-git commit  # Opens Commitizen interactive wizard
+# route with data fetching
+app/(routes)/(public)/pokemon/[id]/
+├── page.tsx                              # route component
+├── loading.tsx                           # loading state
+├── error.tsx                             # error boundary
+└── queries/                              # data fetching (plural)
+    ├── index.ts                          # query exports
+    ├── get-pokemon-detail.query.ts
+    ├── get-pokemon-detail.type.ts
+    ├── get-pokemon-moves.query.ts
+    └── get-pokemon-moves.type.ts
 ```
 
-**Automated Quality Validation:**
-Pre-commit hooks automatically execute:
+### Custom Hooks Pattern
 
-1. TypeScript compilation verification
-2. Complete test suite execution
-3. ESLint validation and automatic fixes
-4. Prettier code formatting
-5. Commit message format validation
+```typescript
+// pokemon-detail.hook.ts
+export function usePokemonSpecies(pokemonId: number): TUsePokemonSpeciesReturn {
+  return useQuery({
+    queryKey: [POKEMON_DETAIL_QUERY_KEY, pokemonId],
+    queryFn: () => fetchPokemonSpecies(pokemonId),
+    staleTime: POKEMON_DETAIL_CONFIG.SPECIES_CACHE_MINUTES * 60 * 1000,
+    retry: POKEMON_DETAIL_CONFIG.RETRY_COUNT,
+  })
+}
+```
 
-### Development Scripts
+### Component Test Pattern
 
-| Command                 | Purpose                                 |
-| ----------------------- | --------------------------------------- |
-| `npm run dev`           | Start development server with Turbopack |
-| `npm run build`         | Create production build                 |
-| `npm run analyze`       | Analyze bundle size and composition     |
-| `npm run test`          | Execute complete test suite             |
-| `npm run test:watch`    | Run tests in watch mode                 |
-| `npm run test:ui`       | Run tests with UI interface             |
-| `npm run test:coverage` | Generate coverage report                |
-| `npm run lint`          | Check code quality                      |
-| `npm run lint:fix`      | Fix linting issues automatically        |
-| `npm run tsc`           | TypeScript compilation check            |
+```typescript
+// pokemon-detail.test.tsx
+import { render, screen } from '@/utils/test-utils'
+import { ViewPokemonDetail } from './pokemon-detail'
 
-## Testing Strategy
+describe('ViewPokemonDetail', () => {
+  const mockPokemon = {
+    id: 1,
+    name: 'pikachu',
+    sprites: { front_default: 'pikachu.png' }
+  }
 
-### Testing Philosophy
+  it('displays pokemon information', () => {
+    render(<ViewPokemonDetail data={mockPokemon} />)
+    expect(screen.getByText('pikachu')).toBeInTheDocument()
+  })
+})
+```
 
-**Behavior-Driven Testing:**
+**Architectural Context:** These patterns align with our [Testing Architecture](ARCHITECTURE.md#testing-architecture) strategy and co-location principles.
 
-- Focus on component behavior rather than implementation details
-- Test user interactions and expected outcomes
-- Validate error states and edge cases comprehensively
-- Maintain tests as living documentation of expected behavior
+---
 
-**Co-location Principle:**
+## Testing Guidelines
 
-- Tests placed adjacent to implementation files
-- Easier maintenance and discovery
-- Clear association between test and source code
-- Simplified refactoring and updates
+### Co-location Principle
+
+Tests are placed next to implementation files for easier maintenance and discovery.
+
+```bash
+app/views/pokemon-detail/
+├── pokemon-detail.tsx
+├── pokemon-detail.test.tsx               # component test
+├── pokemon-detail.hook.ts
+├── pokemon-detail.hook.test.ts           # hook test
+└── pokemon-detail.util.test.ts           # utility test
+```
+
+**File Naming Convention:**
+
+- Components: `component-name.test.tsx`
+- Hooks: `hook-name.test.ts`
+- Utilities: `util-name.test.ts`
+- Integration tests: `feature-name.integration.test.tsx`
 
 ### Testing Patterns
 
-**Component Testing Standards:**
+**Component Testing:**
 
 ```typescript
-// Focus on user-visible behavior
-expect(screen.getByText('Loading...')).toBeInTheDocument()
-expect(mockApiCall).toHaveBeenCalledWith(expectedParameters)
+import { render, screen } from '@/utils/test-utils'
+import { PokemonCard } from './pokemon-card'
+import { vi } from 'vitest'
 
-// Test error states
-expect(screen.getByText('Error occurred')).toBeInTheDocument()
+describe('PokemonCard', () => {
+  it('displays pokemon information', async () => {
+    const pokemon = { id: 1, name: 'pikachu', image: 'pikachu.png' }
+    render(<PokemonCard pokemon={pokemon} />)
+
+    expect(screen.getByText('pikachu')).toBeInTheDocument()
+    expect(screen.getByText('#001')).toBeInTheDocument()
+  })
+})
 ```
 
 **Custom Hook Testing:**
 
 ```typescript
-// Test hook state changes and side effects
-const { result } = renderHook(() => useCustomHook())
-expect(result.current.isLoading).toBe(false)
-expect(result.current.data).toEqual(expectedData)
-```
+import { renderHook } from '@testing-library/react'
+import { usePokemonSpecies } from './pokemon-detail.hook'
 
-**Integration Testing:**
-
-```typescript
-// Test component interactions
-fireEvent.click(screen.getByRole('button'))
-await waitFor(() => expect(mockHandler).toHaveBeenCalled())
-```
-
-**Testing Structure Reference:** `app/components/ui/spinner/`
-
-## HTTP Service Technical Reference
-
-### Client Implementation
-
-**REST Client Usage:**
-
-```typescript
-import { restClient } from '@/app/services/http'
-
-// Basic GET request
-const userData = await restClient.get<UserResponse>('/users/123')
-
-// POST with configuration
-const result = await restClient.post('/users', userData, {
-  baseUrl: 'https://api.example.com',
-  timeout: 5000,
-  revalidate: 3600,
-  headers: { Authorization: 'Bearer token' },
+describe('usePokemonSpecies', () => {
+  it('returns pokemon species data', () => {
+    const { result } = renderHook(() => usePokemonSpecies(1))
+    expect(result.current.isLoading).toBe(false)
+  })
 })
 ```
 
-**GraphQL Client Usage:**
+**Architectural Context:** These patterns implement our [HTTP Service Architecture](ARCHITECTURE.md#http-service-architecture) adapter pattern design.
+
+---
+
+## Development Workflow
+
+### Branch Naming
+
+```bash
+# with card/ticket number
+card-123_pokemon-search-feature
+
+# without card number
+jd_pokemon-detail-optimization
+```
+
+### Commit Process
+
+```bash
+git add .
+git commit  # opens commitizen wizard
+```
+
+**Pre-commit Validation:**
+
+1. typescript compilation
+2. test suite execution
+3. eslint validation
+4. prettier formatting
+5. commit message validation
+
+### HTTP Service Usage
+
+**REST API:**
 
 ```typescript
-import { graphqlClient } from '@/app/services/http'
+import { httpService } from '@/services/http'
 
-// Query execution
-const { data, errors } = await graphqlClient.query(
-  GET_USERS_QUERY,
-  {
-    limit: 10,
-    offset: 0,
-  },
-  {
-    baseUrl: 'https://graphql.example.com',
-    revalidate: 300,
-    tags: ['users'],
-  },
+// typed requests
+const pokemons = await httpService.get<IPokemon[]>('/pokemons')
+const pokemon = await httpService.get<IPokemon>('/pokemon/pikachu')
+
+// error handling
+try {
+  const pokemonData = await httpService.get<IPokemon>('/pokemon/1')
+} catch (error) {
+  console.error(error.message, error.status)
+}
+```
+
+**GraphQL:**
+
+```typescript
+import { graphqlService } from '@/services/http'
+
+const { data } = await graphqlService.request<{ pokemons: IPokemon[] }>(
+  GET_POKEMONS_QUERY,
+  { limit: 20 },
 )
 ```
 
-**Implementation References:**
+---
 
-- REST Example: `app/(routes)/(public)/(examples)/pokemons/[name]/query/query.ts` - data fetching implementation
-- GraphQL Example: `app/(routes)/(public)/(examples)/pokemons/query/query.ts` - GraphQL query patterns
-- Service Configuration: `app/services/http/core/core.ts` - HTTP service configuration
+## Configuration Reference
 
-### Configuration Options
+### TypeScript Setup
 
-**HTTP Service Configuration:**
+**tsconfig.json key settings:**
 
-```typescript
-// Location: app/services/http/core/core.ts
-export const HTTP_CONFIG = {
-  BASE_URL: string, // Default API base URL
-  DEFAULT_REVALIDATE: number, // Cache duration in seconds
-  DEFAULT_TIMEOUT: number, // Request timeout in milliseconds
-  DEFAULT_RETRY_COUNT: number, // Number of retry attempts
-  DEFAULT_STALE_TIME: number, // Stale time for TanStack Query
-}
+- strict mode enabled
+- `@/` path alias configured
+- vitest global types included
+
+### Testing Setup
+
+**vitest.config.ts configuration:**
+
+- jsdom environment
+- coverage thresholds: 80%
+- test file patterns: `*.test.tsx`
+- setup file: `vitest.setup.ts`
+
+### Code Quality
+
+**eslint.config.mjs rules:**
+
+- no `any` types
+- explicit return types
+- import sorting
+- prettier integration
+
+---
+
+## Troubleshooting
+
+### TypeScript Issues
+
+**module resolution errors with path aliases:**
+
+```bash
+# restart typescript service
+cmd + shift + p -> "TypeScript: Restart TS Server"
+
+# verify tsconfig.json paths configuration
+"paths": { "@/*": ["./*"] }
 ```
 
-**Request Configuration Interface:**
+**strict type checking violations:**
 
-```typescript
-interface RequestOptions {
-  baseUrl?: string // Override default base URL
-  timeout?: number // Request timeout in milliseconds
-  revalidate?: number // Next.js cache revalidation time
-  tags?: string[] // Cache tags for invalidation
-  headers?: HeadersInit // Custom request headers
-  signal?: AbortSignal // Request cancellation
-}
+- define explicit typescript interfaces for all data structures
+- reference type definitions: `app/views/pokemon-detail/pokemon-detail.type.ts`
+- check eslint configuration: `eslint.config.mjs` - typescript rules
+
+### Testing Issues
+
+**test discovery failures:**
+
+```bash
+# verify test file naming
+component-name.test.tsx  ✓
+component-name.spec.tsx  ✓
+
+# check vitest.config.ts setup
+test: { environment: 'jsdom' }
 ```
 
-### Data Fetching Patterns
+**async test timeouts:**
 
-**Server-Side Data Fetching:**
+- use `waitFor` utility for asynchronous operations
+- implement proper api call mocking strategies with `vi.mock`
+- verify tanstack query test setup and configuration
 
-```typescript
-// Query function pattern
-export const getDataQuery = async (): Promise<ApiResponse<DataType>> => {
-  try {
-    const response = await restClient.get<DataType>('/api/data')
-    return { success: true, data: response }
-  } catch (error) {
-    return { success: false, error: 'Failed to fetch data' }
-  }
-}
+### Development Environment
 
-// Usage in route component
-const data = await getDataQuery()
-if (!data.success) {
-  notFound()
-}
+**development server issues:**
+
+```bash
+# port conflicts
+npm run dev -- --port 3001
+
+# cache issues
+rm -rf .next
+npm run dev
 ```
 
-**Client-Side Data Fetching:**
-
-```typescript
-// Custom hook pattern
-export const useDataQuery = (id: string) => {
-  return useQuery({
-    queryKey: ['data', id],
-    queryFn: () => restClient.get<DataType>(`/api/data/${id}`),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  })
-}
-```
-
-**Query Directory Structure:** `app/(routes)/(public)/(examples)/pokemons/query/`
-
-## Quality Assurance
-
-### Automated Quality Checks
-
-**Pre-commit Validation Pipeline:**
-
-- TypeScript compilation with strict mode enforcement
-- ESLint validation with custom rule configurations
-- Prettier code formatting with consistent style
-- Vitest test execution with coverage requirements
-- Commit message format validation
-
-**Continuous Integration Pipeline:**
-
-- Cross-browser and cross-environment testing
-- Build verification and deployment readiness checks
-- Code quality metrics and technical debt analysis
-- Security vulnerability scanning and reporting
-
-### Code Quality Metrics
-
-**Target Quality Standards:**
-
-- Test coverage minimum: 80% for new code
-- TypeScript strict mode compliance: 100%
-- ESLint error tolerance: Zero errors allowed
-- Build success rate: 100% for main branch
-- Performance budget: Core Web Vitals compliance
-
-### Performance Guidelines
-
-**Bundle Optimization Strategies:**
-
-- Dynamic imports for heavy components and libraries
-- Image optimization using Next.js Image component
-- Code splitting at route and component boundaries
-- Tree shaking verification and unused code elimination
-
-**Runtime Performance Standards:**
-
-- Core Web Vitals monitoring and optimization
-- Client-side state size minimization
-- Efficient re-rendering patterns and memoization
-- Memory leak prevention and cleanup
-
-## Common Issues and Solutions
-
-### TypeScript Configuration Issues
-
-**Problem:** Module resolution errors with path aliases
-**Solution:**
-
-- Verify path mappings in `tsconfig.json` - paths configuration
-- Restart TypeScript service in development environment
-- Ensure import paths use `@/` prefix for internal modules
-
-**Problem:** Strict type checking violations
-**Solution:**
-
-- Define explicit TypeScript interfaces for all data structures
-- Reference type definitions: `app/views/pokemon-detail/pokemon-detail.type.ts`
-- Check ESLint configuration: `eslint.config.mjs` - TypeScript rules
-
-### Testing Framework Issues
-
-**Problem:** Test discovery and execution failures
-**Solution:**
-
-- Verify Vitest configuration: `vitest.config.ts` - test environment setup
-- Ensure test file naming follows convention: `*.test.tsx` or `*.spec.tsx`
-- Reference working test structure: `app/components/ui/spinner/`
-
-**Problem:** Async test timeouts and race conditions
-**Solution:**
-
-- Use `waitFor` utility for asynchronous operations
-- Implement proper API call mocking strategies
-- Verify TanStack Query test setup and configuration
-
-### Development Environment Issues
-
-**Problem:** Development server port conflicts
-**Solution:** Use alternative port: `npm run dev -- -p 3001`
-
-**Problem:** Hot module reload functionality not working
-**Solution:**
-
-- Restart development server completely
-- Verify file extensions in `tsconfig.json` include configuration
-- Confirm Turbopack is enabled in `package.json` dev script
-
-### Build and Deployment Issues
-
-**Problem:** Production build failures with type errors
-**Solution:**
-
-- Execute `npm run tsc` to identify compilation issues
-- Verify all exported types have proper interface definitions
-- Remove unused imports and unreachable code
-
-**Problem:** Bundle size exceeding performance budget
-**Solution:**
-
-- Implement dynamic imports for heavy dependencies
-- Analyze bundle composition using webpack-bundle-analyzer
-- Verify tree shaking configuration and effectiveness
-
-### HTTP Service Integration Issues
-
-**Problem:** CORS policy violations in API requests
-**Solution:**
-
-- Review middleware configuration: `middleware.ts` - CORS headers
-- Verify API endpoint URLs in environment configuration
-- Check Content Security Policy headers for request blocking
-
-**Problem:** GraphQL query execution failures
-**Solution:**
-
-- Validate GraphQL endpoint configuration: `app/services/http/core/core.ts` - GraphQL settings
-- Verify query syntax: `app/(routes)/(public)/(examples)/pokemons/query/query.const.ts`
-- Check GraphQL adapter configuration and initialization
-
-**Problem:** Cache invalidation and stale data issues
-**Solution:**
-
-- Review revalidate values in query configurations
-- Verify TanStack Query configuration: `app/services/http/providers/react-query.tsx` - QueryClient options
-- Clear browser cache and restart development server
-
-### Performance and Optimization Issues
-
-**Problem:** Poor Core Web Vitals scores
-**Solution:**
-
-- Implement proper image optimization and lazy loading
-- Reduce JavaScript bundle size through code splitting
-- Optimize font loading and rendering strategies
-
-**Problem:** Memory leaks in client-side applications
-**Solution:**
-
-- Implement proper cleanup in useEffect hooks
-- Cancel pending requests on component unmount
-- Monitor memory usage in development tools
-
-## Technical Reference
-
-### Environment Configuration
-
-**Required Environment Variables:**
-
-```env
-NEXT_PUBLIC_API_URL=https://api.example.com
-NODE_ENV=development|production|test
-```
-
-**Optional Configuration:**
-
-```env
-NEXT_PUBLIC_GRAPHQL_ENDPOINT=https://graphql.example.com
-API_TIMEOUT=10000
-CACHE_DURATION=300
-```
-
-### Build Configuration
-
-**Next.js Configuration Reference:** `next.config.js`
-
-- Image optimization domains and settings
-- Security headers and Content Security Policy
-- Bundle analyzer and performance monitoring
-
-**TypeScript Configuration Reference:** `tsconfig.json`
-
-- Strict mode settings and compiler options
-- Path mapping and module resolution
-- Include and exclude patterns
-
-**ESLint Configuration Reference:** `eslint.config.mjs`
-
-- TypeScript integration and strict rules
-- Import sorting and organization
-- Code style and formatting rules
-
-### IDE Configuration
-
-**VS Code Settings Reference:** `.vscode/settings.json`
-
-- TypeScript service configuration
-- ESLint and Prettier integration
-- Tailwind CSS IntelliSense settings
-
-**Recommended Extensions:** `.vscode/extensions.json`
-
-- Essential development tools and utilities
-- Code quality and formatting extensions
-- Framework-specific language support
+---
 
 ## Next Steps
 
-**For architectural understanding:** Review [Architecture Guide](ARCHITECTURE.md) for system design and decision rationale.
+**For system architecture:** see [Architecture Guide](ARCHITECTURE.md) for design patterns and data flow.
 
-**For project navigation:** Return to [README](../README.md) for high-level overview and quick start instructions.
+**For project setup:** return to [README](../README.md) for installation and quick start.
 
-**For practical implementation:** Examine Pokemon examples throughout the codebase for real-world application of these development standards.
+**For examples:** examine `app/views/pokemon-detail/` for complete implementation patterns including hooks, utils, and component structure.

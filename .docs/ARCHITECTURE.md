@@ -8,6 +8,8 @@
 
 This document outlines the architectural decisions, design patterns, and system organization that form the foundation of this Next.js template. The architecture prioritizes scalability, maintainability, and developer productivity through clear separation of concerns and established conventions.
 
+---
+
 ## System Architecture
 
 ### Layered Architecture Model
@@ -66,131 +68,43 @@ Utils & Hooks (Shared Logic)
 - Reusable custom hooks and shared logic
 - Common patterns and helper functions
 
-## Data Flow Patterns
+---
 
-### Route to View Data Flow
+## Design Decisions and Rationale
 
-**Implementation Reference:** `app/(routes)/(public)/(examples)/pokemons/page.tsx`
+### Server-Side First Approach
 
-The standard data flow follows this pattern:
+**Decision:** Prioritize server-side rendering and data fetching
+**Rationale:** Optimal SEO, faster initial page loads, reduced client-side complexity
+**Trade-offs:** More complex client-side interactions, potential server load increase
 
-1. **Route Component** (Server Component) invokes query function
-2. **Query Function** handles API calls and error management
-3. **Route Component** passes structured data to View component
-4. **View Component** renders using received data and manages UI state
+### Hybrid Data Fetching Strategy
 
-**Benefits:**
+**Decision:** Implement a dual-layer data fetching strategy combining server-side and client-side approaches
+**Rationale:** Balance between performance, SEO requirements, and dynamic user experience
+**Trade-offs:** Increased complexity for optimal user experience and technical benefits
 
-- Views become pure components focused on presentation
-- Queries provide reusable data fetching abstractions
-- Server Components handle initial data loading efficiently
-- Clear separation between data fetching and presentation logic
+### Adapter Pattern for HTTP Services
 
-**Related Documentation:** [Development Guide - Data Fetching Patterns](DEVELOPMENT.md#data-fetching-patterns)
+**Decision:** Abstract HTTP implementations behind adapter interfaces
+**Rationale:** Flexibility to change implementations, consistent API, easier testing
+**Trade-offs:** Additional abstraction layer, initial setup complexity
 
-### Client-Side Data Management
+### Co-located Query Organization
 
-**Implementation Reference:** `app/views/pokemon-detail/pokemon-detail.hook.ts`
+**Decision:** Place data fetching logic adjacent to route components
+**Rationale:** Clear data dependencies, easier maintenance, simplified testing
+**Trade-offs:** Potential duplication across similar routes, larger route directories
 
-Client-side data fetching is used strategically for:
+### Layered Component Architecture
 
-- Real-time updates and user interactions
-- Background data refreshing
-- Conditional data loading based on user actions
-- Optimistic updates and error recovery
+**Decision:** Organize components by reusability and specificity
+**Rationale:** Clear separation of concerns, easier maintenance, consistent patterns
+**Trade-offs:** Additional directory structure, decision overhead for placement
 
-## Module Organization
+**Implementation Details:** These decisions are implemented through our [Code Standards](DEVELOPMENT.md#code-standards) and naming conventions.
 
-### Standard Module Structure
-
-Every module in the application follows a consistent organization pattern:
-
-```
-module-name/
-├── index.ts                 # Public exports and interface
-├── module-name.tsx          # Main component implementation
-├── module-name.type.ts      # TypeScript type definitions
-├── module-name.const.ts     # Constants and configuration (optional)
-├── module-name.hook.ts      # Custom hooks (optional)
-├── module-name.util.ts      # Utility functions (optional)
-└── components/              # Internal components (optional)
-```
-
-**Complete Example:** `app/views/pokemon-detail/`
-
-**Related Documentation:** [Development Guide - Module Structure](DEVELOPMENT.md#standard-module-structure)
-
-### File Placement Strategy
-
-The decision between global and module-specific placement follows clear criteria:
-
-| Resource Type | Global Location      | Module-Specific      | Decision Criteria                        |
-| ------------- | -------------------- | -------------------- | ---------------------------------------- |
-| Components    | `app/components/ui/` | `module/components/` | Used across 3+ different modules         |
-| Custom Hooks  | `app/hooks/`         | `module.hook.ts`     | Reused in multiple contexts              |
-| Utilities     | `app/utils/`         | `module.util.ts`     | Application-wide utility functions       |
-| Constants     | `app/constants/`     | `module.const.ts`    | Configuration affecting multiple modules |
-| Types         | `app/typings/`       | `module.type.ts`     | API contracts vs component props         |
-| Services      | `app/services/`      | `module.service.ts`  | Business domain boundaries               |
-
-**Decision Rule:** Start with module-specific placement and promote to global when usage expands beyond the original context.
-
-## HTTP Service Architecture
-
-### Unified Client Pattern
-
-The HTTP service layer implements an adapter pattern that provides consistent interfaces for both REST and GraphQL operations.
-
-**Adapter Benefits:**
-
-- Consistent error handling across different API types
-- Unified configuration and caching strategies
-- Type-safe interfaces with full TypeScript support
-- Easy switching between implementation strategies
-
-**Client Implementations:**
-
-Both REST and GraphQL clients provide consistent APIs:
-
-**Common Features:**
-
-- Standardized error handling and response formatting
-- Unified configuration options and defaults
-- Consistent TypeScript interfaces and type safety
-- Shared caching strategies and optimization
-
-**REST Client Example:** `app/(routes)/(public)/(examples)/pokemons/[name]/query/query.ts`
-**GraphQL Client Example:** `app/(routes)/(public)/(examples)/pokemons/query/query.ts`
-**Configuration Reference:** `app/services/http/core/core.ts`
-
-## State Management Architecture
-
-### State Classification Strategy
-
-The architecture distinguishes between different types of application state:
-
-**Local Component State (React useState/useReducer)**
-
-- Form data and input validation state
-- UI component state (modals, dropdowns, toggles)
-- Temporary interaction state
-- Component-specific derived state
-
-**Global Application State (Zustand)**
-
-- User authentication and session data
-- Application-wide preferences and settings
-- Persistent user data and configurations
-- Cross-component shared state
-
-**Server State (TanStack Query)**
-
-- API response data and caching
-- Background synchronization
-- Optimistic updates and error recovery
-- Request state management (loading, error states)
-
-**Decision Criteria:** Use global state when data needs to persist across route changes or is shared between unrelated components.
+---
 
 ## Component Architecture
 
@@ -229,6 +143,207 @@ The component system is organized in layers of increasing specificity:
 - UI Component: `app/components/ui/spinner/`
 - View-Specific: `app/views/pokemon-detail/components/`
 
+**Implementation Details:** See [Directory Structure](DEVELOPMENT.md#directory-structure) for practical guidelines on where to place each component type.
+
+---
+
+## Module Organization
+
+### Standard Module Structure
+
+Every module in the application follows a consistent organization pattern:
+
+```
+module-name/
+├── index.ts                 # public exports and interface
+├── module-name.tsx          # main component implementation
+├── module-name.type.ts      # typescript type definitions
+├── module-name.const.ts     # constants and configuration (optional)
+├── module-name.hook.ts      # custom hooks (optional)
+├── module-name.util.ts      # utility functions (optional)
+└── components/              # internal components (optional)
+```
+
+**Complete Example:** `app/views/pokemon-detail/`
+
+**Related Documentation:** [Development Guide - Module Structure](DEVELOPMENT.md#directory-structure)
+
+### File Placement Strategy
+
+The decision between global and module-specific placement follows clear criteria:
+
+| Resource Type | Global Location      | Module-Specific      | Decision Criteria                        |
+| ------------- | -------------------- | -------------------- | ---------------------------------------- |
+| Components    | `app/components/ui/` | `module/components/` | Used across 3+ different modules         |
+| Custom Hooks  | `app/hooks/`         | `module.hook.ts`     | Reused in multiple contexts              |
+| Utilities     | `app/utils/`         | `module.util.ts`     | Application-wide utility functions       |
+| Constants     | `app/constants/`     | `module.const.ts`    | Configuration affecting multiple modules |
+| Types         | `app/typings/`       | `module.type.ts`     | API contracts vs component props         |
+| Services      | `app/services/`      | `module.service.ts`  | Business domain boundaries               |
+
+**Decision Rule:** Start with module-specific placement and promote to global when usage expands beyond the original context.
+
+**Implementation Details:** See [Directory Structure](DEVELOPMENT.md#directory-structure) for detailed placement guidelines and decision criteria.
+
+---
+
+## Data Flow Patterns
+
+### Route to View Data Flow
+
+**Implementation Reference:** `app/(routes)/(public)/(examples)/pokemons/page.tsx`
+
+The standard data flow follows this pattern:
+
+1. **Route Component** (Server Component) invokes query function
+2. **Query Function** handles API calls and error management
+3. **Route Component** passes structured data to View component
+4. **View Component** renders using received data and manages UI state
+
+**Benefits:**
+
+- Views become pure components focused on presentation
+- Queries provide reusable data fetching abstractions
+- Server Components handle initial data loading efficiently
+- Clear separation between data fetching and presentation logic
+
+**Related Documentation:** [Development Guide - Data Fetching Patterns](DEVELOPMENT.md#data-fetching-patterns)
+
+### Hybrid Data Fetching Architecture
+
+#### Architectural Benefits
+
+**Performance Optimization:**
+
+- Server-side rendering provides instant content delivery and optimal Core Web Vitals
+- Client-side queries enable responsive interactions without full page reloads
+- Strategic caching at both server and client levels reduces redundant API calls
+- Progressive loading reduces time-to-interactive for complex pages
+
+**SEO and Accessibility:**
+
+- Critical content rendered server-side ensures search engine crawlability
+- Static content delivery improves accessibility and performance on slower devices
+- Graceful degradation when JavaScript is disabled or loading fails
+- Structured data available immediately for social media and search previews
+
+**Developer Experience:**
+
+- Clear separation of concerns between initial data and interactive features
+- Type-safe data contracts across both server and client boundaries
+- Consistent error handling patterns for both data fetching strategies
+- Simplified testing with distinct contexts for server and client logic
+
+#### Architectural Trade-offs
+
+**Complexity Considerations:**
+
+- Requires understanding of both server and client data fetching patterns
+- Increased cognitive overhead for deciding between strategies
+- Potential for data inconsistency between server and client state
+- Additional infrastructure for managing dual caching strategies
+
+**Performance Implications:**
+
+- Larger JavaScript bundles due to client-side query libraries
+- Potential for redundant API calls if not properly coordinated
+- Memory usage increases with client-side caching
+- Network overhead for background data synchronization
+
+#### Integration with Layered Architecture
+
+**Routes Layer Integration:**
+
+Server-side queries integrate directly with Next.js App Router patterns, providing seamless data loading for initial page renders while maintaining the benefits of React Server Components.
+
+**Views Layer Coordination:**
+
+View components orchestrate both server-provided data and client-side hooks, creating a unified data interface that abstracts the complexity of dual data sources from presentation logic.
+
+**Services Layer Abstraction:**
+
+The HTTP service layer provides consistent interfaces for both server and client contexts, ensuring type safety and consistent error handling regardless of execution environment.
+
+**Related Documentation:** [Development Guide - Data Fetching Patterns](DEVELOPMENT.md#data-fetching-patterns) for implementation details and decision criteria.
+
+### Client-Side Data Management
+
+**Implementation Reference:** `app/views/pokemon-detail/pokemon-detail.hook.ts`
+
+Client-side data fetching is used strategically for:
+
+- Real-time updates and user interactions
+- Background data refreshing
+- Conditional data loading based on user actions
+- Optimistic updates and error recovery
+
+**Implementation Details:** See [Data Fetching Patterns](DEVELOPMENT.md#data-fetching-patterns) for practical implementation guidelines and decision criteria.
+
+---
+
+## HTTP Service Architecture
+
+### Unified Client Pattern
+
+The HTTP service layer implements an adapter pattern that provides consistent interfaces for both REST and GraphQL operations.
+
+**Adapter Benefits:**
+
+- Consistent error handling across different API types
+- Unified configuration and caching strategies
+- Type-safe interfaces with full TypeScript support
+- Easy switching between implementation strategies
+
+**Client Implementations:**
+
+Both REST and GraphQL clients provide consistent APIs:
+
+**Common Features:**
+
+- Standardized error handling and response formatting
+- Unified configuration options and defaults
+- Consistent TypeScript interfaces and type safety
+- Shared caching strategies and optimization
+
+**REST Client Example:** `app/(routes)/(public)/(examples)/pokemons/[name]/queries/get-pokemon-detail.query.ts`
+**GraphQL Client Example:** `app/(routes)/(public)/(examples)/pokemons/queries/get-pokemons-list.query.ts`
+**Configuration Reference:** `app/services/http/core/core.ts`
+
+**Implementation Details:** See [Development Workflow](DEVELOPMENT.md#development-workflow) for practical HTTP service usage examples and patterns.
+
+---
+
+## State Management Architecture
+
+### State Classification Strategy
+
+The architecture distinguishes between different types of application state:
+
+**Local Component State (React useState/useReducer)**
+
+- Form data and input validation state
+- UI component state (modals, dropdowns, toggles)
+- Temporary interaction state
+- Component-specific derived state
+
+**Global Application State (Zustand)**
+
+- User authentication and session data
+- Application-wide preferences and settings
+- Persistent user data and configurations
+- Cross-component shared state
+
+**Server State (TanStack Query)**
+
+- API response data and caching
+- Background synchronization
+- Optimistic updates and error recovery
+- Request state management (loading, error states)
+
+**Decision Criteria:** Use global state when data needs to persist across route changes or is shared between unrelated components.
+
+---
+
 ## Error Handling Architecture
 
 ### Layered Error Management
@@ -255,22 +370,7 @@ The architecture implements error handling at multiple levels:
 - Component Error Boundaries: Route-level error.tsx files
 - User Error Display: `app/components/ui/` - error state components
 
-## Caching Strategy
-
-### Multi-Layer Caching
-
-The application implements caching at multiple levels for optimal performance:
-
-1. **Browser Cache:** HTTP headers and service worker
-2. **CDN Cache:** Edge location caching for global performance
-3. **Next.js Cache:** Server-side rendering and API route caching
-4. **Client Cache:** TanStack Query and application state caching
-
-**Configuration References:**
-
-- Next.js Caching: `next.config.js` - cache headers and revalidation
-- TanStack Query: `app/services/http/providers/react-query.tsx` - query client configuration
-- HTTP Service: `app/services/http/core/core.ts` - cache configuration options
+---
 
 ## Testing Architecture
 
@@ -300,6 +400,29 @@ Tests are organized alongside implementation files for:
 - Clear association between tests and functionality
 - Simplified refactoring and updates
 
+**Implementation Details:** See [Testing Guidelines](DEVELOPMENT.md#testing-guidelines) for practical testing patterns and co-location examples.
+
+---
+
+## Caching Strategy
+
+### Multi-Layer Caching
+
+The application implements caching at multiple levels for optimal performance:
+
+1. **Browser Cache:** HTTP headers and service worker
+2. **CDN Cache:** Edge location caching for global performance
+3. **Next.js Cache:** Server-side rendering and API route caching
+4. **Client Cache:** TanStack Query and application state caching
+
+**Configuration References:**
+
+- Next.js Caching: `next.config.js` - cache headers and revalidation
+- TanStack Query: `app/services/http/providers/react-query.tsx` - query client configuration
+- HTTP Service: `app/services/http/core/core.ts` - cache configuration options
+
+---
+
 ## Development Workflow Integration
 
 ### Quality Assurance Automation
@@ -322,31 +445,7 @@ The architecture integrates quality checks at multiple points:
 
 **Related Documentation:** [Development Guide - Development Workflow](DEVELOPMENT.md#development-workflow)
 
-## Design Decisions and Rationale
-
-### Server-Side First Approach
-
-**Decision:** Prioritize server-side rendering and data fetching
-**Rationale:** Optimal SEO, faster initial page loads, reduced client-side complexity
-**Trade-offs:** More complex client-side interactions, potential server load increase
-
-### Adapter Pattern for HTTP Services
-
-**Decision:** Abstract HTTP implementations behind adapter interfaces
-**Rationale:** Flexibility to change implementations, consistent API, easier testing
-**Trade-offs:** Additional abstraction layer, initial setup complexity
-
-### Co-located Query Organization
-
-**Decision:** Place data fetching logic adjacent to route components
-**Rationale:** Clear data dependencies, easier maintenance, simplified testing
-**Trade-offs:** Potential duplication across similar routes, larger route directories
-
-### Layered Component Architecture
-
-**Decision:** Organize components by reusability and specificity
-**Rationale:** Clear separation of concerns, easier maintenance, consistent patterns
-**Trade-offs:** Additional directory structure, decision overhead for placement
+---
 
 ## Future Considerations
 
@@ -367,6 +466,8 @@ Potential architectural enhancements:
 - Advanced caching strategies for global deployment
 - Real-time data synchronization for collaborative features
 - Progressive Web App capabilities for mobile experience
+
+---
 
 ## Next Steps
 
