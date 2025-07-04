@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-import type { IPokemon } from '@/app/(routes)/(public)/(examples)/pokemons/query'
+import type { IPokemon } from '@/app/(routes)/(public)/(examples)/pokemons/queries'
 
 import { POKEMON_HISTORY_CONFIG } from './pokemon-history.const'
 import { IPokemonHistoryStore } from './pokemon-history.type'

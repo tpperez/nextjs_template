@@ -1,6 +1,6 @@
 import { ViewPokemons } from '@/app/views/pokemons'
 
-import { getPokemonsData } from './query'
+import { getPokemonsData } from './queries'
 
 const PagePokemons = async () => {
   const pokemonsData = await getPokemonsData(8, 0)

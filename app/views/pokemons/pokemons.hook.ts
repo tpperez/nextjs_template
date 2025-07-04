@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
 
-import { GET_POKEMONS } from '@/app/(routes)/(public)/(examples)/pokemons/query/query.const'
-import type { IPokemonsResponse } from '@/app/(routes)/(public)/(examples)/pokemons/query/query.type'
+import { GET_POKEMONS } from '@/app/(routes)/(public)/(examples)/pokemons/queries/get-pokemons.const'
+import type { IPokemonsResponse } from '@/app/(routes)/(public)/(examples)/pokemons/queries/get-pokemons.type'
 import { graphqlClient } from '@/app/services/http'
 
 import { POKEMONS_PER_PAGE, POKEMONS_QUERY_CONFIG } from './pokemons.const'

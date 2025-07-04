@@ -1,6 +1,6 @@
 import { restClient } from '@/app/services/http'
 
-import { IPokemonDetail } from './query.type'
+import { IPokemonDetail } from './get-pokemon-detail.type'
 
 export const getPokemonDetailData = async (name: string) => {
   try {

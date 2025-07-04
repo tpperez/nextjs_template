@@ -5,7 +5,7 @@ import type {
   IPokemonSprites,
   IPokemonStat,
   IPokemonType,
-} from '@/app/(routes)/(public)/(examples)/pokemons/[name]/query'
+} from '@/app/(routes)/(public)/(examples)/pokemons/[name]/queries'
 
 export interface IPokemonDetailViewProps {
   data: IPokemonDetail
@@ -63,6 +63,13 @@ export interface IPokemonSpecies {
   }>
   forms_switchable: boolean
   gender_rate: number
+  genera: Array<{
+    genus: string
+    language: {
+      name: string
+      url: string
+    }
+  }>
   generation: {
     name: string
     url: string
