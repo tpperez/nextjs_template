@@ -31,7 +31,7 @@ This template provides a complete foundation for Next.js applications with estab
 ### Developer Workflow
 
 - ESLint + Prettier
-- Jest + Testing Library
+- Vitest + Testing Library
 - Husky + Lint-staged
 - Commitizen
 
@@ -101,8 +101,10 @@ Configuration Files:
 npm run dev           # start development server with turbopack
 npm run build         # create production build
 npm run start         # start production server
+npm run analyze       # analyze bundle size and composition
 npm run test          # run complete test suite
 npm run test:watch    # run tests in watch mode
+npm run test:ui       # run tests with UI interface
 npm run test:coverage # generate coverage report
 npm run lint          # check code quality
 npm run lint:fix      # fix linting issues automatically

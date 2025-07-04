@@ -200,8 +200,10 @@ Pre-commit hooks automatically execute:
 | ----------------------- | --------------------------------------- |
 | `npm run dev`           | Start development server with Turbopack |
 | `npm run build`         | Create production build                 |
+| `npm run analyze`       | Analyze bundle size and composition     |
 | `npm run test`          | Execute complete test suite             |
 | `npm run test:watch`    | Run tests in watch mode                 |
+| `npm run test:ui`       | Run tests with UI interface             |
 | `npm run test:coverage` | Generate coverage report                |
 | `npm run lint`          | Check code quality                      |
 | `npm run lint:fix`      | Fix linting issues automatically        |
@@ -300,8 +302,8 @@ const { data, errors } = await graphqlClient.query(
 
 **Implementation References:**
 
-- REST Example: `app/(routes)/(public)/pokemons/[name]/query/query.ts` (lines 6-16)
-- GraphQL Example: `app/(routes)/(public)/pokemons/query/query.ts` (lines 8-18)
+- REST Example: `app/(routes)/(public)/(examples)/pokemons/[name]/query/query.ts` (lines 6-16)
+- GraphQL Example: `app/(routes)/(public)/(examples)/pokemons/query/query.ts` (lines 8-18)
 - Service Configuration: `app/services/http/core/core.ts` (lines 7-20)
 
 ### Configuration Options
@@ -365,7 +367,7 @@ try {
 }
 ```
 
-**Error Handling Reference:** `app/(routes)/(public)/pokemons/query/query.ts` (lines 15-25)
+**Error Handling Reference:** `app/(routes)/(public)/(examples)/pokemons/query/query.ts` (lines 15-25)
 
 ### Adapter Configuration
 
@@ -476,7 +478,7 @@ app/(routes)/(public)/route-name/
 - Simplified testing and mocking strategies
 - Reusable query functions across similar contexts
 
-**Complete Example:** `app/(routes)/(public)/pokemons/query/`
+**Complete Implementation Example:** `app/(routes)/(public)/(examples)/pokemons/query/`
 
 ## Quality Assurance
 
@@ -487,7 +489,7 @@ app/(routes)/(public)/route-name/
 - TypeScript compilation with strict mode enforcement
 - ESLint validation with custom rule configurations
 - Prettier code formatting with consistent style
-- Jest test execution with coverage requirements
+- Vitest test execution with coverage requirements
 - Commit message format validation
 
 **Continuous Integration Pipeline:**
@@ -546,7 +548,7 @@ app/(routes)/(public)/route-name/
 **Problem:** Test discovery and execution failures
 **Solution:**
 
-- Verify Jest configuration: `jest.config.ts` (lines 8-12)
+- Verify Vitest configuration: `vitest.config.ts` (lines 8-12)
 - Ensure test file naming follows convention: `*.test.tsx` or `*.spec.tsx`
 - Reference working test structure: `app/components/ui/spinner/`
 
@@ -598,7 +600,7 @@ app/(routes)/(public)/route-name/
 **Solution:**
 
 - Validate GraphQL endpoint configuration: `app/services/http/core/core.ts` (line 8)
-- Verify query syntax: `app/(routes)/(public)/pokemons/query/query.const.ts`
+- Verify query syntax: `app/(routes)/(public)/(examples)/pokemons/query/query.const.ts`
 - Check GraphQL adapter configuration and initialization
 
 **Problem:** Cache invalidation and stale data issues

@@ -70,7 +70,7 @@ Utils & Hooks (Shared Logic)
 
 ### Route to View Data Flow
 
-**Implementation Reference:** `app/(routes)/(public)/pokemons/page.tsx`
+**Implementation Reference:** `app/(routes)/(public)/(examples)/pokemons/page.tsx`
 
 The standard data flow follows this pattern:
 
@@ -148,7 +148,7 @@ The architecture prioritizes server-side data fetching for optimal performance a
 - Static and semi-static content
 - Authentication-dependent data
 
-**Implementation Pattern:** `app/(routes)/(public)/pokemons/query/query.ts`
+**Implementation Pattern:** `app/(routes)/(public)/(examples)/pokemons/query/query.ts`
 
 ### Client-Side Strategic Implementation
 
@@ -184,7 +184,7 @@ app/(routes)/(public)/route-name/
 - Simplified testing and mocking
 - Reusable query functions across similar contexts
 
-**Example Implementation:** `app/(routes)/(public)/pokemons/query/`
+**Example Implementation:** `app/(routes)/(public)/(examples)/pokemons/query/`
 
 ### Caching Strategy
 
@@ -235,8 +235,8 @@ Both REST and GraphQL clients provide consistent APIs:
 - Consistent TypeScript interfaces and type safety
 - Shared caching strategies and optimization
 
-**REST Client Example:** `app/(routes)/(public)/pokemons/[name]/query/query.ts`
-**GraphQL Client Example:** `app/(routes)/(public)/pokemons/query/query.ts`
+**REST Client Example:** `app/(routes)/(public)/(examples)/pokemons/[name]/query/query.ts`
+**GraphQL Client Example:** `app/(routes)/(public)/(examples)/pokemons/query/query.ts`
 **Configuration Reference:** `app/services/http/core/core.ts`
 
 ## State Management Architecture
@@ -424,7 +424,7 @@ The architecture integrates quality checks at multiple points:
 - TypeScript compilation with strict configuration
 - ESLint validation with custom rules
 - Prettier formatting enforcement
-- Jest test execution with coverage requirements
+- Vitest test execution with coverage requirements
 
 **Continuous Integration Pipeline**
 
