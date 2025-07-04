@@ -63,6 +63,13 @@ export interface IPokemonSpecies {
   }>
   forms_switchable: boolean
   gender_rate: number
+  genera: Array<{
+    genus: string
+    language: {
+      name: string
+      url: string
+    }
+  }>
   generation: {
     name: string
     url: string

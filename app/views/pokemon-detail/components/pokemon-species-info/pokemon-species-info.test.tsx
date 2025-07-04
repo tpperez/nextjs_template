@@ -83,6 +83,7 @@ describe('PokemonSpeciesInfo Component', () => {
     pokedex_numbers: [],
     shape: { name: 'quadruped', url: 'https://example.com/quadruped' },
     varieties: [],
+    genera: [],
   }
 
   const mockRefetch = vi.fn()

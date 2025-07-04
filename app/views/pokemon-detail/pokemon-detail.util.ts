@@ -20,10 +20,7 @@ export const getEnglishDescription = (
 export const getEnglishGenus = (
   species: IPokemonSpecies,
 ): string | undefined => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const genera = (species as any).genera
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return genera?.find((genus: any) => {
+  return species.genera?.find((genus) => {
     return genus.language.name === 'en'
   })?.genus
 }
