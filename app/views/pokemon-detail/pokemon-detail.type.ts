@@ -5,7 +5,7 @@ import type {
   IPokemonSprites,
   IPokemonStat,
   IPokemonType,
-} from '@/app/(routes)/(public)/(examples)/pokemons/[name]/query'
+} from '@/app/(routes)/(public)/(examples)/pokemons/[name]/queries'
 
 export interface IPokemonDetailViewProps {
   data: IPokemonDetail

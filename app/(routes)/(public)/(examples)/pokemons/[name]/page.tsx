@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 
 import { ViewPokemonDetail } from '@/app/views/pokemon-detail'
 
-import { getPokemonDetailData } from './query'
+import { getPokemonDetailData } from './queries'
 
 interface PokemonPageProps {
   params: Promise<{

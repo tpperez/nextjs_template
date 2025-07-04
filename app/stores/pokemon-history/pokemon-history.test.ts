@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { IPokemon } from '@/app/(routes)/(public)/(examples)/pokemons/query'
+import type { IPokemon } from '@/app/(routes)/(public)/(examples)/pokemons/queries'
 
 import { usePokemonHistoryStore } from './pokemon-history'
 import { POKEMON_HISTORY_CONFIG } from './pokemon-history.const'

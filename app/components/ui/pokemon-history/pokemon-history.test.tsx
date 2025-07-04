@@ -3,7 +3,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { IPokemon } from '@/app/(routes)/(public)/(examples)/pokemons/query'
+import type { IPokemon } from '@/app/(routes)/(public)/(examples)/pokemons/queries'
 
 vi.mock('@/app/stores/pokemon-history', () => {
   return {

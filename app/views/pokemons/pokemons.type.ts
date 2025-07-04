@@ -1,4 +1,4 @@
-import type { IPokemon } from '@/app/(routes)/(public)/(examples)/pokemons/query'
+import type { IPokemon } from '@/app/(routes)/(public)/(examples)/pokemons/queries'
 
 export interface IPokemonsViewProps {
   success: boolean

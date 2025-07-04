@@ -1,4 +1,4 @@
-export { getPokemonDetailData } from './query'
+export { getPokemonDetailData } from './get-pokemon-detail.query'
 export type {
   IPokemonAbility,
   IPokemonDetail,
@@ -6,4 +6,4 @@ export type {
   IPokemonSprites,
   IPokemonStat,
   IPokemonType,
-} from './query.type'
+} from './get-pokemon-detail.type'

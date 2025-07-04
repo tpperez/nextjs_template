@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { renderHook, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { IPokemonsResponse } from '@/app/(routes)/(public)/(examples)/pokemons/query/query.type'
+import type { IPokemonsResponse } from '@/app/(routes)/(public)/(examples)/pokemons/queries/get-pokemons.type'
 
 import { POKEMONS_PER_PAGE, POKEMONS_QUERY_CONFIG } from './pokemons.const'
 import { useMorePokemons } from './pokemons.hook'
@@ -19,11 +19,14 @@ vi.mock('@/app/services/http', () => {
 
 import { graphqlClient } from '@/app/services/http'
 
-vi.mock('@/app/(routes)/(public)/(examples)/pokemons/query/query.const', () => {
-  return {
-    GET_POKEMONS: 'mocked-query',
-  }
-})
+vi.mock(
+  '@/app/(routes)/(public)/(examples)/pokemons/queries/get-pokemons.const',
+  () => {
+    return {
+      GET_POKEMONS: 'mocked-query',
+    }
+  },
+)
 
 describe('useMorePokemons Hook', () => {
   let queryClient: QueryClient
