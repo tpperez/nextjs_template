@@ -135,96 +135,20 @@ The decision between global and module-specific placement follows clear criteria
 
 **Decision Rule:** Start with module-specific placement and promote to global when usage expands beyond the original context.
 
-## Data Fetching Architecture
-
-### Server-Side First Strategy
-
-The architecture prioritizes server-side data fetching for optimal performance and SEO:
-
-**Primary Use Cases:**
-
-- Initial page data and above-the-fold content
-- SEO-critical information
-- Static and semi-static content
-- Authentication-dependent data
-
-**Implementation Pattern:** `app/(routes)/(public)/(examples)/pokemons/query/query.ts`
-
-### Client-Side Strategic Implementation
-
-Client-side fetching is employed selectively for enhanced user experience:
-
-**Specific Use Cases:**
-
-- Real-time data updates and notifications
-- User interaction responses and form submissions
-- Background data refreshing and cache updates
-- Progressive data loading and infinite scroll
-
-**Implementation Pattern:** `app/views/pokemon-detail/pokemon-detail.hook.ts`
-
-### Query Organization Pattern
-
-Data fetching logic is co-located with routes for clear dependency management:
-
-```
-app/(routes)/(public)/route-name/
-├── page.tsx                 # Route component
-└── query/                   # Data fetching module
-    ├── index.ts            # Public exports
-    ├── query.ts            # Fetch function implementations
-    ├── query.const.ts      # GraphQL queries and constants
-    └── query.type.ts       # Response type definitions
-```
-
-**Benefits:**
-
-- Clear data dependencies for each route
-- Route-specific cache configuration
-- Simplified testing and mocking
-- Reusable query functions across similar contexts
-
-**Example Implementation:** `app/(routes)/(public)/(examples)/pokemons/query/`
-
-### Caching Strategy
-
-The architecture implements multi-layer caching for optimal performance:
-
-**Server-Side Caching (Next.js)**
-
-- Static content: 24-hour revalidation
-- Semi-dynamic content: 1-hour revalidation
-- Dynamic content: 5-minute revalidation
-- Personalized content: No caching
-
-**Client-Side Caching (TanStack Query)**
-
-- Background data updates for freshness
-- Optimistic updates for perceived performance
-- Stale-while-revalidate for error resilience
-- Selective cache invalidation for data consistency
-
 ## HTTP Service Architecture
 
-### Adapter Pattern Implementation
+### Unified Client Pattern
 
-The HTTP service layer uses the adapter pattern for flexibility and maintainability:
+The HTTP service layer implements an adapter pattern that provides consistent interfaces for both REST and GraphQL operations.
 
-**Core Components:**
+**Adapter Benefits:**
 
-- **Configuration Layer:** `app/services/http/core/core.ts`
-- **Client Interfaces:** Unified REST and GraphQL APIs
-- **Adapter Implementations:** Fetch, Axios, GraphQL-Request
-- **Error Handling:** Consistent error formatting across adapters
+- Consistent error handling across different API types
+- Unified configuration and caching strategies
+- Type-safe interfaces with full TypeScript support
+- Easy switching between implementation strategies
 
-**Architecture Benefits:**
-
-- Interchangeable HTTP libraries without client code changes
-- Consistent interface across different transport mechanisms
-- Simplified testing through adapter mocking
-- Future-proof design for emerging HTTP libraries
-
-### Unified Client Interface
+**Client Implementations:**
 
 Both REST and GraphQL clients provide consistent APIs:
 
@@ -311,79 +235,42 @@ The component system is organized in layers of increasing specificity:
 
 The architecture implements error handling at multiple levels:
 
-**Server-Side Error Handling**
+**API Level Error Handling**
 
-- Query functions handle API errors and network failures
-- Structured error responses with consistent formatting
-- Graceful degradation and fallback strategies
-- Server-side error logging and monitoring
+- HTTP status code interpretation
+- Network timeout and connectivity issues
+- Response validation and parsing errors
+- Retry logic and circuit breaker patterns
 
-**Client-Side Error Handling**
+**Application Level Error Recovery**
 
-- React Error Boundaries for component error isolation
-- TanStack Query for data fetching error management
-- User-friendly error messaging and recovery options
-- Client-side error reporting and analytics
+- User-friendly error messages and fallback UI
+- Error boundary implementation for component isolation
+- Graceful degradation strategies
+- Error reporting and monitoring integration
 
-**Global Error Handling**
+**Implementation References:**
 
-- Middleware for security and routing errors
-- Consistent error response formats across the application
-- Integration with logging and monitoring services
-- Automatic error recovery and retry mechanisms
+- HTTP Error Handling: `app/services/http/core/core.ts` - error response processing
+- Component Error Boundaries: Route-level error.tsx files
+- User Error Display: `app/components/ui/` - error state components
 
-**Related Documentation:** [Development Guide - Error Handling Patterns](DEVELOPMENT.md#error-handling-patterns)
-
-## Security Architecture
-
-### Content Security Policy Implementation
-
-**Configuration:** `middleware.ts`
-
-The security layer implements comprehensive protection:
-
-- Strict CSP headers for XSS prevention
-- Nonce-based script execution control
-- Restricted resource loading domains
-- Frame protection and clickjacking prevention
-
-### Type Safety Strategy
-
-TypeScript configuration ensures compile-time safety:
-
-- Strict mode enabled with no escape hatches
-- Explicit `any` type prohibition through ESLint
-- Comprehensive interface definitions for all data structures
-- Generic type usage for reusable component patterns
-
-## Performance Architecture
-
-### Bundle Optimization Strategy
-
-The architecture implements multiple optimization techniques:
-
-- Dynamic imports for heavy components and libraries
-- Route-level code splitting for optimal loading
-- Tree shaking configuration for unused code elimination
-- Image optimization through Next.js Image component
-
-### Rendering Strategy
-
-Balanced approach between server and client rendering:
-
-- Server Components for initial page rendering
-- Client Components only when interactivity is required
-- Static Site Generation for cacheable content
-- Incremental Static Regeneration for dynamic content
+## Caching Strategy
 
 ### Multi-Layer Caching
 
-Comprehensive caching strategy across multiple layers:
+The application implements caching at multiple levels for optimal performance:
 
 1. **Browser Cache:** HTTP headers and service worker
 2. **CDN Cache:** Edge location caching for global performance
 3. **Next.js Cache:** Server-side rendering and API route caching
 4. **Client Cache:** TanStack Query and application state caching
+
+**Configuration References:**
+
+- Next.js Caching: `next.config.js` - cache headers and revalidation
+- TanStack Query: `app/services/http/providers/react-query.tsx` - query client configuration
+- HTTP Service: `app/services/http/core/core.ts` - cache configuration options
 
 ## Testing Architecture
 

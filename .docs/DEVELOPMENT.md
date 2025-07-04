@@ -20,7 +20,7 @@ This guide provides comprehensive development standards, workflows, and technica
 
 1. **Create query directory:** `app/(routes)/my-route/query/`
 2. **Implement data fetching:** Follow [Data Fetching Patterns](#data-fetching-patterns)
-3. **Reference examples:** REST at line 6-16, GraphQL at line 8-18 in respective query files
+3. **Reference examples:** REST and GraphQL patterns in respective query directories
 
 ### Component Placement Decision
 
@@ -302,9 +302,9 @@ const { data, errors } = await graphqlClient.query(
 
 **Implementation References:**
 
-- REST Example: `app/(routes)/(public)/(examples)/pokemons/[name]/query/query.ts` (lines 6-16)
-- GraphQL Example: `app/(routes)/(public)/(examples)/pokemons/query/query.ts` (lines 8-18)
-- Service Configuration: `app/services/http/core/core.ts` (lines 7-20)
+- REST Example: `app/(routes)/(public)/(examples)/pokemons/[name]/query/query.ts` - data fetching implementation
+- GraphQL Example: `app/(routes)/(public)/(examples)/pokemons/query/query.ts` - GraphQL query patterns
+- Service Configuration: `app/services/http/core/core.ts` - HTTP service configuration
 
 ### Configuration Options
 
@@ -330,155 +330,46 @@ interface RequestOptions {
   revalidate?: number // Next.js cache revalidation time
   tags?: string[] // Cache tags for invalidation
   headers?: HeadersInit // Custom request headers
-  signal?: AbortSignal // Request cancellation signal
+  signal?: AbortSignal // Request cancellation
 }
 ```
 
-### Error Handling Implementation
+### Data Fetching Patterns
 
-**Error Response Structure:**
-
-```typescript
-interface HttpError {
-  message: string // Human-readable error message
-  status: number // HTTP status code
-  code?: string // Application-specific error code
-  details?: Record<string, unknown> // Additional error context
-}
-```
-
-**Error Handling Pattern:**
+**Server-Side Data Fetching:**
 
 ```typescript
-try {
-  const response = await restClient.get<DataType>('/api/endpoint')
-  return {
-    success: true,
-    data: response,
-    error: null,
-  }
-} catch (error: HttpError) {
-  console.error('API request failed:', error.message)
-  return {
-    success: false,
-    data: null,
-    error: error.message,
+// Query function pattern
+export const getDataQuery = async (): Promise<ApiResponse<DataType>> => {
+  try {
+    const response = await restClient.get<DataType>('/api/data')
+    return { success: true, data: response }
+  } catch (error) {
+    return { success: false, error: 'Failed to fetch data' }
   }
 }
+
+// Usage in route component
+const data = await getDataQuery()
+if (!data.success) {
+  notFound()
+}
 ```
 
-**Error Handling Reference:** `app/(routes)/(public)/(examples)/pokemons/query/query.ts` (lines 15-25)
-
-### Adapter Configuration
-
-**Available HTTP Adapters:**
-
-- **FetchRestAdapter** - Native fetch API with Next.js integration (default)
-- **AxiosRestAdapter** - Axios library with interceptor support
-- **FetchGraphQLAdapter** - Native fetch for GraphQL operations (default)
-- **GraphQLRequestAdapter** - graphql-request library implementation
-
-**Adapter Switching Configuration:**
+**Client-Side Data Fetching:**
 
 ```typescript
-// Location: app/services/http/core/core.ts
-export const HTTP_ADAPTER_CONFIG = {
-  restAdapter: () => new FetchRestAdapter(), // Default REST adapter
-  graphqlAdapter: () => new FetchGraphQLAdapter(), // Default GraphQL adapter
-}
-
-// To use alternative adapters:
-export const HTTP_ADAPTER_CONFIG = {
-  restAdapter: () => new AxiosRestAdapter(),
-  graphqlAdapter: () => new GraphQLRequestAdapter(),
+// Custom hook pattern
+export const useDataQuery = (id: string) => {
+  return useQuery({
+    queryKey: ['data', id],
+    queryFn: () => restClient.get<DataType>(`/api/data/${id}`),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  })
 }
 ```
 
-## State Management Patterns
-
-### State Classification Guidelines
-
-**Local Component State (React Hooks):**
-
-- Form input data and validation state
-- UI component state (modal visibility, dropdown selection)
-- Temporary interaction state
-- Component-specific derived state
-
-**Global Application State (Zustand):**
-
-- User authentication and session information
-- Application-wide preferences and settings
-- Persistent user data and configurations
-- Cross-component shared state that survives navigation
-
-**Server State (TanStack Query):**
-
-- API response data and caching
-- Request state management (loading, error, success)
-- Background data synchronization
-- Optimistic updates and error recovery
-
-**Decision Criteria:** Use global state when data needs to persist across route changes or is shared between unrelated components.
-
-### Custom Hook Guidelines
-
-**Hook Creation Criteria:**
-
-- Same state logic required in multiple components
-- Complex state management with multiple related actions
-- Business logic that benefits from encapsulation and reuse
-
-**Hook Naming Standards:**
-
-- Always prefix with `use` followed by descriptive name
-- Be specific about functionality: `usePokemonSpecies` vs `useApiRequest`
-- Include context when generic: `useFormValidation` vs `useValidation`
-
-**Custom Hook Reference:** `app/views/pokemon-detail/pokemon-detail.hook.ts` (lines 30-70)
-
-## Data Fetching Patterns
-
-### Server-Side vs Client-Side Decision Matrix
-
-**Server-Side Data Fetching (Default Choice):**
-
-- SEO-critical content requiring search engine indexing
-- Above-the-fold content for optimal loading performance
-- Initial page data that determines page structure
-- Static and semi-static content with infrequent updates
-
-**Client-Side Data Fetching (Strategic Usage):**
-
-- Real-time data updates and live notifications
-- User interaction responses and form submissions
-- Background data refresh and cache updates
-- Conditional data loading based on user actions
-
-**Related Architecture:** [Architecture Guide - Data Fetching Strategy](ARCHITECTURE.md#data-fetching-architecture)
-
-### Query Organization Pattern
-
-**Co-location Structure:**
-
-```
-app/(routes)/(public)/route-name/
-├── page.tsx                 # Route component implementation
-└── query/                   # Data fetching module
-    ├── index.ts            # Public exports
-    ├── query.ts            # Fetch function implementations
-    ├── query.const.ts      # GraphQL queries and constants
-    └── query.type.ts       # Response type definitions
-```
-
-**Organization Benefits:**
-
-- Clear data dependencies for each route
-- Route-specific cache configuration and optimization
-- Simplified testing and mocking strategies
-- Reusable query functions across similar contexts
-
-**Complete Implementation Example:** `app/(routes)/(public)/(examples)/pokemons/query/`
+**Query Directory Structure:** `app/(routes)/(public)/(examples)/pokemons/query/`
 
 ## Quality Assurance
 
@@ -532,7 +423,7 @@ app/(routes)/(public)/route-name/
 **Problem:** Module resolution errors with path aliases
 **Solution:**
 
-- Verify path mappings in `tsconfig.json` (lines 22-24)
+- Verify path mappings in `tsconfig.json` - paths configuration
 - Restart TypeScript service in development environment
 - Ensure import paths use `@/` prefix for internal modules
 
@@ -541,14 +432,14 @@ app/(routes)/(public)/route-name/
 
 - Define explicit TypeScript interfaces for all data structures
 - Reference type definitions: `app/views/pokemon-detail/pokemon-detail.type.ts`
-- Check ESLint configuration: `eslint.config.mjs` (line 32)
+- Check ESLint configuration: `eslint.config.mjs` - TypeScript rules
 
 ### Testing Framework Issues
 
 **Problem:** Test discovery and execution failures
 **Solution:**
 
-- Verify Vitest configuration: `vitest.config.ts` (lines 8-12)
+- Verify Vitest configuration: `vitest.config.ts` - test environment setup
 - Ensure test file naming follows convention: `*.test.tsx` or `*.spec.tsx`
 - Reference working test structure: `app/components/ui/spinner/`
 
@@ -592,14 +483,14 @@ app/(routes)/(public)/route-name/
 **Problem:** CORS policy violations in API requests
 **Solution:**
 
-- Review middleware configuration: `middleware.ts` (lines 15-20)
+- Review middleware configuration: `middleware.ts` - CORS headers
 - Verify API endpoint URLs in environment configuration
 - Check Content Security Policy headers for request blocking
 
 **Problem:** GraphQL query execution failures
 **Solution:**
 
-- Validate GraphQL endpoint configuration: `app/services/http/core/core.ts` (line 8)
+- Validate GraphQL endpoint configuration: `app/services/http/core/core.ts` - GraphQL settings
 - Verify query syntax: `app/(routes)/(public)/(examples)/pokemons/query/query.const.ts`
 - Check GraphQL adapter configuration and initialization
 
@@ -607,7 +498,7 @@ app/(routes)/(public)/route-name/
 **Solution:**
 
 - Review revalidate values in query configurations
-- Verify TanStack Query configuration: `app/services/http/providers/react-query.tsx` (lines 10-20)
+- Verify TanStack Query configuration: `app/services/http/providers/react-query.tsx` - QueryClient options
 - Clear browser cache and restart development server
 
 ### Performance and Optimization Issues
@@ -647,7 +538,7 @@ CACHE_DURATION=300
 
 ### Build Configuration
 
-**Next.js Configuration Reference:** `next.config.ts`
+**Next.js Configuration Reference:** `next.config.js`
 
 - Image optimization domains and settings
 - Security headers and Content Security Policy
@@ -658,6 +549,12 @@ CACHE_DURATION=300
 - Strict mode settings and compiler options
 - Path mapping and module resolution
 - Include and exclude patterns
+
+**ESLint Configuration Reference:** `eslint.config.mjs`
+
+- TypeScript integration and strict rules
+- Import sorting and organization
+- Code style and formatting rules
 
 ### IDE Configuration
 
