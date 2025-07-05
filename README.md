@@ -72,6 +72,49 @@ NEXT_PUBLIC_API_URL="https://api.example.com"
 
 ---
 
+## Contributing Guidelines
+
+### Branch Management
+
+**Branch Naming Convention:**
+
+```bash
+# with card/ticket number
+card-123_pokemon-search-feature
+
+# without card number
+jd_pokemon-detail-optimization
+```
+
+### Commit Process
+
+```bash
+git add .
+git commit  # opens commitizen wizard
+```
+
+**Pre-commit Validation Pipeline:**
+
+The project enforces quality through automated hooks that validate:
+
+1. TypeScript compilation
+2. Test suite execution
+3. ESLint validation
+4. Prettier formatting
+5. Conventional commit messages via Commitizen
+
+### Pull Request Guidelines
+
+Use the provided PR template and ensure:
+
+- Self-review completed
+- Tests added for core features
+- All tests pass locally
+- Proper tags applied
+- Reviewer assigned
+
+---
+
 ## Available Scripts
 
 ```bash
@@ -130,7 +173,44 @@ vitest.setup.ts             # test environment setup configuration
 
 ---
 
+## Development Workflow
+
+### Daily Development Commands
+
+```bash
+# development
+npm run dev                 # start with hot reload
+npm run test:watch          # run tests in watch mode
+npm run lint && npm run tsc # check code quality
+
+# troubleshooting
+npm run dev -- --port 3001 # use different port
+rm -rf .next && npm run dev # clear cache
+```
+
+### Code Quality Standards
+
+The project maintains strict code quality through:
+
+- **TypeScript strict mode** with explicit return types
+- **ESLint rules** preventing `any` types and enforcing patterns
+- **Prettier formatting** for consistent code style
+- **Vitest testing** with 80% coverage threshold
+- **Conventional commits** for clear change history
+
+---
+
 ## Documentation
 
-- **[Development Guide](.docs/DEVELOPMENT.md)** - coding standards and workflows
-- **[Architecture Guide](.docs/ARCHITECTURE.md)** - design decisions and patterns
+- **[Development Guide](.docs/DEVELOPMENT.md)** - daily workflows and implementation patterns
+- **[Architecture Guide](.docs/ARCHITECTURE.md)** - design decisions and system architecture
+
+---
+
+## Next Steps
+
+**For new contributors:** Review the [Development Guide](.docs/DEVELOPMENT.md) for coding standards and implementation patterns.
+
+**For architecture decisions:** See the [Architecture Guide](.docs/ARCHITECTURE.md) for design rationale and system organization.
+
+**For implementation examples:** Examine `app/views/pokemon-detail/` for complete feature patterns.
