@@ -15,9 +15,30 @@ vi.mock('next/script', () => {
 
 const mockRadarVisualization = vi.fn()
 
+const mockD3 = {
+  select: vi.fn(() => {
+    return {
+      selectAll: vi.fn(() => {
+        return {
+          remove: vi.fn(),
+        }
+      }),
+    }
+  }),
+  symbol: vi.fn(),
+  symbolStar: {},
+  forceSimulation: vi.fn(),
+  forceCollide: vi.fn(),
+}
+
 describe('TechRadar Component', () => {
   beforeEach(() => {
     vi.useFakeTimers()
+
+    Object.defineProperty(window, 'd3', {
+      value: mockD3,
+      writable: true,
+    })
 
     Object.defineProperty(window, 'radar_visualization', {
       value: mockRadarVisualization,
@@ -28,6 +49,13 @@ describe('TechRadar Component', () => {
   afterEach(() => {
     vi.useRealTimers()
     vi.clearAllMocks()
+    mockD3.select.mockReturnValue({
+      selectAll: vi.fn(() => {
+        return {
+          remove: vi.fn(),
+        }
+      }),
+    })
   })
 
   it('should render without errors', () => {
@@ -42,11 +70,9 @@ describe('TechRadar Component', () => {
     expect(wrapperDiv).toHaveClass('h-screen', 'w-full', 'overflow-hidden')
   })
 
-  it('should call radar_visualization after timeout when window object is available', () => {
+  it('should call radar_visualization after timeout when both scripts are available', () => {
     render(<TechRadar />)
-
     vi.advanceTimersByTime(100)
-
     expect(mockRadarVisualization).toHaveBeenCalledWith(TECH_RADAR_CONFIG)
     expect(mockRadarVisualization).toHaveBeenCalledTimes(1)
   })
@@ -64,7 +90,7 @@ describe('TechRadar Component', () => {
     expect(mockRadarVisualization).toHaveBeenCalledWith(customConfig)
   })
 
-  it('should cleanup timeout on unmount', () => {
+  it('should cleanup timeout on unmount when scripts are loaded', () => {
     const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout')
 
     const { unmount } = render(<TechRadar />)

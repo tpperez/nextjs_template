@@ -36,12 +36,15 @@ vi.mock('next/image', () => {
       [key: string]: unknown
     }) => {
       return (
-        <img
-          src={src}
-          alt={alt}
-          width={width}
-          height={height}
+        <div
+          data-testid='next-image-mock'
+          data-src={src}
+          data-alt={alt}
+          data-width={width}
+          data-height={height}
           className={className}
+          role='img'
+          aria-label={alt}
           {...props}
         />
       )
@@ -168,11 +171,14 @@ describe('PokemonHistory Component', () => {
     it('should render pokemon images correctly', () => {
       render(<PokemonHistory />)
 
-      const pikachuImage = screen.getByAltText('pikachu')
+      const pikachuImage = screen.getByLabelText('pikachu')
       expect(pikachuImage).toBeInTheDocument()
-      expect(pikachuImage).toHaveAttribute('src', mockPokemonHistory[0].image)
-      expect(pikachuImage).toHaveAttribute('width', '80')
-      expect(pikachuImage).toHaveAttribute('height', '80')
+      expect(pikachuImage).toHaveAttribute(
+        'data-src',
+        mockPokemonHistory[0].image,
+      )
+      expect(pikachuImage).toHaveAttribute('data-width', '80')
+      expect(pikachuImage).toHaveAttribute('data-height', '80')
     })
 
     it('should render correct navigation links', () => {
@@ -238,7 +244,7 @@ describe('PokemonHistory Component', () => {
       render(<PokemonHistory />)
 
       expect(screen.getByText('No Image')).toBeInTheDocument()
-      expect(screen.queryByAltText('missingno')).not.toBeInTheDocument()
+      expect(screen.queryByLabelText('missingno')).not.toBeInTheDocument()
     })
 
     it('should still render pokemon name and link when image is missing', () => {
@@ -270,7 +276,7 @@ describe('PokemonHistory Component', () => {
     it('should have proper alt text for images', () => {
       render(<PokemonHistory />)
 
-      const image = screen.getByAltText('pikachu')
+      const image = screen.getByLabelText('pikachu')
       expect(image).toBeInTheDocument()
     })
 

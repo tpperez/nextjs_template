@@ -40,3 +40,31 @@ export interface IRadarConfig {
 export interface ITechRadarProps {
   config?: IRadarConfig
 }
+
+export interface ID3Selection {
+  selectAll: (selector: string) => ID3Selection
+  remove: () => ID3Selection
+}
+
+export interface ID3Symbol {
+  type: (symbolType: unknown) => ID3Symbol
+  size: (size: number) => ID3Symbol
+}
+
+export interface ID3Force {
+  radius: (radius: number) => ID3Force
+}
+
+export interface ID3Simulation {
+  nodes: (nodes: unknown[]) => ID3Simulation
+  force: (name: string, force: ID3Force) => ID3Simulation
+  on: (event: string, callback: () => void) => ID3Simulation
+}
+
+export interface ID3Library {
+  select: (selector: string) => ID3Selection
+  symbol: () => ID3Symbol
+  symbolStar: unknown
+  forceSimulation: () => ID3Simulation
+  forceCollide: () => ID3Force
+}

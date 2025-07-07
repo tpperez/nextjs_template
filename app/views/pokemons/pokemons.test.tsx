@@ -1,35 +1,43 @@
-/* eslint-disable */
-import { render, screen, fireEvent } from '@testing-library/react'
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { POKEMON_GALLERY_CONFIG } from './pokemons.const'
 import { ViewPokemons } from './pokemons'
+import { POKEMON_GALLERY_CONFIG } from './pokemons.const'
 import type { IPokemonsViewProps } from './pokemons.type'
 
-vi.mock('./pokemons.hook', () => ({
-  useMorePokemons: vi.fn(),
-}))
+vi.mock('./pokemons.hook', () => {
+  return {
+    useMorePokemons: vi.fn(),
+  }
+})
 
-vi.mock('./components/pokemon-search', () => ({
-  PokemonSearch: vi.fn(),
-  usePokemonNameSearch: vi.fn(),
-}))
+vi.mock('./components/pokemon-search', () => {
+  return {
+    PokemonSearch: vi.fn(),
+    usePokemonNameSearch: vi.fn(),
+  }
+})
 
-vi.mock('./components/pokemon-card', () => ({
-  PokemonCard: vi.fn(),
-}))
+vi.mock('./components/pokemon-card', () => {
+  return {
+    PokemonCard: vi.fn(),
+  }
+})
 
-vi.mock('@/app/components/ui/spinner', () => ({
-  Spinner: vi.fn(),
-}))
+vi.mock('@/app/components/ui/spinner', () => {
+  return {
+    Spinner: vi.fn(),
+  }
+})
 
-import { useMorePokemons } from './pokemons.hook'
+import { Spinner } from '@/app/components/ui/spinner'
+
+import { PokemonCard } from './components/pokemon-card'
 import {
   PokemonSearch,
   usePokemonNameSearch,
 } from './components/pokemon-search'
-import { PokemonCard } from './components/pokemon-card'
-import { Spinner } from '@/app/components/ui/spinner'
+import { useMorePokemons } from './pokemons.hook'
 
 const mockedUseMorePokemons = vi.mocked(useMorePokemons)
 const mockedUsePokemonNameSearch = vi.mocked(usePokemonNameSearch)
@@ -68,7 +76,7 @@ describe('ViewPokemons Component', () => {
       fetchNextPage: mockFetchNextPage,
       hasNextPage: false,
       isFetchingNextPage: false,
-    } as any)
+    } as unknown as ReturnType<typeof useMorePokemons>)
 
     mockedUsePokemonNameSearch.mockReturnValue({
       result: undefined,
@@ -77,29 +85,37 @@ describe('ViewPokemons Component', () => {
       refetch: vi.fn(),
     })
 
-    mockedPokemonSearch.mockImplementation(({ onSearch, isLoading }) => (
-      <div data-testid='pokemon-search'>
-        <input
-          data-testid='search-input'
-          onChange={(e) => onSearch(e.target.value)}
-          placeholder='Search Pokemon'
-        />
-        {isLoading && <div data-testid='search-loading'>Loading...</div>}
-      </div>
-    ))
+    mockedPokemonSearch.mockImplementation(({ onSearch, isLoading }) => {
+      return (
+        <div data-testid='pokemon-search'>
+          <input
+            data-testid='search-input'
+            onChange={(e) => {
+              return onSearch(e.target.value)
+            }}
+            placeholder='Search Pokemon'
+          />
+          {isLoading && <div data-testid='search-loading'>Loading...</div>}
+        </div>
+      )
+    })
 
-    mockedPokemonCard.mockImplementation(({ pokemon }) => (
-      <div data-testid='pokemon-card'>
-        <div data-testid='pokemon-name'>{pokemon.name}</div>
-        <div data-testid='pokemon-image'>{pokemon.image}</div>
-      </div>
-    ))
+    mockedPokemonCard.mockImplementation(({ pokemon }) => {
+      return (
+        <div data-testid='pokemon-card'>
+          <div data-testid='pokemon-name'>{pokemon.name}</div>
+          <div data-testid='pokemon-image'>{pokemon.image}</div>
+        </div>
+      )
+    })
 
-    mockedSpinner.mockImplementation(({ text }) => (
-      <div data-testid='spinner'>
-        ({text && <span data-testid='spinner-text'>{text}</span>})
-      </div>
-    ))
+    mockedSpinner.mockImplementation(({ text }) => {
+      return (
+        <div data-testid='spinner'>
+          ({text && <span data-testid='spinner-text'>{text}</span>})
+        </div>
+      )
+    })
   })
 
   describe('Error State', () => {
@@ -265,7 +281,7 @@ describe('ViewPokemons Component', () => {
         fetchNextPage: mockFetchNextPage,
         hasNextPage: true,
         isFetchingNextPage: false,
-      } as any)
+      } as unknown as ReturnType<typeof useMorePokemons>)
 
       render(<ViewPokemons {...defaultProps} />)
 
@@ -275,11 +291,13 @@ describe('ViewPokemons Component', () => {
     it('should show load more button when data length is between 8 and count', () => {
       const propsWithMoreData = {
         ...defaultProps,
-        data: new Array(10).fill(null).map((_, i) => ({
-          name: `pokemon-${i}`,
-          image: `https://example.com/pokemon-${i}.png`,
-          url: `/pokemons/pokemon-${i}`,
-        })),
+        data: new Array(10).fill(null).map((_, i) => {
+          return {
+            name: `pokemon-${i}`,
+            image: `https://example.com/pokemon-${i}.png`,
+            url: `/pokemons/pokemon-${i}`,
+          }
+        }),
       }
 
       mockedUseMorePokemons.mockReturnValue({
@@ -287,7 +305,7 @@ describe('ViewPokemons Component', () => {
         fetchNextPage: mockFetchNextPage,
         hasNextPage: false,
         isFetchingNextPage: false,
-      } as any)
+      } as unknown as ReturnType<typeof useMorePokemons>)
 
       render(<ViewPokemons {...propsWithMoreData} />)
 
@@ -300,7 +318,7 @@ describe('ViewPokemons Component', () => {
         fetchNextPage: mockFetchNextPage,
         hasNextPage: true,
         isFetchingNextPage: false,
-      } as any)
+      } as unknown as ReturnType<typeof useMorePokemons>)
 
       render(<ViewPokemons {...defaultProps} />)
 
@@ -315,7 +333,7 @@ describe('ViewPokemons Component', () => {
         fetchNextPage: mockFetchNextPage,
         hasNextPage: true,
         isFetchingNextPage: true,
-      } as any)
+      } as unknown as ReturnType<typeof useMorePokemons>)
 
       render(<ViewPokemons {...defaultProps} />)
 
@@ -329,7 +347,7 @@ describe('ViewPokemons Component', () => {
         fetchNextPage: mockFetchNextPage,
         hasNextPage: true,
         isFetchingNextPage: false,
-      } as any)
+      } as unknown as ReturnType<typeof useMorePokemons>)
 
       const searchResult = {
         id: 25,
@@ -368,7 +386,7 @@ describe('ViewPokemons Component', () => {
         fetchNextPage: mockFetchNextPage,
         hasNextPage: false,
         isFetchingNextPage: false,
-      } as any)
+      } as unknown as ReturnType<typeof useMorePokemons>)
 
       render(<ViewPokemons {...emptyProps} />)
 
@@ -412,6 +430,7 @@ describe('ViewPokemons Component', () => {
             ],
           },
         ],
+        pageParams: [8],
       }
 
       mockedUseMorePokemons.mockReturnValue({
@@ -419,7 +438,7 @@ describe('ViewPokemons Component', () => {
         fetchNextPage: mockFetchNextPage,
         hasNextPage: false,
         isFetchingNextPage: false,
-      } as any)
+      } as unknown as ReturnType<typeof useMorePokemons>)
 
       render(<ViewPokemons {...defaultProps} />)
 
@@ -433,7 +452,7 @@ describe('ViewPokemons Component', () => {
         fetchNextPage: mockFetchNextPage,
         hasNextPage: false,
         isFetchingNextPage: false,
-      } as any)
+      } as unknown as ReturnType<typeof useMorePokemons>)
 
       render(<ViewPokemons {...defaultProps} />)
 

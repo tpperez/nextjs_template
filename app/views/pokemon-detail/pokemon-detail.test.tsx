@@ -1,39 +1,57 @@
-/* eslint-disable */
 import { render, screen } from '@testing-library/react'
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { POKEMON_DETAIL_CONFIG } from './pokemon-detail.const'
-import { ViewPokemonDetail } from './pokemon-detail'
-import type { IPokemonDetail } from './pokemon-detail.type'
 import { usePokemonHistoryStore } from '@/app/stores/pokemon-history'
+
+import { ViewPokemonDetail } from './pokemon-detail'
+import { POKEMON_DETAIL_CONFIG } from './pokemon-detail.const'
+import type { IPokemonDetail } from './pokemon-detail.type'
 import { formatName, formatStatName } from './pokemon-detail.util'
 
 const mockAddToHistory = vi.fn()
 
-vi.mock('@/app/stores/pokemon-history', () => ({
-  usePokemonHistoryStore: vi.fn(() => ({
-    addToHistory: mockAddToHistory,
-  })),
-}))
+vi.mock('@/app/stores/pokemon-history', () => {
+  return {
+    usePokemonHistoryStore: vi.fn(() => {
+      return {
+        addToHistory: mockAddToHistory,
+      }
+    }),
+  }
+})
 
-vi.mock('./components/pokemon-moves', () => ({
-  PokemonMoves: ({ pokemonName }: { pokemonName: string }) => (
-    <div data-testid='pokemon-moves'>Pokemon Moves for {pokemonName}</div>
-  ),
-}))
+vi.mock('./components/pokemon-moves', () => {
+  return {
+    PokemonMoves: ({ pokemonName }: { pokemonName: string }) => {
+      return (
+        <div data-testid='pokemon-moves'>Pokemon Moves for {pokemonName}</div>
+      )
+    },
+  }
+})
 
-vi.mock('./components/pokemon-species-info', () => ({
-  PokemonSpeciesInfo: ({ pokemonId }: { pokemonId: number }) => (
-    <div data-testid='pokemon-species-info'>
-      Pokemon Species Info for {pokemonId}
-    </div>
-  ),
-}))
+vi.mock('./components/pokemon-species-info', () => {
+  return {
+    PokemonSpeciesInfo: ({ pokemonId }: { pokemonId: number }) => {
+      return (
+        <div data-testid='pokemon-species-info'>
+          Pokemon Species Info for {pokemonId}
+        </div>
+      )
+    },
+  }
+})
 
-vi.mock('./pokemon-detail.util', () => ({
-  formatName: vi.fn((name: string) => name.replace('-', ' ')),
-  formatStatName: vi.fn((name: string) => name.replace('-', ' ')),
-}))
+vi.mock('./pokemon-detail.util', () => {
+  return {
+    formatName: vi.fn((name: string) => {
+      return name.replace('-', ' ')
+    }),
+    formatStatName: vi.fn((name: string) => {
+      return name.replace('-', ' ')
+    }),
+  }
+})
 
 describe('ViewPokemonDetail', () => {
   const mockPokemonData: IPokemonDetail = {

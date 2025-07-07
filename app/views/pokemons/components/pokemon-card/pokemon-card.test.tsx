@@ -25,10 +25,13 @@ vi.mock('next/image', () => {
       ...props
     }: React.ComponentProps<'img'>) => {
       return (
-        <img
-          src={src}
-          alt={alt}
+        <div
+          data-testid='next-image-mock'
+          data-src={src}
+          data-alt={alt}
           className={className}
+          role='img'
+          aria-label={alt}
           {...props}
         />
       )
@@ -144,8 +147,8 @@ describe('PokemonCard', () => {
       render(<PokemonCard pokemon={mockPokemon} />)
 
       const image = screen.getByRole('img')
-      expect(image).toHaveAttribute('src', mockPokemon.image)
-      expect(image).toHaveAttribute('alt', 'pikachu')
+      expect(image).toHaveAttribute('data-src', mockPokemon.image)
+      expect(image).toHaveAttribute('aria-label', 'pikachu')
       expect(image).toHaveAttribute('width', '220')
       expect(image).toHaveAttribute('height', '220')
       expect(image).toHaveAttribute('loading', 'lazy')
@@ -235,7 +238,7 @@ describe('PokemonCard', () => {
       render(<PokemonCard pokemon={mockPokemon} />)
 
       const image = screen.getByRole('img')
-      expect(image).toHaveAttribute('alt', 'pikachu')
+      expect(image).toHaveAttribute('aria-label', 'pikachu')
     })
 
     it('has proper link role', () => {
