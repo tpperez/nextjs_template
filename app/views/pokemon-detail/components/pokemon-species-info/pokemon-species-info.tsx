@@ -72,7 +72,6 @@ export const PokemonSpeciesInfo = ({ pokemonId }: IPokemonSpeciesInfoProps) => {
           </div>
         </div>
       </div>
-
       <div className='space-y-3'>
         <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
           {englishDescription && (
