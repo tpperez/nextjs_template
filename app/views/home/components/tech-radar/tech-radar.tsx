@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import Script from 'next/script'
 
@@ -24,20 +24,22 @@ const TechRadar = ({ config = TECH_RADAR_CONFIG }: ITechRadarProps) => {
   const isRadarVisualizationAvailable = (): boolean => {
     return Boolean(window && typeof window.radar_visualization === 'function')
   }
-  const areBothScriptsLoaded = (): boolean => {
+  const areBothScriptsLoaded = useCallback((): boolean => {
     return d3Loaded && radarScriptLoaded
-  }
+  }, [d3Loaded, radarScriptLoaded])
+
   const isWindowAvailable = (): boolean => {
     return typeof window !== 'undefined'
   }
-  const areAllDependenciesReady = (): boolean => {
+
+  const areAllDependenciesReady = useCallback((): boolean => {
     return (
       isWindowAvailable() &&
       isD3Available() &&
       isRadarVisualizationAvailable() &&
       areBothScriptsLoaded()
     )
-  }
+  }, [areBothScriptsLoaded])
 
   useEffect(() => {
     if (isD3Available()) {
@@ -68,7 +70,13 @@ const TechRadar = ({ config = TECH_RADAR_CONFIG }: ITechRadarProps) => {
         return clearTimeout(timer)
       }
     }
-  }, [config, d3Loaded, radarScriptLoaded])
+  }, [
+    config,
+    d3Loaded,
+    radarScriptLoaded,
+    areAllDependenciesReady,
+    areBothScriptsLoaded,
+  ])
 
   const handleD3Load = () => {
     if (isD3Available()) {
