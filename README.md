@@ -20,12 +20,12 @@ This template provides a complete foundation for Next.js applications with estab
 
 This working implementation demonstrates every architectural pattern in the template:
 
-- **Server-Side Data Fetching:** REST adapter for initial Pokemon data (`queries/get-pokemon-detail.query.ts`)
-- **Client-Side Enhancement:** GraphQL adapter for dynamic moves data (`pokemon-detail.hook.ts`)
-- **Form Handling:** React Hook Form for Pokemon search functionality (`components/pokemon-search/`)
-- **State Management:** Zustand store with persistence (`stores/pokemon-history/`)
-- **Component Architecture:** View orchestration with sub-components (`views/pokemon-detail/`)
-- **Testing Strategy:** Complete coverage across all layers (`.test.tsx` files)
+- **server-side data fetching:** REST adapter for initial Pokemon data
+- **client-side enhancement:** GraphQL adapter for dynamic moves data
+- **form handling:** React Hook Form for Pokemon search functionality
+- **state management:** Zustand store with persistence
+- **component architecture:** View orchestration with sub-components
+- **testing strategy:** Complete coverage across all layers
 
 **Implementation Reference:** `app/views/pokemon-detail/` for complete patterns
 **Route Reference:** `app/(routes)/(public)/(examples)/pokemons/[name]/` for server-side patterns
@@ -35,22 +35,22 @@ This working implementation demonstrates every architectural pattern in the temp
 
 **Hybrid Data Strategy:**
 
-- Initial data via server-side REST adapter for SEO optimization
-- Dynamic data via client-side GraphQL adapter within TanStack Query for real-time updates
-- Multi-layer caching with Next.js ISR and TanStack Query management
-- **Client-Side Architecture:** TanStack Query wraps all HTTP adapters for cache and state management
+- initial data via server-side REST adapter for SEO optimization
+- dynamic data via client-side GraphQL adapter within TanStack Query for real-time updates
+- multi-layer caching with Next.js ISR and TanStack Query management
+- **client-side architecture:** TanStack Query wraps all HTTP adapters for cache and state management
 
 **Form Management:**
 
 - React Hook Form integration for search functionality with validation
-- Type-safe form handling with minimal re-renders
-- Custom hooks for form state and submission
+- type-safe form handling with minimal re-renders
+- custom hooks for form state and submission
 
 **Adapter Flexibility:**
 
-- Both REST and GraphQL adapters work universally (server + client)
-- Easy switching between fetch/axios/graphql-request implementations
-- HTTP adapters execute within TanStack Query's `queryFn` on client-side
+- both REST and GraphQL adapters work universally (server + client)
+- easy switching between fetch/axios/graphql-request implementations
+- HTTP adapters execute within TanStack Query's queryFn on client-side
 
 ---
 
@@ -58,41 +58,27 @@ This working implementation demonstrates every architectural pattern in the temp
 
 ### Foundation
 
-- [Next.js](https://nextjs.org) - React framework with App Router
-- [React](https://react.dev) - Component library with hooks
-- [TypeScript](https://www.typescriptlang.org) - Type safety and developer experience
+- [Next.js](https://nextjs.org/) - react framework with app router
+- [TypeScript](https://www.typescriptlang.org/) - type safety and developer experience
+- [Tailwind CSS](https://tailwindcss.com/) - utility-first styling framework
 
-### Application Features
+### Data Management
 
-- [Tailwind CSS](https://tailwindcss.com) - Utility-first styling framework
-- [React Hook Form](https://react-hook-form.com) - Form handling and validation (Pokemon Search example)
-- [TanStack Query](https://tanstack.com/query) - Client-side cache and state management layer
-- [Zustand](https://zustand-demo.pmnd.rs) - Global state management with persistence
+- [TanStack Query](https://tanstack.com/query) - server state management and caching
+- [Zustand](https://zustand-demo.pmnd.rs/) - client state management with persistence
+- [React Hook Form](https://react-hook-form.com/) - performant forms with validation
 
-### HTTP Transport Layer (Flexible Implementation)
+### HTTP Clients
 
-**Current Defaults:**
+- **REST Client** (`app/services/http/rest-client.ts`) - fetch-based adapter with error handling
+- **GraphQL Client** (`app/services/http/graphql-client.ts`) - graphql-request adapter with caching
 
-- **Fetch API** - Native HTTP transport for both REST and GraphQL adapters
+### Development Tools
 
-**Available Alternatives:**
-
-- [Axios](https://axios-http.com) - Alternative REST transport implementation
-- [GraphQL Request](https://github.com/jasonkuhrt/graphql-request) - Alternative GraphQL transport implementation
-
-**Client-Side Integration:** All HTTP adapters work within TanStack Query's `queryFn` for cache management
-**Adapter Switching:** Easy configuration change in `app/services/http/core/core.ts`
-
-### Development Workflow
-
-- [ESLint](https://eslint.org) - Code quality and consistency
-- [Prettier](https://prettier.io) - Code formatting and style
-- [Vitest](https://vitest.dev) - Fast unit and integration testing
-- [Testing Library](https://testing-library.com) - Component testing utilities
-- [Conventional Commits](https://www.conventionalcommits.org) - Standardized commit messages
-- [Commitizen](https://commitizen-tools.github.io/commitizen) - Interactive commit wizard
-- [Husky](https://typicode.github.io/husky) - Git hooks for quality gates
-- [Lint-staged](https://github.com/lint-staged/lint-staged) - Pre-commit validation
+- [Vitest](https://vitest.dev/) - fast unit testing framework
+- [ESLint](https://eslint.org/) - code quality and consistency enforcement
+- [Prettier](https://prettier.io/) - code formatting automation
+- [Commitizen](https://commitizen.github.io/cz-cli/) - conventional commit messages
 
 ---
 
@@ -100,34 +86,31 @@ This working implementation demonstrates every architectural pattern in the temp
 
 ### Prerequisites
 
-- [nvm](https://github.com/nvm-sh/nvm) - Node.js version management
-- [Node.js](https://nodejs.org) - Runtime environment
-- [npm](https://www.npmjs.com) - Package manager
+- node.js 18+ with npm package manager
 
 ### Setup Instructions
 
-```bash
-git clone <repository-url>
-cd <project-name>
-nvm use
-npm install
-npm run dev
-```
+**Reference:** Package scripts configuration in `package.json`
+
+1. clone repository and navigate to project directory
+2. use node version specified in `.nvmrc`
+3. install dependencies with npm
+4. start development server
 
 **Access application:** `http://localhost:3000`
 **Try live example:** `http://localhost:3000/pokemons/pikachu`
 
 ### Environment Configuration
 
-Create `.env.local`:
+**Reference:** Environment setup in `.env.example`
 
-```env
-NEXT_PUBLIC_API_URL="https://api.example.com"
-```
+create `.env.local` with required environment variables for API integration
 
 ---
 
 ## Project Structure
+
+**Reference:** Complete directory structure in `app/` folder
 
 ```
 app/
@@ -152,13 +135,6 @@ app/
 .docs/                      # project documentation
 ├── ARCHITECTURE.md         # system design and patterns
 └── DEVELOPMENT.md          # implementation guide and workflow
-
-Configuration Files:
-├── eslint.config.mjs       # code quality rules
-├── next.config.ts          # next.js configuration
-├── tsconfig.json           # typescript configuration
-├── vitest.config.ts        # testing configuration
-└── tailwind.config.ts      # styling configuration
 ```
 
 **Detailed Structure:** See [Development Guide](.docs/DEVELOPMENT.md#code-organization) for complete directory explanation and module patterns.
@@ -167,42 +143,30 @@ Configuration Files:
 
 ## Available Scripts
 
-```bash
-# Development
-npm run dev           # start development server with turbopack
-npm run dev:debug     # start with debugging enabled
+**Reference:** All scripts defined in `package.json`
 
-# Production
-npm run build         # create production build
-npm run start         # start production server
-npm run analyze       # analyze bundle size and composition
+### Development Commands
 
-# Testing
-npm run test          # run complete test suite
-npm run test:watch    # run tests in watch mode
-npm run test:ui       # run tests with UI interface
-npm run test:coverage # generate coverage report
+- **dev server:** start development server with turbopack
+- **dev debug:** start with debugging enabled
+- **build:** create production build
+- **start:** start production server
+- **analyze:** analyze bundle size and composition
 
-# Code Quality
-npm run lint          # check code quality and standards
-npm run lint:fix      # fix linting issues automatically
-npm run format        # check code formatting
-npm run format:fix    # fix code formatting issues
-npm run tsc           # TypeScript compilation check
-```
+### Testing Commands
 
-### Daily Development Commands
+- **test:** run complete test suite
+- **test watch:** run tests in watch mode
+- **test ui:** run tests with UI interface
+- **test coverage:** generate coverage report
 
-```bash
-# Start development with comprehensive checking
-npm run dev && npm run test:watch
+### Code Quality Commands
 
-# Code quality verification
-npm run lint && npm run tsc && npm run test
-
-# Bundle analysis
-npm run analyze
-```
+- **lint:** check code quality and standards
+- **lint fix:** fix linting issues automatically
+- **format:** check code formatting
+- **format fix:** fix code formatting issues
+- **tsc:** TypeScript compilation check
 
 ---
 
@@ -210,73 +174,36 @@ npm run analyze
 
 ### Quality Assurance Pipeline
 
-The project enforces strict quality standards through automated validation:
+**Reference:** Configuration files for automated validation
 
-**Pre-commit Hooks:**
-
-1. TypeScript compilation verification
-2. ESLint code quality checks
-3. Prettier formatting validation
-4. Test suite execution
-5. Conventional commit message validation
-
-**Configuration Files:**
-
-- **ESLint:** `eslint.config.mjs` - Code quality rules
-- **Prettier:** `prettier.config.js` - Formatting standards
-- **TypeScript:** `tsconfig.json` - Compilation settings
-- **Testing:** `vitest.config.ts` - Test environment
-- **Git Hooks:** `.husky/` - Pre-commit validation
+- **ESLint:** `eslint.config.mjs` - code quality rules
+- **Prettier:** `prettier.config.js` - formatting standards
+- **TypeScript:** `tsconfig.json` - compilation settings
+- **Testing:** `vitest.config.ts` - test environment
+- **Git Hooks:** `.husky/` - pre-commit validation
 
 ### Branch Management
 
-**Branch Naming Convention:**
+**Reference:** Branch naming conventions in development guidelines
 
-```bash
-# With ticket/card number
-card-123_pokemon-search-feature
-
-# Without card number
-jd_pokemon-detail-optimization
-```
+use descriptive branch names following established patterns with optional ticket numbers
 
 ### Commit Process
 
-```bash
-git add .
-git commit  # Opens Commitizen wizard for conventional commits
-```
+**Reference:** Commitizen configuration for conventional commits
+
+use automated commit wizard for standardized commit message format
 
 ---
 
-## Implementation Guidance
+## Getting Started
 
-### Architecture Deep Dive
+### Development Workflow
 
-**System Design:** Review [Architecture Guide](.docs/ARCHITECTURE.md) for:
-
-- Layered architecture patterns and responsibilities
-- Data fetching strategy with REST/GraphQL adapters
-- State management patterns with Zustand
-- Component organization and hierarchy
-- Performance optimization strategies
-
-### Practical Implementation
-
-**Development Patterns:** See [Development Guide](.docs/DEVELOPMENT.md) for:
-
-- Complete Pokemon Detail implementation walkthrough
-- Feature development workflow and best practices
-- Testing strategies across all application layers
-- Code organization patterns and module structure
-- Troubleshooting guide and common solutions
-
-### Getting Started with Examples
-
-1. **Explore Pokemon Detail:** Visit `/pokemons/pikachu` to see all patterns in action
-2. **Review Implementation:** Examine `app/views/pokemon-detail/` for complete feature patterns
-3. **Study Tests:** Check `.test.tsx` files for testing approaches
-4. **Follow Workflow:** Use [Development Guide](.docs/DEVELOPMENT.md) for step-by-step implementation
+1. **explore pokemon detail:** visit `/pokemons/pikachu` to see all patterns in action
+2. **review implementation:** examine `app/views/pokemon-detail/` for complete feature patterns
+3. **study tests:** check `.test.tsx` files for testing approaches
+4. **follow workflow:** use [Development Guide](.docs/DEVELOPMENT.md) for step-by-step implementation
 
 ---
 
@@ -284,27 +211,27 @@ git commit  # Opens Commitizen wizard for conventional commits
 
 ### Pull Request Process
 
-1. Create feature branch using naming convention
-2. Implement changes following established patterns
-3. Ensure all tests pass and coverage thresholds met
-4. Use Commitizen for conventional commit messages
-5. Submit PR with comprehensive description
+1. create feature branch using naming convention
+2. implement changes following established patterns
+3. ensure all tests pass and coverage thresholds met
+4. use Commitizen for conventional commit messages
+5. submit PR with comprehensive description
 
 ### Code Standards
 
-- **TypeScript strict mode** with explicit return types
-- **ESLint enforcement** preventing `any` types and ensuring patterns
-- **Prettier formatting** for consistent code style
-- **Vitest testing** with 80% coverage threshold
-- **Conventional commits** for clear change history
+- **typescript strict mode** with explicit return types
+- **eslint enforcement** preventing `any` types and ensuring patterns
+- **prettier formatting** for consistent code style
+- **vitest testing** with 80% coverage threshold
+- **conventional commits** for clear change history
 
 ### Review Checklist
 
-- [ ] All tests pass locally
-- [ ] Code follows established patterns (reference Pokemon Detail)
-- [ ] TypeScript compilation successful
-- [ ] ESLint validation clean
-- [ ] Conventional commit message format
+- [ ] all tests pass locally
+- [ ] code follows established patterns (reference Pokemon Detail)
+- [ ] typescript compilation successful
+- [ ] eslint validation clean
+- [ ] conventional commit message format
 - [ ] PR description includes testing instructions
 
 ---
@@ -313,8 +240,8 @@ git commit  # Opens Commitizen wizard for conventional commits
 
 ### Technical Documentation
 
-- **[Architecture Guide](.docs/ARCHITECTURE.md)** - System design decisions and implementation patterns
-- **[Development Guide](.docs/DEVELOPMENT.md)** - Daily workflows and feature implementation
+- **[Architecture Guide](.docs/ARCHITECTURE.md)** - system design decisions and implementation patterns
+- **[Development Guide](.docs/DEVELOPMENT.md)** - daily workflows and feature implementation
 
 ### External Resources
 
