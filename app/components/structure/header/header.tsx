@@ -1,7 +1,8 @@
 'use client'
 
-import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+
+import { Button } from '@/app/components/ui/button'
 
 const Header = () => {
   const pathname = usePathname()
@@ -20,17 +21,16 @@ const Header = () => {
               {navItems.map((item) => {
                 const isActive = pathname === item.href
                 return (
-                  <Link
+                  <Button
                     key={item.href}
+                    asLink
                     href={item.href}
-                    className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
-                      isActive
-                        ? 'border-blue-600 bg-blue-600 text-white shadow-sm'
-                        : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50 hover:text-black'
-                    }`}
+                    variant={isActive ? 'primary' : 'secondary'}
+                    size='sm'
+                    className='shadow-sm'
                   >
                     {item.label}
-                  </Link>
+                  </Button>
                 )
               })}
             </div>

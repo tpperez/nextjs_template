@@ -1,3 +1,5 @@
+import { createElement } from 'react'
+
 import { vi } from 'vitest'
 
 import '@testing-library/jest-dom'
@@ -30,8 +32,16 @@ vi.mock('next/image', () => {
 // mock next.js link
 vi.mock('next/link', () => {
   return {
-    default: vi.fn(({ children }) => {
-      return children
-    }),
+    default: ({
+      children,
+      href,
+      ...props
+    }: {
+      children: React.ReactNode
+      href: string
+      [key: string]: unknown
+    }) => {
+      return createElement('a', { href, ...props }, children)
+    },
   }
 })

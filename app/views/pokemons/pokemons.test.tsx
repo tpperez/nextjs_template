@@ -30,6 +30,13 @@ vi.mock('@/app/components/ui/spinner', () => {
   }
 })
 
+vi.mock('@/app/components/ui/button', () => {
+  return {
+    Button: vi.fn(),
+  }
+})
+
+import { Button } from '@/app/components/ui/button'
 import { Spinner } from '@/app/components/ui/spinner'
 
 import { PokemonCard } from './components/pokemon-card'
@@ -44,6 +51,7 @@ const mockedUsePokemonNameSearch = vi.mocked(usePokemonNameSearch)
 const mockedPokemonSearch = vi.mocked(PokemonSearch)
 const mockedPokemonCard = vi.mocked(PokemonCard)
 const mockedSpinner = vi.mocked(Spinner)
+const mockedButton = vi.mocked(Button)
 
 describe('ViewPokemons Component', () => {
   const mockPokemonData = [
@@ -116,6 +124,20 @@ describe('ViewPokemons Component', () => {
         </div>
       )
     })
+
+    mockedButton.mockImplementation(
+      ({ children, onClick, disabled, isLoading, loadingText }) => {
+        return (
+          <button
+            data-testid='load-more-button'
+            onClick={onClick}
+            disabled={disabled || isLoading}
+          >
+            {isLoading ? loadingText : children}
+          </button>
+        )
+      },
+    )
   })
 
   describe('Error State', () => {

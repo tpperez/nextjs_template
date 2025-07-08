@@ -67,7 +67,14 @@ describe('TechRadar Component', () => {
     const { container } = render(<TechRadar />)
 
     const wrapperDiv = container.firstChild
-    expect(wrapperDiv).toHaveClass('h-screen', 'w-full', 'overflow-hidden')
+    expect(wrapperDiv).toHaveClass(
+      'w-full',
+      'overflow-hidden',
+      'flex',
+      'items-center',
+      'justify-center',
+      'min-h-screen',
+    )
   })
 
   it('should call radar_visualization after timeout when both scripts are available', () => {

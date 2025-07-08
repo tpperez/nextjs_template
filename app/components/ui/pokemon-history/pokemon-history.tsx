@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
+import { Button } from '@/app/components/ui/button'
 import {
   POKEMON_HISTORY_CONFIG,
   usePokemonHistoryStore,
@@ -34,12 +35,14 @@ export const PokemonHistory = () => {
           <h3 className='text-lg font-semibold text-gray-800'>
             {POKEMON_HISTORY_CONFIG.TITLE}
           </h3>
-          <button
+          <Button
             onClick={clearHistory}
-            className='rounded-lg bg-gray-100 px-3 py-1 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2'
+            variant='secondary'
+            size='sm'
+            className='bg-gray-100 text-gray-600 hover:bg-gray-200 focus:ring-gray-500'
           >
             {POKEMON_HISTORY_CONFIG.CLEAR_BUTTON_TEXT}
-          </button>
+          </Button>
         </div>
 
         <div className='grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5'>

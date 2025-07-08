@@ -3,8 +3,8 @@
 import { useEffect } from 'react'
 
 import Image from 'next/image'
-import Link from 'next/link'
 
+import { Button } from '@/app/components/ui/button'
 import { usePokemonHistoryStore } from '@/app/stores/pokemon-history'
 
 import { PokemonMoves } from './components/pokemon-moves'
@@ -32,12 +32,14 @@ export const ViewPokemonDetail = ({
       <div className='container mx-auto px-4'>
         <div className='mx-auto max-w-6xl'>
           <div className='mb-6'>
-            <Link
+            <Button
+              asLink
               href='/pokemons'
-              className='mb-4 inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-800 shadow-sm transition-all duration-200 hover:bg-gray-50 hover:shadow-md'
+              variant='secondary'
+              className='mb-4 shadow-sm'
             >
               Back to Pokémon List
-            </Link>
+            </Button>
           </div>
           <div className='mb-6 text-center'>
             <h1 className='mb-1 text-3xl font-bold capitalize text-black'>

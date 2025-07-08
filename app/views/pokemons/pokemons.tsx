@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 
+import { Button } from '@/app/components/ui/button'
 import { Spinner } from '@/app/components/ui/spinner'
 
 import { PokemonCard } from './components/pokemon-card'
@@ -189,25 +190,17 @@ export const ViewPokemons = ({
 
           {shouldShowLoadMoreButton && (
             <div className='mt-8 text-center'>
-              <button
+              <Button
                 onClick={() => {
                   fetchNextPage()
                 }}
-                disabled={isFetchingNextPage}
-                className='inline-flex items-center rounded-lg bg-blue-600 px-6 py-3 font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
+                isLoading={isFetchingNextPage}
+                loadingText='Loading more...'
+                variant='primary'
+                leftIcon={!isFetchingNextPage ? '🔽' : undefined}
               >
-                {isFetchingNextPage ? (
-                  <>
-                    <div className='mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent'></div>
-                    <span className='ml-2'>Loading more...</span>
-                  </>
-                ) : (
-                  <>
-                    <span className='mr-2'>🔽</span>
-                    Show more pokemons
-                  </>
-                )}
-              </button>
+                Show more pokemons
+              </Button>
             </div>
           )}
 
