@@ -101,7 +101,7 @@ const TechRadar = ({ config = TECH_RADAR_CONFIG }: ITechRadarProps) => {
         }}
       />
       <Script
-        src='/utils/tech-radar.js'
+        src='/js/tech-radar.js'
         strategy='afterInteractive'
         onLoad={handleRadarScriptLoad}
         onError={(e) => {

@@ -199,6 +199,7 @@ export const ViewPokemons = ({
                 variant='primary'
                 leftIcon={!isFetchingNextPage ? '🔽' : undefined}
               >
+                {' '}
                 Show more pokemons
               </Button>
             </div>
