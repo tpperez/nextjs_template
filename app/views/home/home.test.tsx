@@ -3,6 +3,18 @@ import { describe, expect, it, vi } from 'vitest'
 
 import ViewHome from './home'
 
+vi.mock('next/headers', () => {
+  return {
+    headers: vi.fn(() => {
+      return Promise.resolve({
+        get: vi.fn(() => {
+          return 'mock-nonce-value'
+        }),
+      })
+    }),
+  }
+})
+
 vi.mock('./components/tech-radar', () => {
   return {
     default: vi.fn(() => {
@@ -12,13 +24,15 @@ vi.mock('./components/tech-radar', () => {
 })
 
 describe('ViewHome Component', () => {
-  it('should render without errors', () => {
-    const { container } = render(<ViewHome />)
+  it('should render without errors', async () => {
+    const ViewHomeResolved = await ViewHome()
+    const { container } = render(ViewHomeResolved)
     expect(container).toBeInTheDocument()
   })
 
-  it('should render TechRadar component', () => {
-    render(<ViewHome />)
+  it('should render TechRadar component', async () => {
+    const ViewHomeResolved = await ViewHome()
+    render(ViewHomeResolved)
     expect(screen.getByTestId('tech-radar')).toBeInTheDocument()
     expect(screen.getByText('Tech Radar Component')).toBeInTheDocument()
   })

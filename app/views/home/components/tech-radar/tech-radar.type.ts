@@ -39,6 +39,7 @@ export interface IRadarConfig {
 
 export interface ITechRadarProps {
   config?: IRadarConfig
+  nonce?: string
 }
 
 export interface ID3Selection {

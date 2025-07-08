@@ -14,7 +14,7 @@ declare global {
   }
 }
 
-const TechRadar = ({ config = TECH_RADAR_CONFIG }: ITechRadarProps) => {
+const TechRadar = ({ config = TECH_RADAR_CONFIG, nonce }: ITechRadarProps) => {
   const [d3Loaded, setD3Loaded] = useState(false)
   const [radarScriptLoaded, setRadarScriptLoaded] = useState(false)
 
@@ -99,6 +99,7 @@ const TechRadar = ({ config = TECH_RADAR_CONFIG }: ITechRadarProps) => {
         onError={(e) => {
           return console.error('Failed to load D3:', e)
         }}
+        nonce={nonce}
       />
       <Script
         src='/js/tech-radar.js'
@@ -107,6 +108,7 @@ const TechRadar = ({ config = TECH_RADAR_CONFIG }: ITechRadarProps) => {
         onError={(e) => {
           return console.error('Failed to load tech-radar script:', e)
         }}
+        nonce={nonce}
       />
 
       <svg
