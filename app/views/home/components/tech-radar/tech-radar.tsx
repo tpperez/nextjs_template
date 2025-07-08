@@ -91,7 +91,7 @@ const TechRadar = ({ config = TECH_RADAR_CONFIG }: ITechRadarProps) => {
   }
 
   return (
-    <div className='h-screen w-full overflow-hidden'>
+    <div className='flex min-h-screen w-full items-center justify-center overflow-hidden'>
       <Script
         src='https://d3js.org/d3.v7.min.js'
         strategy='afterInteractive'
@@ -111,7 +111,9 @@ const TechRadar = ({ config = TECH_RADAR_CONFIG }: ITechRadarProps) => {
 
       <svg
         id={config.svg_id}
-        className='h-full w-full'
+        viewBox={`0 0 ${config.width || 1450} ${config.height || 1000}`}
+        className='max-h-full max-w-full'
+        preserveAspectRatio='xMidYMid meet'
       />
     </div>
   )
