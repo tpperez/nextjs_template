@@ -1,5 +1,6 @@
 'use client'
 
+import { Button } from '@/app/components/ui/button'
 import { Spinner } from '@/app/components/ui/spinner'
 
 import { ERROR_MESSAGES } from '../../pokemon-detail.const'
@@ -42,14 +43,16 @@ export const PokemonSpeciesInfo = ({ pokemonId }: IPokemonSpeciesInfoProps) => {
           <p className='mt-1 text-sm text-gray-600'>
             {error?.message || ERROR_MESSAGES.UNKNOWN_ERROR}
           </p>
-          <button
+          <Button
             onClick={() => {
               return refetch()
             }}
-            className='mt-3 rounded-lg border border-gray-400 bg-black px-4 py-2 text-white transition-colors hover:bg-gray-800'
+            variant='primary'
+            size='sm'
+            className='mt-3 bg-black hover:bg-gray-800'
           >
             {ERROR_MESSAGES.RETRY_TEXT}
-          </button>
+          </Button>
         </div>
       </div>
     )

@@ -1,5 +1,7 @@
 import { useForm } from 'react-hook-form'
 
+import { Button } from '@/app/components/ui/button'
+
 import type { IPokemonSearchProps } from './pokemon-search.type'
 
 export const PokemonSearch = ({
@@ -34,22 +36,24 @@ export const PokemonSearch = ({
           />
         </div>
         <div className='flex gap-2'>
-          <button
+          <Button
             type='submit'
-            disabled={isLoading || !searchValue.trim()}
-            className='rounded-lg bg-blue-600 px-6 py-3 font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
+            disabled={!searchValue.trim()}
+            isLoading={isLoading}
+            loadingText='Searching...'
+            variant='primary'
           >
-            {isLoading ? 'Searching...' : 'Search'}
-          </button>
+            Search
+          </Button>
           {searchValue && (
-            <button
+            <Button
               type='button'
               onClick={handleClear}
               disabled={isLoading}
-              className='rounded-lg border border-gray-300 bg-white px-6 py-3 font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
+              variant='secondary'
             >
               Clear
-            </button>
+            </Button>
           )}
         </div>
       </form>
