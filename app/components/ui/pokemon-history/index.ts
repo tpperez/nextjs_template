@@ -1,1 +1,1 @@
-export { PokemonHistory } from './pokemon-history'
+export { default } from './pokemon-history'

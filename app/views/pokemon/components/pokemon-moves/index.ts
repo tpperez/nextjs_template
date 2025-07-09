@@ -1,1 +1,1 @@
-export { PokemonMoves } from './pokemon-moves'
+export { default } from './pokemon-moves'

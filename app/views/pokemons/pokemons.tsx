@@ -2,10 +2,10 @@
 
 import { useState } from 'react'
 
-import { Button } from '@/app/components/ui/button'
-import { Spinner } from '@/app/components/ui/spinner'
+import Button from '@/app/components/ui/button'
+import Spinner from '@/app/components/ui/spinner'
 
-import { PokemonCard } from './components/pokemon-card'
+import PokemonCard from './components/pokemon-card'
 import {
   PokemonSearch,
   usePokemonNameSearch,
@@ -14,7 +14,7 @@ import { POKEMON_GALLERY_CONFIG } from './pokemons.const'
 import { useMorePokemons } from './pokemons.hook'
 import type { IPokemonsViewProps } from './pokemons.type'
 
-export const ViewPokemons = ({
+const ViewPokemons = ({
   success,
   data,
   error: viewError,
@@ -226,3 +226,5 @@ export const ViewPokemons = ({
     </div>
   )
 }
+
+export default ViewPokemons

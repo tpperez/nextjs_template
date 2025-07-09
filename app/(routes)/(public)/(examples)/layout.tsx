@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 
-import { PokemonHistory } from '@/app/components/ui/pokemon-history'
+import PokemonHistory from '@/app/components/ui/pokemon-history'
 
 interface ExamplesLayoutProps {
   children: React.ReactNode

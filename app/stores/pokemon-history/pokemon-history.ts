@@ -6,7 +6,7 @@ import type { IPokemon } from '@/app/(routes)/(public)/(examples)/pokemons/queri
 import { POKEMON_HISTORY_CONFIG } from './pokemon-history.const'
 import { IPokemonHistoryStore } from './pokemon-history.type'
 
-export const usePokemonHistoryStore = create<IPokemonHistoryStore>()(
+const usePokemonHistoryStore = create<IPokemonHistoryStore>()(
   persist(
     (set) => {
       return {
@@ -54,3 +54,5 @@ export const usePokemonHistoryStore = create<IPokemonHistoryStore>()(
     },
   ),
 )
+
+export default usePokemonHistoryStore

@@ -2,7 +2,7 @@ import { forwardRef } from 'react'
 
 import Link from 'next/link'
 
-import { cn } from '@/app/utils/cn'
+import cn from '@/app/utils/cn'
 
 import type { IButtonProps } from './button.type'
 

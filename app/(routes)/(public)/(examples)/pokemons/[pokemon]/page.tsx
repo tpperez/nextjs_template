@@ -1,21 +1,17 @@
-import { cache } from 'react'
-
 import { notFound } from 'next/navigation'
 
 import { Metadata } from 'next'
 
-import { ViewPokemon } from '@/app/views/pokemon'
+import ViewPokemon from '@/app/views/pokemon'
 
-import { getPokemonDetailData } from './queries'
+import getPokemonDetailData from './queries'
 import type { IPagePokemonProps } from './type'
-
-const getCachedPokemonData = cache(getPokemonDetailData)
 
 export const generateMetadata = async ({
   params,
 }: IPagePokemonProps): Promise<Metadata> => {
   const { pokemon } = await params
-  const pokemonData = await getCachedPokemonData(pokemon)
+  const pokemonData = await getPokemonDetailData(pokemon)
 
   if (!pokemonData.success || !pokemonData.data) {
     return {
@@ -45,7 +41,7 @@ export const generateMetadata = async ({
 
 const PagePokemon = async ({ params }: IPagePokemonProps) => {
   const { pokemon } = await params
-  const pokemonData = await getCachedPokemonData(pokemon)
+  const pokemonData = await getPokemonDetailData(pokemon)
 
   if (!pokemonData.success || !pokemonData.data) {
     notFound()

@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 
-import { ViewPokemons } from '@/app/views/pokemons'
+import ViewPokemons from '@/app/views/pokemons'
 
-import { getPokemonsData } from './queries'
+import getPokemonsData from './queries'
 
 export const metadata: Metadata = {
   title: 'All Pokémons',

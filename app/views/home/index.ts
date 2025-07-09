@@ -1,2 +1,1 @@
-import ViewHome from './home'
-export default ViewHome
+export { default } from './home'

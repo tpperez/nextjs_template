@@ -3,11 +3,11 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { usePokemonHistoryStore } from '@/app/stores/pokemon-history'
+import usePokemonHistoryStore from '@/app/stores/pokemon-history'
 
 import type { IPokemonCardProps } from '../../pokemons.type'
 
-export const PokemonCard = ({ pokemon }: IPokemonCardProps) => {
+const PokemonCard = ({ pokemon }: IPokemonCardProps) => {
   const { addToHistory } = usePokemonHistoryStore()
 
   const handlePokemonClick = () => {
@@ -46,3 +46,5 @@ export const PokemonCard = ({ pokemon }: IPokemonCardProps) => {
     </Link>
   )
 }
+
+export default PokemonCard

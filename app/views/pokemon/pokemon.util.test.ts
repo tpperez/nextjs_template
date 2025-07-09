@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import type { IPokemonSpecies } from './pokemon.type'
+import type { IPokemonSpecies } from './components/pokemon-species-info/pokemon-species-info.type'
 import {
   formatGenderRate,
   formatName,

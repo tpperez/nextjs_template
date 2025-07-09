@@ -1,12 +1,14 @@
 'use client'
 
-import { Spinner } from '@/app/components/ui/spinner'
+import Spinner from '@/app/components/ui/spinner'
 
-import { ERROR_MESSAGES, MOVE_DISPLAY_CONFIG } from '../../pokemon.const'
-import { usePokemonMovesGraphQL } from '../../pokemon.hook'
-import type { IPokemonMovesGraphQLProps } from '../../pokemon.type'
+import { ERROR_MESSAGES } from '../../pokemon.const'
 
-export const PokemonMoves = ({ pokemonName }: IPokemonMovesGraphQLProps) => {
+import { MOVE_DISPLAY_CONFIG } from './pokemon-moves.const'
+import usePokemonMovesGraphQL from './pokemon-moves.hook'
+import { IPokemonMovesGraphQLProps } from './pokemon-moves.type'
+
+const PokemonMoves = ({ pokemonName }: IPokemonMovesGraphQLProps) => {
   const { pokemonMoves, isError, error, isFetching } = usePokemonMovesGraphQL(
     pokemonName,
     { enabled: true },
@@ -99,3 +101,5 @@ export const PokemonMoves = ({ pokemonName }: IPokemonMovesGraphQLProps) => {
     </div>
   )
 }
+
+export default PokemonMoves
