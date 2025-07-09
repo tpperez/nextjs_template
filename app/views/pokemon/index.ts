@@ -1,18 +1,18 @@
 export { PokemonSpeciesInfo } from './components/pokemon-species-info'
-export { ViewPokemonDetail } from './pokemon-detail'
-export { ERROR_MESSAGES, POKEMON_DETAIL_CONFIG } from './pokemon-detail.const'
-export { usePokemonSpecies } from './pokemon-detail.hook'
+export { ViewPokemon } from './pokemon'
+export { ERROR_MESSAGES, POKEMON_DETAIL_CONFIG } from './pokemon.const'
+export { usePokemonSpecies } from './pokemon.hook'
 export type {
   IPokemonDetail,
-  IPokemonDetailViewProps,
   IPokemonSpecies,
   IPokemonSpeciesInfoProps,
+  IViewPokemonProps,
   TUsePokemonSpeciesReturn,
-} from './pokemon-detail.type'
+} from './pokemon.type'
 export {
   formatGenderRate,
   formatName,
   formatStatName,
   getEnglishDescription,
   getEnglishGenus,
-} from './pokemon-detail.util'
+} from './pokemon.util'

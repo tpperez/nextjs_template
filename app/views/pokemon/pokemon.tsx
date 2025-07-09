@@ -9,13 +9,11 @@ import { usePokemonHistoryStore } from '@/app/stores/pokemon-history'
 
 import { PokemonMoves } from './components/pokemon-moves'
 import { PokemonSpeciesInfo } from './components/pokemon-species-info'
-import { POKEMON_DETAIL_CONFIG } from './pokemon-detail.const'
-import type { IPokemonDetailViewProps } from './pokemon-detail.type'
-import { formatName, formatStatName } from './pokemon-detail.util'
+import { POKEMON_DETAIL_CONFIG } from './pokemon.const'
+import type { IViewPokemonProps } from './pokemon.type'
+import { formatName, formatStatName } from './pokemon.util'
 
-export const ViewPokemonDetail = ({
-  data: pokemon,
-}: IPokemonDetailViewProps) => {
+export const ViewPokemon = ({ data: pokemon }: IViewPokemonProps) => {
   const { addToHistory } = usePokemonHistoryStore()
 
   useEffect(() => {
@@ -42,7 +40,7 @@ export const ViewPokemonDetail = ({
             </Button>
           </div>
           <div className='mb-6 text-center'>
-            <h1 className='mb-1 text-3xl font-bold capitalize text-black'>
+            <h1 className='mb-1 text-3xl font-bold text-black'>
               {pokemon.name}
             </h1>
             <p className='mb-2 text-lg text-gray-600'>
@@ -210,3 +208,5 @@ export const ViewPokemonDetail = ({
     </div>
   )
 }
+
+export default ViewPokemon

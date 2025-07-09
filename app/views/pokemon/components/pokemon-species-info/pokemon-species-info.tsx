@@ -3,15 +3,15 @@
 import { Button } from '@/app/components/ui/button'
 import { Spinner } from '@/app/components/ui/spinner'
 
-import { ERROR_MESSAGES } from '../../pokemon-detail.const'
-import { usePokemonSpecies } from '../../pokemon-detail.hook'
-import type { IPokemonSpeciesInfoProps } from '../../pokemon-detail.type'
+import { ERROR_MESSAGES } from '../../pokemon.const'
+import { usePokemonSpecies } from '../../pokemon.hook'
+import type { IPokemonSpeciesInfoProps } from '../../pokemon.type'
 import {
   formatGenderRate,
   formatName,
   getEnglishDescription,
   getEnglishGenus,
-} from '../../pokemon-detail.util'
+} from '../../pokemon.util'
 
 export const PokemonSpeciesInfo = ({ pokemonId }: IPokemonSpeciesInfoProps) => {
   const { species, isFetching, isError, error, refetch } =

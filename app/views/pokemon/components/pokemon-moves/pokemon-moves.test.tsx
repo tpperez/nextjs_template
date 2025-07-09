@@ -1,13 +1,13 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
-import { ERROR_MESSAGES, MOVE_DISPLAY_CONFIG } from '../../pokemon-detail.const'
-import { usePokemonMovesGraphQL } from '../../pokemon-detail.hook'
-import type { IGraphQLPokemonMoves } from '../../pokemon-detail.type'
+import { ERROR_MESSAGES, MOVE_DISPLAY_CONFIG } from '../../pokemon.const'
+import { usePokemonMovesGraphQL } from '../../pokemon.hook'
+import type { IGraphQLPokemonMoves } from '../../pokemon.type'
 
 import { PokemonMoves } from './pokemon-moves'
 
-vi.mock('../../pokemon-detail.hook', () => {
+vi.mock('../../pokemon.hook', () => {
   return {
     usePokemonMovesGraphQL: vi.fn(),
   }

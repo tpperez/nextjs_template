@@ -2,9 +2,9 @@
 
 import { Spinner } from '@/app/components/ui/spinner'
 
-import { ERROR_MESSAGES, MOVE_DISPLAY_CONFIG } from '../../pokemon-detail.const'
-import { usePokemonMovesGraphQL } from '../../pokemon-detail.hook'
-import type { IPokemonMovesGraphQLProps } from '../../pokemon-detail.type'
+import { ERROR_MESSAGES, MOVE_DISPLAY_CONFIG } from '../../pokemon.const'
+import { usePokemonMovesGraphQL } from '../../pokemon.hook'
+import type { IPokemonMovesGraphQLProps } from '../../pokemon.type'
 
 export const PokemonMoves = ({ pokemonName }: IPokemonMovesGraphQLProps) => {
   const { pokemonMoves, isError, error, isFetching } = usePokemonMovesGraphQL(

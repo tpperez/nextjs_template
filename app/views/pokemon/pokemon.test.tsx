@@ -3,10 +3,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { usePokemonHistoryStore } from '@/app/stores/pokemon-history'
 
-import { ViewPokemonDetail } from './pokemon-detail'
-import { POKEMON_DETAIL_CONFIG } from './pokemon-detail.const'
-import type { IPokemonDetail } from './pokemon-detail.type'
-import { formatName, formatStatName } from './pokemon-detail.util'
+import ViewPokemon from './pokemon'
+import { POKEMON_DETAIL_CONFIG } from './pokemon.const'
+import type { IPokemonDetail } from './pokemon.type'
+import { formatName, formatStatName } from './pokemon.util'
 
 const mockAddToHistory = vi.fn()
 
@@ -42,7 +42,7 @@ vi.mock('./components/pokemon-species-info', () => {
   }
 })
 
-vi.mock('./pokemon-detail.util', () => {
+vi.mock('./pokemon.util', () => {
   return {
     formatName: vi.fn((name: string) => {
       return name.replace('-', ' ')
@@ -53,7 +53,7 @@ vi.mock('./pokemon-detail.util', () => {
   }
 })
 
-describe('ViewPokemonDetail', () => {
+describe('ViewPokemon', () => {
   const mockPokemonData: IPokemonDetail = {
     id: 25,
     name: 'pikachu',
@@ -142,7 +142,7 @@ describe('ViewPokemonDetail', () => {
 
   describe('Component Rendering', () => {
     it('should render the pokemon detail view with basic information', () => {
-      render(<ViewPokemonDetail data={mockPokemonData} />)
+      render(<ViewPokemon data={mockPokemonData} />)
 
       expect(screen.getByText('pikachu')).toBeInTheDocument()
       expect(screen.getByText('#025')).toBeInTheDocument()
@@ -154,7 +154,7 @@ describe('ViewPokemonDetail', () => {
     })
 
     it('should render pokemon physical stats correctly', () => {
-      render(<ViewPokemonDetail data={mockPokemonData} />)
+      render(<ViewPokemon data={mockPokemonData} />)
 
       expect(screen.getByText('4 m')).toBeInTheDocument()
       expect(screen.getByText('6 kg')).toBeInTheDocument()
@@ -162,20 +162,20 @@ describe('ViewPokemonDetail', () => {
     })
 
     it('should render pokemon types', () => {
-      render(<ViewPokemonDetail data={mockPokemonData} />)
+      render(<ViewPokemon data={mockPokemonData} />)
 
       expect(screen.getByText('electric')).toBeInTheDocument()
     })
 
     it('should render pokemon abilities with formatted names', () => {
-      render(<ViewPokemonDetail data={mockPokemonData} />)
+      render(<ViewPokemon data={mockPokemonData} />)
 
       expect(vi.mocked(formatName)).toHaveBeenCalledWith('static')
       expect(vi.mocked(formatName)).toHaveBeenCalledWith('lightning-rod')
     })
 
     it('should render pokemon stats with formatted names', () => {
-      render(<ViewPokemonDetail data={mockPokemonData} />)
+      render(<ViewPokemon data={mockPokemonData} />)
 
       expect(vi.mocked(formatStatName)).toHaveBeenCalledWith('hp')
       expect(vi.mocked(formatStatName)).toHaveBeenCalledWith('attack')
@@ -187,7 +187,7 @@ describe('ViewPokemonDetail', () => {
     })
 
     it('should render child components with correct props', () => {
-      render(<ViewPokemonDetail data={mockPokemonData} />)
+      render(<ViewPokemon data={mockPokemonData} />)
 
       expect(screen.getByTestId('pokemon-moves')).toBeInTheDocument()
       expect(screen.getByText('Pokemon Moves for pikachu')).toBeInTheDocument()
@@ -199,7 +199,7 @@ describe('ViewPokemonDetail', () => {
     })
 
     it('should render cache and server-side rendering info', () => {
-      render(<ViewPokemonDetail data={mockPokemonData} />)
+      render(<ViewPokemon data={mockPokemonData} />)
 
       expect(
         screen.getByText(`Cache: ${POKEMON_DETAIL_CONFIG.CACHE_DURATION}`),
@@ -210,7 +210,7 @@ describe('ViewPokemonDetail', () => {
 
   describe('Image Display', () => {
     it('should render pokemon image when sprite is available', () => {
-      render(<ViewPokemonDetail data={mockPokemonData} />)
+      render(<ViewPokemon data={mockPokemonData} />)
 
       expect(screen.queryByText('No Image Available')).not.toBeInTheDocument()
     })
@@ -224,7 +224,7 @@ describe('ViewPokemonDetail', () => {
         },
       }
 
-      render(<ViewPokemonDetail data={mockPokemonWithoutImage} />)
+      render(<ViewPokemon data={mockPokemonWithoutImage} />)
 
       expect(screen.getByText('No Image Available')).toBeInTheDocument()
     })
@@ -232,7 +232,7 @@ describe('ViewPokemonDetail', () => {
 
   describe('Pokemon History Integration', () => {
     it('should add pokemon to history on mount', () => {
-      render(<ViewPokemonDetail data={mockPokemonData} />)
+      render(<ViewPokemon data={mockPokemonData} />)
 
       expect(mockAddToHistory).toHaveBeenCalledWith({
         name: 'pikachu',
@@ -250,7 +250,7 @@ describe('ViewPokemonDetail', () => {
         },
       }
 
-      render(<ViewPokemonDetail data={mockPokemonWithoutImage} />)
+      render(<ViewPokemon data={mockPokemonWithoutImage} />)
 
       expect(mockAddToHistory).toHaveBeenCalledWith({
         name: 'pikachu',
@@ -262,7 +262,7 @@ describe('ViewPokemonDetail', () => {
 
   describe('Stats Bar Rendering', () => {
     it('should render stat bars with correct width percentages', () => {
-      render(<ViewPokemonDetail data={mockPokemonData} />)
+      render(<ViewPokemon data={mockPokemonData} />)
 
       mockPokemonData.stats.forEach((stat) => {
         expect(screen.getByText(stat.base_stat.toString())).toBeInTheDocument()
@@ -292,14 +292,14 @@ describe('ViewPokemonDetail', () => {
         ],
       }
 
-      render(<ViewPokemonDetail data={mockPokemonWithMultipleTypes} />)
+      render(<ViewPokemon data={mockPokemonWithMultipleTypes} />)
 
       expect(screen.getByText('electric')).toBeInTheDocument()
       expect(screen.getByText('flying')).toBeInTheDocument()
     })
 
     it('should render multiple abilities correctly', () => {
-      render(<ViewPokemonDetail data={mockPokemonData} />)
+      render(<ViewPokemon data={mockPokemonData} />)
 
       expect(vi.mocked(formatName)).toHaveBeenCalledWith('static')
       expect(vi.mocked(formatName)).toHaveBeenCalledWith('lightning-rod')

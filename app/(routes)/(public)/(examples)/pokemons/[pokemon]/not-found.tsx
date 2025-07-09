@@ -1,6 +1,14 @@
 import Link from 'next/link'
 
-const PokemonNotFound = () => {
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Pokémon not found',
+  description: 'We could not find the Pokémon you are looking for...',
+  robots: 'noindex, nofollow',
+}
+
+const NotFoundPokemon = () => {
   return (
     <div className='min-h-screen bg-gradient-to-br from-slate-50 to-blue-100 py-6'>
       <div className='container mx-auto px-4'>
@@ -39,4 +47,4 @@ const PokemonNotFound = () => {
   )
 }
 
-export default PokemonNotFound
+export default NotFoundPokemon

@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest'
 
-import type { IPokemonSpecies } from './pokemon-detail.type'
+import type { IPokemonSpecies } from './pokemon.type'
 import {
   formatGenderRate,
   formatName,
   formatStatName,
   getEnglishDescription,
   getEnglishGenus,
-} from './pokemon-detail.util'
+} from './pokemon.util'
 
 describe('pokemon-detail.util', () => {
   describe('formatStatName', () => {

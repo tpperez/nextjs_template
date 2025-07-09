@@ -8,15 +8,12 @@ import {
   POKEMON_DETAIL_CONFIG,
   POKEMON_DETAIL_QUERY_KEY,
   POKEMON_MOVES_GRAPHQL_QUERY_KEY,
-} from './pokemon-detail.const'
-import {
-  usePokemonMovesGraphQL,
-  usePokemonSpecies,
-} from './pokemon-detail.hook'
+} from './pokemon.const'
+import { usePokemonMovesGraphQL, usePokemonSpecies } from './pokemon.hook'
 import type {
   IGraphQLPokemonMovesResponse,
   IPokemonSpecies,
-} from './pokemon-detail.type'
+} from './pokemon.type'
 
 vi.mock('@/app/services/http', () => {
   return {

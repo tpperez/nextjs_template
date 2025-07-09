@@ -64,14 +64,14 @@ This working implementation demonstrates every architectural pattern in the temp
 
 ### Data Management
 
-- [TanStack Query](https://tanstack.com/query) - server state management and caching
 - [Zustand](https://zustand-demo.pmnd.rs/) - client state management with persistence
 - [React Hook Form](https://react-hook-form.com/) - performant forms with validation
+- [TanStack Query](https://tanstack.com/query) - server state management and caching
 
-### HTTP Clients
+### Fetch Tools
 
-- **REST Client** (`app/services/http/rest-client.ts`) - fetch-based adapter with error handling
-- **GraphQL Client** (`app/services/http/graphql-client.ts`) - graphql-request adapter with caching
+- **REST Client** (`app/services/http/rest-client.ts`) - modular rest service for handling rest requests with a default implementation using fetch-based adapter with optional configuration to use axios as an alternative.
+- **GraphQL Client** (`app/services/http/graphql-client.ts`) - ...
 
 ### Development Tools
 

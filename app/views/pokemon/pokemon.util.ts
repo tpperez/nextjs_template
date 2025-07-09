@@ -1,4 +1,4 @@
-import type { IPokemonSpecies } from './pokemon-detail.type'
+import type { IPokemonSpecies } from './pokemon.type'
 
 export const formatStatName = (statName: string): string => {
   return statName.replace('-', ' ').replace(/\b\w/g, (l) => {

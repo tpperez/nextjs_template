@@ -1,19 +1,19 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
-import { ERROR_MESSAGES } from '../../pokemon-detail.const'
-import { usePokemonSpecies } from '../../pokemon-detail.hook'
-import type { IPokemonSpecies } from '../../pokemon-detail.type'
+import { ERROR_MESSAGES } from '../../pokemon.const'
+import { usePokemonSpecies } from '../../pokemon.hook'
+import type { IPokemonSpecies } from '../../pokemon.type'
 import {
   formatGenderRate,
   formatName,
   getEnglishDescription,
   getEnglishGenus,
-} from '../../pokemon-detail.util'
+} from '../../pokemon.util'
 
 import { PokemonSpeciesInfo } from './pokemon-species-info'
 
-vi.mock('../../pokemon-detail.hook', () => {
+vi.mock('../../pokemon.hook', () => {
   return {
     usePokemonSpecies: vi.fn(),
   }
@@ -27,7 +27,7 @@ vi.mock('@/app/components/ui/spinner', () => {
   }
 })
 
-vi.mock('../../pokemon-detail.util', () => {
+vi.mock('../../pokemon.util', () => {
   return {
     formatGenderRate: vi.fn(),
     formatName: vi.fn(),

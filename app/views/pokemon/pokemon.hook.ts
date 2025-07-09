@@ -9,7 +9,7 @@ import {
   POKEMON_DETAIL_CONFIG,
   POKEMON_DETAIL_QUERY_KEY,
   POKEMON_MOVES_GRAPHQL_QUERY_KEY,
-} from './pokemon-detail.const'
+} from './pokemon.const'
 import type {
   IGraphQLPokemonMovesResponse,
   IPokemonSpecies,
@@ -17,7 +17,7 @@ import type {
   TUsePokemonMovesGraphQLReturn,
   TUsePokemonSpeciesOptions,
   TUsePokemonSpeciesReturn,
-} from './pokemon-detail.type'
+} from './pokemon.type'
 
 const fetchPokemonSpecies = async (
   pokemonId: number,
