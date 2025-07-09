@@ -71,7 +71,7 @@ This working implementation demonstrates every architectural pattern in the temp
 ### Fetch Tools
 
 - **REST Client** (`app/services/http/rest-client.ts`) - modular rest service for handling rest requests with a default implementation using fetch-based adapter with optional configuration to use axios as an alternative.
-- **GraphQL Client** (`app/services/http/graphql-client.ts`) - ...
+- **GraphQL Client** (`app/services/http/graphql-client.ts`) - modular rest service for handling graphql requests with a default implementation using fetch-based adapter with optional configuration to use graphql-resquest as an alternative.
 
 ### Development Tools
 
