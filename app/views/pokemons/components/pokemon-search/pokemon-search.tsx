@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form'
 
-import { Button } from '@/app/components/ui/button'
+import Button from '@/app/components/ui/button'
 
 import type { IPokemonSearchProps } from './pokemon-search.type'
 

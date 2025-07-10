@@ -1,21 +1,22 @@
 import { render, screen } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ERROR_MESSAGES, MOVE_DISPLAY_CONFIG } from '../../pokemon.const'
-import { usePokemonMovesGraphQL } from '../../pokemon.hook'
-import type { IGraphQLPokemonMoves } from '../../pokemon.type'
+import { ERROR_MESSAGES } from '../../pokemon.const'
 
-import { PokemonMoves } from './pokemon-moves'
+import PokemonMoves from './pokemon-moves'
+import { MOVE_DISPLAY_CONFIG } from './pokemon-moves.const'
+import usePokemonMovesGraphQL from './pokemon-moves.hook'
+import type { IGraphQLPokemonMoves } from './pokemon-moves.type'
 
-vi.mock('../../pokemon.hook', () => {
+vi.mock('./pokemon-moves.hook', () => {
   return {
-    usePokemonMovesGraphQL: vi.fn(),
+    default: vi.fn(),
   }
 })
 
 vi.mock('@/app/components/ui/spinner', () => {
   return {
-    Spinner: ({ text }: { text: string }) => {
+    default: ({ text }: { text: string }) => {
       return <div data-testid='spinner'>{text}</div>
     },
   }

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ViewPokemons } from './pokemons'
+import ViewPokemons from './pokemons'
 import { POKEMON_GALLERY_CONFIG } from './pokemons.const'
 import type { IPokemonsViewProps } from './pokemons.type'
 
@@ -20,26 +20,28 @@ vi.mock('./components/pokemon-search', () => {
 
 vi.mock('./components/pokemon-card', () => {
   return {
-    PokemonCard: vi.fn(),
+    default: vi.fn(),
   }
 })
 
 vi.mock('@/app/components/ui/spinner', () => {
   return {
+    default: vi.fn(),
     Spinner: vi.fn(),
   }
 })
 
 vi.mock('@/app/components/ui/button', () => {
   return {
+    default: vi.fn(),
     Button: vi.fn(),
   }
 })
 
-import { Button } from '@/app/components/ui/button'
-import { Spinner } from '@/app/components/ui/spinner'
+import Button from '@/app/components/ui/button'
+import Spinner from '@/app/components/ui/spinner'
 
-import { PokemonCard } from './components/pokemon-card'
+import PokemonCard from './components/pokemon-card'
 import {
   PokemonSearch,
   usePokemonNameSearch,

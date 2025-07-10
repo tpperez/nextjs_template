@@ -2,7 +2,7 @@ import { restClient } from '@/app/services/http'
 
 import { IPokemonDetail } from './get-pokemon-detail.type'
 
-export const getPokemonDetailData = async (name: string) => {
+const getPokemonDetailData = async (name: string) => {
   try {
     const response = await restClient.get<IPokemonDetail>(
       `/pokemon/${name.toLowerCase()}`,
@@ -26,3 +26,5 @@ export const getPokemonDetailData = async (name: string) => {
     }
   }
 }
+
+export default getPokemonDetailData

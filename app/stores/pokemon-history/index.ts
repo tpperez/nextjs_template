@@ -1,4 +1,4 @@
-export { usePokemonHistoryStore } from './pokemon-history'
+export { default } from './pokemon-history'
 export { POKEMON_HISTORY_CONFIG } from './pokemon-history.const'
 export type {
   IPokemonHistoryStore,

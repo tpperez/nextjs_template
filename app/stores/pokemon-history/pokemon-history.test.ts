@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { IPokemon } from '@/app/(routes)/(public)/(examples)/pokemons/queries'
 
-import { usePokemonHistoryStore } from './pokemon-history'
+import usePokemonHistoryStore from './pokemon-history'
 import { POKEMON_HISTORY_CONFIG } from './pokemon-history.const'
 
 vi.mock('zustand/middleware', () => {

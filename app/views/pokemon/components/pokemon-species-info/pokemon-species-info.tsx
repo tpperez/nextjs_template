@@ -1,11 +1,9 @@
 'use client'
 
-import { Button } from '@/app/components/ui/button'
-import { Spinner } from '@/app/components/ui/spinner'
+import Button from '@/app/components/ui/button'
+import Spinner from '@/app/components/ui/spinner'
 
 import { ERROR_MESSAGES } from '../../pokemon.const'
-import { usePokemonSpecies } from '../../pokemon.hook'
-import type { IPokemonSpeciesInfoProps } from '../../pokemon.type'
 import {
   formatGenderRate,
   formatName,
@@ -13,7 +11,10 @@ import {
   getEnglishGenus,
 } from '../../pokemon.util'
 
-export const PokemonSpeciesInfo = ({ pokemonId }: IPokemonSpeciesInfoProps) => {
+import usePokemonSpecies from './pokemon-species-info.hook'
+import { IPokemonSpeciesInfoProps } from './pokemon-species-info.type'
+
+const PokemonSpeciesInfo = ({ pokemonId }: IPokemonSpeciesInfoProps) => {
   const { species, isFetching, isError, error, refetch } =
     usePokemonSpecies(pokemonId)
 
@@ -178,3 +179,5 @@ export const PokemonSpeciesInfo = ({ pokemonId }: IPokemonSpeciesInfoProps) => {
     </div>
   )
 }
+
+export default PokemonSpeciesInfo

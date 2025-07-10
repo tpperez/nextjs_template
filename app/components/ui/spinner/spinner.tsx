@@ -1,4 +1,4 @@
-import { cn } from '@/app/utils/cn'
+import cn from '@/app/utils/cn'
 
 import { SPINNER_COLOR_CLASSES, SPINNER_SIZE_CLASSES } from './spinner.const'
 import type { ISpinnerProps } from './spinner.type'
@@ -23,3 +23,5 @@ export const Spinner = ({
     </div>
   )
 }
+
+export default Spinner

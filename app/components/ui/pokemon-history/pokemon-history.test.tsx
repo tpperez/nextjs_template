@@ -6,8 +6,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { IPokemon } from '@/app/(routes)/(public)/(examples)/pokemons/queries'
 
 vi.mock('@/app/stores/pokemon-history', () => {
+  const mockUsePokemonHistoryStore = vi.fn()
   return {
-    usePokemonHistoryStore: vi.fn(),
+    default: mockUsePokemonHistoryStore,
     POKEMON_HISTORY_CONFIG: {
       MAX_HISTORY_SIZE: 5,
       TITLE: 'Recently Viewed',
@@ -78,12 +79,11 @@ vi.mock('next/link', () => {
   }
 })
 
-import {
+import usePokemonHistoryStore, {
   POKEMON_HISTORY_CONFIG,
-  usePokemonHistoryStore,
 } from '@/app/stores/pokemon-history'
 
-import { PokemonHistory } from './pokemon-history'
+import PokemonHistory from './pokemon-history'
 
 const mockUsePokemonHistoryStore =
   usePokemonHistoryStore as unknown as ReturnType<typeof vi.fn>

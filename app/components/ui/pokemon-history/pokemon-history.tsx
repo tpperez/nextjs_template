@@ -3,13 +3,12 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { Button } from '@/app/components/ui/button'
-import {
+import Button from '@/app/components/ui/button'
+import usePokemonHistoryStore, {
   POKEMON_HISTORY_CONFIG,
-  usePokemonHistoryStore,
 } from '@/app/stores/pokemon-history'
 
-export const PokemonHistory = () => {
+const PokemonHistory = () => {
   const { history, clearHistory } = usePokemonHistoryStore()
 
   if (history.length === 0) {
@@ -80,3 +79,5 @@ export const PokemonHistory = () => {
     </div>
   )
 }
+
+export default PokemonHistory

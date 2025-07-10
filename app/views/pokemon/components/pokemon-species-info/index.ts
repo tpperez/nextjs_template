@@ -1,1 +1,1 @@
-export { PokemonSpeciesInfo } from './pokemon-species-info'
+export { default } from './pokemon-species-info'

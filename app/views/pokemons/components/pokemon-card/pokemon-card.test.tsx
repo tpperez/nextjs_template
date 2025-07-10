@@ -3,15 +3,15 @@ import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { usePokemonHistoryStore } from '@/app/stores/pokemon-history'
+import usePokemonHistoryStore from '@/app/stores/pokemon-history'
 
-import { PokemonCard } from './pokemon-card'
+import PokemonCard from './pokemon-card'
 
 const mockAddToHistory = vi.fn()
 
 vi.mock('@/app/stores/pokemon-history', () => {
   return {
-    usePokemonHistoryStore: vi.fn(),
+    default: vi.fn(),
   }
 })
 

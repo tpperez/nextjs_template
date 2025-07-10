@@ -1,18 +1,19 @@
 import { render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { usePokemonHistoryStore } from '@/app/stores/pokemon-history'
+import usePokemonHistoryStore from '@/app/stores/pokemon-history'
+
+import type { IPokemonDetail } from '../../(routes)/(public)/(examples)/pokemons/[pokemon]/queries'
 
 import ViewPokemon from './pokemon'
 import { POKEMON_DETAIL_CONFIG } from './pokemon.const'
-import type { IPokemonDetail } from './pokemon.type'
 import { formatName, formatStatName } from './pokemon.util'
 
 const mockAddToHistory = vi.fn()
 
 vi.mock('@/app/stores/pokemon-history', () => {
   return {
-    usePokemonHistoryStore: vi.fn(() => {
+    default: vi.fn(() => {
       return {
         addToHistory: mockAddToHistory,
       }
@@ -22,7 +23,7 @@ vi.mock('@/app/stores/pokemon-history', () => {
 
 vi.mock('./components/pokemon-moves', () => {
   return {
-    PokemonMoves: ({ pokemonName }: { pokemonName: string }) => {
+    default: ({ pokemonName }: { pokemonName: string }) => {
       return (
         <div data-testid='pokemon-moves'>Pokemon Moves for {pokemonName}</div>
       )
@@ -32,7 +33,7 @@ vi.mock('./components/pokemon-moves', () => {
 
 vi.mock('./components/pokemon-species-info', () => {
   return {
-    PokemonSpeciesInfo: ({ pokemonId }: { pokemonId: number }) => {
+    default: ({ pokemonId }: { pokemonId: number }) => {
       return (
         <div data-testid='pokemon-species-info'>
           Pokemon Species Info for {pokemonId}

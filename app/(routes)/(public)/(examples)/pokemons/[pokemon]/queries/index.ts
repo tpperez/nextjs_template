@@ -1,4 +1,4 @@
-export { getPokemonDetailData } from './get-pokemon-detail.query'
+export { default } from './get-pokemon-detail.query'
 export type {
   IPokemonAbility,
   IPokemonDetail,

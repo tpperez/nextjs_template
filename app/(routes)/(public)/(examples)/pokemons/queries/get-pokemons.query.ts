@@ -3,10 +3,7 @@ import { graphqlClient } from '@/app/services/http'
 import { GET_POKEMONS } from './get-pokemons.const'
 import { IPokemonsResponse } from './get-pokemons.type'
 
-export const getPokemonsData = async (
-  limit: number = 8,
-  offset: number = 0,
-) => {
+const getPokemonsData = async (limit: number = 8, offset: number = 0) => {
   try {
     const response = await graphqlClient.query<IPokemonsResponse>(
       GET_POKEMONS,
@@ -39,3 +36,5 @@ export const getPokemonsData = async (
     }
   }
 }
+
+export default getPokemonsData

@@ -1,5 +1,5 @@
-import { Footer } from '@/app/components/structure/footer'
-import { Header } from '@/app/components/structure/header'
+import Footer from '@/app/components/structure/footer'
+import Header from '@/app/components/structure/header'
 
 const LayoutPublic = ({ children }: { children: React.ReactNode }) => {
   return (

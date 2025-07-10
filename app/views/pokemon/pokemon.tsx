@@ -4,16 +4,16 @@ import { useEffect } from 'react'
 
 import Image from 'next/image'
 
-import { Button } from '@/app/components/ui/button'
-import { usePokemonHistoryStore } from '@/app/stores/pokemon-history'
+import Button from '@/app/components/ui/button'
+import usePokemonHistoryStore from '@/app/stores/pokemon-history'
 
-import { PokemonMoves } from './components/pokemon-moves'
-import { PokemonSpeciesInfo } from './components/pokemon-species-info'
+import PokemonMoves from './components/pokemon-moves'
+import PokemonSpeciesInfo from './components/pokemon-species-info'
 import { POKEMON_DETAIL_CONFIG } from './pokemon.const'
 import type { IViewPokemonProps } from './pokemon.type'
 import { formatName, formatStatName } from './pokemon.util'
 
-export const ViewPokemon = ({ data: pokemon }: IViewPokemonProps) => {
+const ViewPokemon = ({ data: pokemon }: IViewPokemonProps) => {
   const { addToHistory } = usePokemonHistoryStore()
 
   useEffect(() => {
