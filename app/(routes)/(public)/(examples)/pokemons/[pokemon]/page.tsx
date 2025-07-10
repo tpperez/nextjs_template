@@ -4,8 +4,31 @@ import { Metadata } from 'next'
 
 import ViewPokemon from '@/app/views/pokemon'
 
+import getPokemonsData from '../queries'
+
 import getPokemonDetailData from './queries'
 import type { IPagePokemonProps } from './type'
+
+export const revalidate = 3600
+
+export const generateStaticParams = async () => {
+  try {
+    const pokemonsData = await getPokemonsData(8, 0)
+
+    if (!pokemonsData.success) {
+      return []
+    }
+
+    return pokemonsData.data.map((pokemon) => {
+      return {
+        pokemon: pokemon.name,
+      }
+    })
+  } catch (error) {
+    console.error('Error generating static params:', error)
+    return []
+  }
+}
 
 export const generateMetadata = async ({
   params,
