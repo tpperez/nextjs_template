@@ -41,8 +41,7 @@ For detailed information about development practices and project architecture:
 
 - [Stack](docs/stack.md)
 - [Scripts](docs/scripts.md)
-- [Directory Structure](docs/directory-structure.md)
-- [Naming Conventions](docs/naming-conventions.md)
+- [Code Organization](docs/code-organization.md)
 - [Code Quality Standards](docs/code-quality.md)
 - [Data Fetching](docs/data-fetching.md)
 - [State Management](docs/state-management.md)
