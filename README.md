@@ -40,7 +40,7 @@ open http://localhost:3000
 For detailed information about development practices and project architecture:
 
 - [Stack](docs/stack.md)
-- [Scripts](docs/tools.md)
+- [Scripts](docs/scripts.md)
 - [Directory Structure](docs/directory-structure.md)
 - [Naming Conventions](docs/naming-conventions.md)
 - [Code Quality Standards](docs/code-quality.md)
