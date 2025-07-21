@@ -1,4 +1,4 @@
-export { FetchGraphQLAdapter, GraphQLRequestAdapter } from './adapters'
+export { FetchGraphQLAdapter } from './adapters'
 export { graphqlClient } from './graphql'
 export type {
   IGraphQLRequest,
