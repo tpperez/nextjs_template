@@ -50,7 +50,7 @@ For detailed information about development practices and project architecture:
 - [Caching](docs/caching.md)
 - [Testing Framework](docs/testing.md)
 - [Contributing Guidelines](docs/contributing.md)
-- [Examples](docs/exemplos.md)
+- [Implementation Examples](docs/examples.md)
 - [Support Documentation](docs/support.md)
 
 ## Contributing
