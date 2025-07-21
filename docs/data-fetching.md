@@ -28,44 +28,104 @@ interface IAdapterConfig extends IBaseRequestConfig {
 
 ### rest client implementation
 
-rest services provide standardized http communication:
+The REST client is available as a singleton instance that provides standardized HTTP communication:
 
 ```typescript
-// rest client configuration
-const restClient = createRestClient({
-  baseUrl: 'https://pokeapi.co/api/v2',
-  timeout: 10000,
-  headers: {
-    'content-type': 'application/json',
-  },
-})
+import { restClient } from '@/app/services/http'
 
-// client usage patterns
-const fetchPokemonSpecies = async (id: number): Promise<IPokemonSpecies> => {
-  return restClient.get(`/pokemon-species/${id}`, {
-    cache: { revalidate: 30 * 60 }, // 30 minutes
+// pokemon detail query (actual example from the codebase)
+const getPokemonDetailData = async (name: string) => {
+  try {
+    const response = await restClient.get<IPokemonDetail>(
+      `/pokemon/${name.toLowerCase()}`,
+      {
+        revalidate: 3600, // 1 hour cache
+      },
+    )
+
+    return {
+      success: true,
+      data: response,
+      error: null,
+    }
+  } catch (error) {
+    console.error(`Error fetching Pokémon ${name}:`, error)
+    return {
+      success: false,
+      data: null,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    }
+  }
+}
+
+// other available methods
+const createUser = async (userData: IUser): Promise<IUser> => {
+  return restClient.post('/users', {
+    body: userData,
+    headers: {
+      'content-type': 'application/json',
+    },
   })
+}
+
+const updateUser = async (
+  id: string,
+  userData: Partial<IUser>,
+): Promise<IUser> => {
+  return restClient.put(`/users/${id}`, {
+    body: userData,
+  })
+}
+
+const deleteUser = async (id: string): Promise<void> => {
+  return restClient.delete(`/users/${id}`)
 }
 ```
 
 ### graphql client integration
 
-graphql services handle graph-based api communication:
+GraphQL services handle graph-based API communication through the singleton GraphQL client:
 
 ```typescript
-// graphql client setup
-const graphqlClient = createGraphQLClient({
-  endpoint: 'https://api.example.com/graphql',
-  headers: {
-    authorization: `bearer ${token}`,
-  },
-})
+import { graphqlClient } from '@/app/services/http'
 
-// query execution
-const fetchUserProfile = async (id: string) => {
-  const query = `
-    query GetUserProfile($id: ID!) {
-      user(id: $id) {
+const getPokemonsData = async (limit: number = 8, offset: number = 0) => {
+  try {
+    const response = await graphqlClient.query<IPokemonsResponse>(
+      GET_POKEMONS,
+      {
+        limit,
+        offset,
+      },
+      {
+        revalidate: 300, // 5 minutes cache
+      },
+    )
+
+    return {
+      success: true,
+      data: response.data?.pokemons?.results || [],
+      count: response.data?.pokemons?.count || 0,
+      next: response.data?.pokemons?.next || null,
+      previous: response.data?.pokemons?.previous || null,
+    }
+  } catch (error) {
+    console.error('Error fetching Pokémon:', error)
+    return {
+      success: false,
+      data: [],
+      count: 0,
+      next: null,
+      previous: null,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    }
+  }
+}
+
+const createUserProfile = async (userData: IUserInput) => {
+  const mutation = `
+    mutation CreateUser($input: UserInput!) {
+      createUser(input: $input) {
         id
         name
         email
@@ -77,7 +137,7 @@ const fetchUserProfile = async (id: string) => {
     }
   `
 
-  return graphqlClient.request(query, { id })
+  return graphqlClient.mutation(mutation, { input: userData })
 }
 ```
 
@@ -189,11 +249,30 @@ export class AxiosRestAdapter implements IRestHttpAdapter {
 }
 ```
 
-To use this adapter, install axios:
+To use this adapter, install axios and update the adapter configuration:
 
 ```bash
 npm install axios
 npm install --save-dev @types/axios
+```
+
+Then update `app/services/http/core/core.ts`:
+
+```typescript
+import { AxiosRestAdapter } from '../rest/adapters/axios-rest'
+import { FetchGraphQLAdapter } from '../graphql/adapters'
+
+export const HTTP_ADAPTER_CONFIG: {
+  restAdapter: TRestAdapterFactory
+  graphqlAdapter: TGraphQLAdapterFactory
+} = {
+  restAdapter: () => {
+    return new AxiosRestAdapter()
+  },
+  graphqlAdapter: () => {
+    return new FetchGraphQLAdapter() // keep default
+  },
+}
 ```
 
 ### graphql-request adapter
@@ -296,10 +375,29 @@ export class GraphQLRequestAdapter implements IGraphQLHttpAdapter {
 }
 ```
 
-To use this adapter, install graphql-request:
+To use this adapter, install graphql-request and update the adapter configuration:
 
 ```bash
 npm install graphql-request graphql
+```
+
+Then update `app/services/http/core/core.ts`:
+
+```typescript
+import { FetchRestAdapter } from '../rest/adapters'
+import { GraphQLRequestAdapter } from '../graphql/adapters/graphql-request'
+
+export const HTTP_ADAPTER_CONFIG: {
+  restAdapter: TRestAdapterFactory
+  graphqlAdapter: TGraphQLAdapterFactory
+} = {
+  restAdapter: () => {
+    return new FetchRestAdapter() // keep default
+  },
+  graphqlAdapter: () => {
+    return new GraphQLRequestAdapter()
+  },
+}
 ```
 
 ### extending with custom adapters
@@ -444,12 +542,19 @@ const POKEMON_SPECIES_CONFIG = {
 mutations manage server state changes with optimistic updates:
 
 ```typescript
-// mutation hook
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { restClient, graphqlClient } from '@/app/services/http'
+
+// mutation with rest client
 const useUpdateUserProfile = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: updateUserProfile,
+    mutationFn: async (userData: Partial<IUser>) => {
+      return restClient.put('/user/profile', {
+        body: userData,
+      })
+    },
     onMutate: async (variables) => {
       // optimistic update
       await queryClient.cancelQueries({ queryKey: ['user-profile'] })
@@ -467,6 +572,31 @@ const useUpdateUserProfile = () => {
     onSettled: () => {
       // refetch after mutation
       queryClient.invalidateQueries({ queryKey: ['user-profile'] })
+    },
+  })
+}
+
+// mutation with graphql client
+const useCreatePokemon = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (pokemonData: IPokemonInput) => {
+      const mutation = `
+        mutation CreatePokemon($input: PokemonInput!) {
+          createPokemon(input: $input) {
+            id
+            name
+            type
+          }
+        }
+      `
+      return graphqlClient.mutation(mutation, { input: pokemonData })
+    },
+    onSuccess: () => {
+      // invalidate list queries
+      queryClient.invalidateQueries({ queryKey: ['pokemon-list'] })
+      queryClient.invalidateQueries({ queryKey: ['pokemon-moves-graphql'] })
     },
   })
 }
@@ -504,38 +634,70 @@ const refreshPokemonData = () => {
 
 ### client-side error management
 
-http clients implement consistent error handling:
+HTTP clients implement consistent error handling using real patterns from the codebase:
 
 ```typescript
-// error response interface
-interface IHttpError {
-  message: string
-  status: number
-  code?: string
-  details?: Record<string, unknown>
+import { restClient, graphqlClient } from '@/app/services/http'
+
+// error handling in REST queries (actual pattern from get-pokemon-detail.query.ts)
+const getPokemonDetailData = async (name: string) => {
+  try {
+    const response = await restClient.get<IPokemonDetail>(
+      `/pokemon/${name.toLowerCase()}`,
+      {
+        baseUrl: 'https://pokeapi.co/api/v2',
+        revalidate: 3600,
+      },
+    )
+
+    return {
+      success: true,
+      data: response,
+      error: null,
+    }
+  } catch (error) {
+    console.error(`Error fetching Pokémon ${name}:`, error)
+    return {
+      success: false,
+      data: null,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    }
+  }
 }
 
-// error handling in adapters
-const axiosAdapter: IRestHttpAdapter = {
-  async request<TResponse>(
-    url: string,
-    config: IHttpRequestConfig,
-  ): Promise<TResponse> {
-    try {
-      const response = await axios.request({ url, ...config })
-      return response.data
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        throw {
-          message: error.message,
-          status: error.response?.status || 0,
-          code: error.code,
-          details: error.response?.data,
-        } as IHttpError
-      }
-      throw error
+// error handling in GraphQL queries (actual pattern from get-pokemons.query.ts)
+const getPokemonsData = async (limit: number = 8, offset: number = 0) => {
+  try {
+    const response = await graphqlClient.query<IPokemonsResponse>(
+      GET_POKEMONS,
+      {
+        limit,
+        offset,
+      },
+      {
+        baseUrl: 'https://graphql-pokeapi.graphcdn.app/',
+        revalidate: 300,
+      },
+    )
+
+    return {
+      success: true,
+      data: response.data?.pokemons?.results || [],
+      count: response.data?.pokemons?.count || 0,
+      next: response.data?.pokemons?.next || null,
+      previous: response.data?.pokemons?.previous || null,
     }
-  },
+  } catch (error) {
+    console.error('Error fetching Pokémon:', error)
+    return {
+      success: false,
+      data: [],
+      count: 0,
+      next: null,
+      previous: null,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    }
+  }
 }
 ```
 
@@ -563,22 +725,48 @@ const ApiErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children })
   )
 }
 
-// query error handling
-const PokemonSpeciesDisplay: React.FC<{ id: number }> = ({ id }) => {
-  const { data, error, isLoading, retry } = usePokemonSpecies(id)
+// query error handling (actual pattern from PokemonMoves component)
+const PokemonMoves = ({ pokemonName }: { pokemonName: string }) => {
+  const { pokemonMoves, isError, error, isFetching } = usePokemonMovesGraphQL(
+    pokemonName,
+    { enabled: true },
+  )
 
-  if (error) {
+  if (isFetching) {
     return (
-      <div className="error-state">
-        <p>failed to load pokemon species</p>
-        <button onClick={() => retry()}>try again</button>
+      <div className='rounded-xl border border-gray-300 bg-white p-6 shadow-lg'>
+        <Spinner text='Loading moves via GraphQL...' />
       </div>
     )
   }
 
-  if (isLoading) return <Spinner />
+  if (isError || !pokemonMoves) {
+    return (
+      <div className='rounded-xl border border-gray-300 bg-white p-6 shadow-lg'>
+        <div className='mb-4 flex items-center justify-between'>
+          <h2 className='text-xl font-bold text-black'>Moves</h2>
+          <div className='rounded-full border border-gray-300 bg-gray-100 px-3 py-1 text-xs text-gray-700'>
+            ❌ GraphQL Error
+          </div>
+        </div>
+        <div className='rounded-lg border border-gray-300 bg-gray-50 p-6 text-center'>
+          <p className='text-gray-600'>
+            {error?.message || 'Failed to load pokemon moves'}
+          </p>
+        </div>
+      </div>
+    )
+  }
 
-  return <div>{data?.name}</div>
+  return (
+    <div className='pokemon-moves'>
+      {pokemonMoves.moves.map((moveInfo, index) => (
+        <div key={`${moveInfo.move.name}-${index}`} className='move-item'>
+          {moveInfo.move.name}
+        </div>
+      ))}
+    </div>
+  )
 }
 ```
 
@@ -589,15 +777,15 @@ const PokemonSpeciesDisplay: React.FC<{ id: number }> = ({ id }) => {
 loading states provide user feedback during data operations:
 
 ```typescript
-// loading state hooks
+// loading state hooks (using real query patterns)
 const useLoadingStates = () => {
-  const pokemonQuery = usePokemonSpecies(25)
-  const userQuery = useUserProfile('user-123')
+  const pokemonDetailQuery = usePokemonDetail('pikachu')
+  const pokemonMovesQuery = usePokemonMovesGraphQL('pikachu', { enabled: true })
 
   return {
-    isLoading: pokemonQuery.isLoading || userQuery.isLoading,
-    isError: pokemonQuery.isError || userQuery.isError,
-    errors: [pokemonQuery.error, userQuery.error].filter(Boolean)
+    isLoading: pokemonDetailQuery.isLoading || pokemonMovesQuery.isLoading,
+    isError: pokemonDetailQuery.isError || pokemonMovesQuery.isError,
+    errors: [pokemonDetailQuery.error, pokemonMovesQuery.error].filter(Boolean)
   }
 }
 
@@ -768,16 +956,16 @@ proactive data loading improves user experience:
 
 ```typescript
 // prefetch related data
-const usePokemonWithPrefetch = (id: number) => {
+const usePokemonWithPrefetch = (name: string) => {
   const queryClient = useQueryClient()
-  const pokemon = usePokemonSpecies(id)
+  const pokemon = usePokemonDetail(name)
 
-  // prefetch evolution chain when pokemon loads
+  // prefetch moves when pokemon loads
   useEffect(() => {
-    if (pokemon.data?.evolutionChainId) {
+    if (pokemon.data?.name) {
       queryClient.prefetchQuery({
-        queryKey: ['evolution-chain', pokemon.data.evolutionChainId],
-        queryFn: () => fetchEvolutionChain(pokemon.data.evolutionChainId),
+        queryKey: ['pokemon-moves-graphql', pokemon.data.name],
+        queryFn: () => fetchPokemonMovesGraphQL(pokemon.data.name),
         staleTime: 10 * 60 * 1000,
       })
     }
@@ -790,10 +978,10 @@ const usePokemonWithPrefetch = (id: number) => {
 const usePrefetchOnHover = () => {
   const queryClient = useQueryClient()
 
-  const prefetchPokemon = (id: number) => {
+  const prefetchPokemon = (name: string) => {
     queryClient.prefetchQuery({
-      queryKey: [POKEMON_SPECIES_QUERY_KEY, id],
-      queryFn: () => fetchPokemonSpecies(id),
+      queryKey: ['pokemon-detail', name],
+      queryFn: () => getPokemonDetailData(name),
     })
   }
 
@@ -808,25 +996,36 @@ const usePrefetchOnHover = () => {
 consistent data structure across different apis:
 
 ```typescript
-// api response transformer
-const transformPokemonResponse = (apiData: any): IPokemonSpecies => {
+// api response transformer (based on real pokemon detail data)
+const transformPokemonResponse = (apiData: any): IPokemonDetail => {
   return {
     id: apiData.id,
     name: apiData.name,
-    evolutionChain: apiData.evolution_chain?.url?.split('/').slice(-2)[0] || '',
-    habitat: apiData.habitat?.name || 'unknown',
-    flavorText:
-      apiData.flavor_text_entries?.find((entry) => entry.language.name === 'en')
-        ?.flavor_text || '',
+    height: apiData.height,
+    weight: apiData.weight,
+    types: apiData.types?.map((type: any) => type.type.name) || [],
+    abilities:
+      apiData.abilities?.map((ability: any) => ability.ability.name) || [],
+    sprites: {
+      front_default: apiData.sprites?.front_default || '',
+      back_default: apiData.sprites?.back_default || '',
+    },
+    moves: apiData.moves?.slice(0, 10).map((move: any) => move.move.name) || [],
   }
 }
 
 // query with transformation
-const usePokemonSpecies = (id: number) => {
+const usePokemonDetail = (name: string) => {
   return useQuery({
-    queryKey: [POKEMON_SPECIES_QUERY_KEY, id],
+    queryKey: ['pokemon-detail', name],
     queryFn: async () => {
-      const response = await fetchPokemonSpecies(id)
+      const response = await restClient.get<any>(
+        `/pokemon/${name.toLowerCase()}`,
+        {
+          baseUrl: 'https://pokeapi.co/api/v2',
+          revalidate: 3600,
+        },
+      )
       return transformPokemonResponse(response)
     },
   })
@@ -839,22 +1038,20 @@ combining multiple api responses into unified data structures:
 
 ```typescript
 // aggregate multiple queries
-const usePokemonComplete = (id: number) => {
-  const species = usePokemonSpecies(id)
-  const pokemon = usePokemon(id)
-  const evolution = useEvolutionChain(species.data?.evolutionChainId)
+const usePokemonComplete = (name: string) => {
+  const detail = usePokemonDetail(name)
+  const moves = usePokemonMovesGraphQL(name, { enabled: !!name })
 
   return {
     data:
-      species.data && pokemon.data
+      detail.data && moves.pokemonMoves
         ? {
-            ...species.data,
-            ...pokemon.data,
-            evolutionChain: evolution.data,
+            ...detail.data,
+            movesData: moves.pokemonMoves,
           }
         : undefined,
-    isLoading: species.isLoading || pokemon.isLoading || evolution.isLoading,
-    error: species.error || pokemon.error || evolution.error,
+    isLoading: detail.isLoading || moves.isLoading,
+    error: detail.error || moves.error,
   }
 }
 ```
