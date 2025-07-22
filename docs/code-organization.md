@@ -31,7 +31,7 @@ The project follows a comprehensive casing strategy to ensure consistency and ma
 | **Type Aliases**          | `TPascalCase`      | Type alias identification      |
 | **Variables & Functions** | `camelCase`        | Standard JavaScript convention |
 | **Custom Hooks**          | `useCamelCase`     | React hook convention          |
-| **Constants**             | `UPPER_SNAKE_CASE` | Global constant identification |
+| **Constants**             | `UPPER_SNAKE_CASE` | Constant identification        |
 
 ## Project Structure
 
