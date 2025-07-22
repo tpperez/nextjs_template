@@ -12,5 +12,6 @@ export interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   rightIcon?: ReactNode
   asLink?: boolean
   href?: string
+  target?: string
   children: ReactNode
 }

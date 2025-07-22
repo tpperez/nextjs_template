@@ -1,7 +1,19 @@
-import type { IDatocms } from '@/app/(routes)/(public)/(examples)/datocms/queries'
+import type {
+  IDatocmsResponse,
+  IFooter,
+  IHeader,
+} from '@/app/(routes)/(public)/(examples)/datocms/queries'
 
 export interface IDatocmsViewProps {
   success?: boolean
-  data?: IDatocms
+  data?: IDatocmsResponse
   error?: string
+}
+
+export interface IHeaderProps {
+  data: IHeader
+}
+
+export interface IFooterProps {
+  data: IFooter
 }

@@ -10,7 +10,7 @@ const getDatocmsData = async () => {
       {},
       {
         baseUrl: 'https://graphql.datocms.com/',
-        revalidate: 300,
+        revalidate: 300, // 5 min
         headers: {
           Authorization: `Bearer ${process.env.DATOCMS_API_TOKEN}`,
         },
@@ -19,7 +19,7 @@ const getDatocmsData = async () => {
 
     return {
       success: true,
-      data: response.data?.home,
+      data: response.data,
     }
   } catch (error) {
     console.error('Error fetching datocms:', error)

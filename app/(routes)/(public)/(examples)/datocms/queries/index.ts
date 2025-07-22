@@ -4,4 +4,6 @@ export type {
   IContentSection,
   IDatocms,
   IDatocmsResponse,
+  IFooter,
+  IHeader,
 } from './get-datocms.type'

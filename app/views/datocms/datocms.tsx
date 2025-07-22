@@ -1,3 +1,5 @@
+import Footer from './components/footer'
+import Header from './components/header'
 import SectionWithCards from './components/section-with-cards'
 import SectionWithContent from './components/section-with-content'
 import SectionWithIcons from './components/section-with-icons'
@@ -15,24 +17,28 @@ const ViewDatocms = ({ success, data, error }: IDatocmsViewProps) => {
     )
   }
 
-  const { sectionone, sectiontwo, sectionthree } = data
+  const { sectionone, sectiontwo, sectionthree } = data.home
 
   return (
-    <main className='space-y-20 px-4 py-10 md:px-12'>
-      <SectionWithCards
-        title={sectionone.title}
-        description={sectionone.description}
-        items={sectionone.items}
-      />
+    <>
+      <Header data={data.header} />
+      <main className='space-y-20 px-4 py-10 md:px-12'>
+        <SectionWithCards
+          title={sectionone.title}
+          description={sectionone.description}
+          items={sectionone.items}
+        />
 
-      <SectionWithContent {...sectiontwo} />
+        <SectionWithContent {...sectiontwo} />
 
-      <SectionWithIcons
-        title={sectionthree.title}
-        description={sectionthree.description}
-        items={sectionthree.items}
-      />
-    </main>
+        <SectionWithIcons
+          title={sectionthree.title}
+          description={sectionthree.description}
+          items={sectionthree.items}
+        />
+      </main>
+      <Footer data={data.footer} />
+    </>
   )
 }
 

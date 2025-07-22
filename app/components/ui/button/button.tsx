@@ -17,6 +17,7 @@ const Button = forwardRef<HTMLButtonElement, IButtonProps>(
       rightIcon,
       asLink = false,
       href,
+      target = '_self',
       className,
       disabled,
       children,
@@ -76,6 +77,7 @@ const Button = forwardRef<HTMLButtonElement, IButtonProps>(
         <Link
           href={href}
           className={buttonClasses}
+          target={target}
         >
           {content}
         </Link>
