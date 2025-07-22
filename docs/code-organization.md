@@ -15,12 +15,6 @@ Codebase organization, architectural patterns, and standardized naming conventio
 - [Module Structure Hierarchy](#module-structure-hierarchy)
 - [Module Growth Strategy](#module-growth-strategy)
 
-### [Architectural Principles](#architectural-principles)
-
-- [Clear Separation of Concerns](#clear-separation-of-concerns)
-- [Dependency Flow](#dependency-flow)
-- [Scalability Considerations](#scalability-considerations)
-
 ---
 
 ## Naming Conventions
