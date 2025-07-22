@@ -78,55 +78,38 @@ my-module/
 
 #### Module Growth Strategy
 
-Modules evolve naturally from simple implementations to complex structures. Understanding when to add each file helps maintain organization as functionality grows.
+Modules evolve naturally from simple implementations to complex structures. **Start simple and add files as needed**.
 
-**Stage 1: Start Simple**
-
-```
-my-module/
-├── my-module.{tsx|ts}           # core implementation
-└── index.ts                     # clean export
-```
-
-**Stage 2: Add Types**
+**Complete Module Structure:**
 
 ```
 my-module/
 ├── my-module.{tsx|ts}           # core implementation
 ├── my-module.type.ts            # interfaces and type definitions
-└── index.ts                     # clean export
-```
-
-**Stage 3: Add Tests**
-
-```
-my-module/
-├── my-module.{tsx|ts}           # core implementation
-├── my-module.type.ts            # interfaces and type definitions
-├── my-module.test.{tsx|ts}      # unit tests
-└── index.ts                     # clean export
-```
-
-**Stage 4: Add Constants**
-
-```
-my-module/
-├── my-module.{tsx|ts}           # core implementation
-├── my-module.type.ts            # interfaces and type definitions
-├── my-module.test.{tsx|ts}      # unit tests
 ├── my-module.const.ts           # constants and configurations
-└── index.ts                     # clean export
-```
-
-**Stage 5: Add Hooks**
-
-```
-my-module/
-├── my-module.{tsx|ts}           # core implementation
-├── my-module.type.ts            # interfaces and type definitions
 ├── my-module.test.{tsx|ts}      # unit tests
-├── my-module.const.ts           # constants and configurations
-├── my-module.hook.ts            # custom hooks
-├── my-module.hook.test.ts       # hook tests
-└── index.ts                     # clean export
+├── my-module.hook.ts            # custom hooks (when applicable)
+├── my-module.hook.test.ts       # hook-specific tests
+└── index.ts                     # clean export barrel
 ```
+
+**Growth Pattern:**
+Start with just the main file and `index.ts`, then add additional files as complexity grows. Not every module needs every file type.
+
+#### Module Scope Strategy
+
+Understanding when to create global versus local modules is crucial for maintaining clean architecture and preventing unnecessary coupling. The decision follows a simple principle: **reusability determines scope**.
+
+**Global Module Criteria:**
+
+- Shared between 2 or more components
+- Provides common functionality across features
+- Contains reusable business logic
+- Maintains application-wide state
+
+**Local Module Criteria:**
+
+- Used exclusively within a single context
+- Contains feature-specific logic
+- Tightly coupled to parent component
+- No reusability requirements
