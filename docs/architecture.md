@@ -1,40 +1,49 @@
-# Architectural Principles
+# Architecture
 
-## Clear Separation of Concerns
+Application architecture patterns and design principles for scalable development.
 
-directory structure enforces architectural boundaries:
+## Table of Contents
 
-- components handle ui rendering and user interaction
-- services manage external api communication
-- stores maintain application state
-- views coordinate page-level functionality
-- utils provide pure helper functions
+- [Overview](#overview)
+- [Guidelines](#guidelines)
 
-## Dependency Flow
+---
 
-architecture encourages unidirectional data flow:
+## Overview
 
-- views depend on components, services, and stores
-- components depend on utilities and types
-- services provide data to stores and views
-- utilities remain dependency-free for maximum reusability
+Architecture follows a coordinator pattern with Views as central orchestrators, where each page route has a corresponding view component:
 
-## Scalability Considerations
+```
+Routes (page.tsx)
+  ↓
+Queries ←→ Services
+  ↓
+Views
+  ├→ Components
+  ├→ Stores
+  ├→ Hooks
+  ├→ Utils
+  └→ Services
+```
 
-### feature-based organization
+**Route-View Relationship:**
 
-structure supports growth through feature modules:
+- Each page route has a corresponding view component
+- Routes handle server-side setup and pass initial data to Views
+- Views implement page behavior and coordinate user interactions
 
-- new features add directories under views/
-- feature-specific components stay localized
-- shared components promote reusability
-- service layer scales with additional apis
+**Layer Responsibilities:**
 
-### maintenance efficiency
+- **Routes**: Server-side rendering and initial data fetching for each page
+- **Queries**: Data fetching, transformation, and validation using Services
+- **Views**: Page implementations that orchestrate all other layers
+- **Components**: UI rendering and user interactions (primarily presentational)
+- **Services**: External API communication used by both server (Queries) and client (Views)
+- **Stores**: Application state management and persistence
+- **Utils**: Pure helper functions and shared utilities (dependency-free)
 
-organization optimizes for developer productivity:
+## Guidelines
 
-- related files stay physically close
-- consistent patterns reduce cognitive load
-- clear boundaries prevent coupling issues
-- modular structure supports team collaboration
+- Each page requires a Route and a View
+- Views manage all page functionality: component composition, state, and user interactions
+- Data flows from Routes through Queries to Views, then to Components as props
