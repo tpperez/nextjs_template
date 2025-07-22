@@ -1,14 +1,5 @@
-import Footer from '@/app/components/structure/footer'
-import Header from '@/app/components/structure/header'
-
 const LayoutPublic = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <section className='flex min-h-screen flex-col'>
-      <Header />
-      <main className='flex-1'>{children}</main>
-      <Footer />
-    </section>
-  )
+  return <section className='flex min-h-screen flex-col'>{children}</section>
 }
 
 export default LayoutPublic

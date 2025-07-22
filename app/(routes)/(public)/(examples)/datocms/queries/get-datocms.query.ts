@@ -1,12 +1,12 @@
 import { graphqlClient } from '@/app/services/http'
 
-import type { IHomeResponse } from './get-home.type'
-import { GET_HOME_QUERY } from './get-home-query.const'
+import type { IDatocmsResponse } from './get-datocms.type'
+import { GET_DATOCMS_QUERY } from './get-datocms-query.const'
 
-const getHomeData = async () => {
+const getDatocmsData = async () => {
   try {
-    const response = await graphqlClient.query<IHomeResponse>(
-      GET_HOME_QUERY,
+    const response = await graphqlClient.query<IDatocmsResponse>(
+      GET_DATOCMS_QUERY,
       {},
       {
         baseUrl: 'https://graphql.datocms.com/',
@@ -22,13 +22,12 @@ const getHomeData = async () => {
       data: response.data?.home,
     }
   } catch (error) {
-    console.error('Error fetching home:', error)
+    console.error('Error fetching datocms:', error)
     return {
       success: false,
-      data: null,
       error: error instanceof Error ? error.message : 'Unknown error',
     }
   }
 }
 
-export default getHomeData
+export default getDatocmsData

@@ -1,4 +1,4 @@
-export const GET_HOME_QUERY = `
+export const GET_DATOCMS_QUERY = `
 {
   header {
     logo {

@@ -1,6 +1,6 @@
-export interface IHomeResponse {
+export interface IDatocmsResponse {
   header: IHeader
-  home: IHome
+  home: IDatocms
   footer: IFooter
 }
 
@@ -19,7 +19,7 @@ export interface IMenuLink {
   url: string
 }
 
-export interface IHome {
+export interface IDatocms {
   sectionone: ICardSection
   sectiontwo: IContentSection
   sectionthree: ICardSection

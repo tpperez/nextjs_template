@@ -1,12 +1,13 @@
+import { Metadata } from 'next'
+
 import ViewHome from '@/app/views/home'
 
-import getHomeData from './queries'
+export const metadata: Metadata = {
+  title: 'Home',
+  description: 'This is home',
+}
 
-const PageHome = async () => {
-  const homeData = await getHomeData()
-
-  console.log(homeData)
-
+const PageHome = () => {
   return <ViewHome />
 }
 

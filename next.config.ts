@@ -18,6 +18,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/PokeAPI/sprites/master/sprites/pokemon/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.datocms-assets.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 }
