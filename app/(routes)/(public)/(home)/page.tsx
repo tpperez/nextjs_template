@@ -1,6 +1,12 @@
 import ViewHome from '@/app/views/home'
 
-const PageHome = () => {
+import getHomeData from './queries'
+
+const PageHome = async () => {
+  const homeData = await getHomeData()
+
+  console.log(homeData)
+
   return <ViewHome />
 }
 

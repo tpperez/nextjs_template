@@ -5,7 +5,7 @@ import { TGraphQLAdapterFactory, TRestAdapterFactory } from './core.type'
 
 export const HTTP_CONFIG = {
   BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api',
-  GRAPHQL_ENDPOINT: '/graphql',
+  GRAPHQL_ENDPOINT: '',
   DEFAULT_REVALIDATE: 300,
   DEFAULT_STALE_TIME: 5 * 60 * 1000,
   DEFAULT_RETRY_COUNT: 1,

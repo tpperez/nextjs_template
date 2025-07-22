@@ -12,7 +12,7 @@ const getPokemonsData = async (limit: number = 8, offset: number = 0) => {
         offset,
       },
       {
-        baseUrl: 'https://graphql-pokeapi.graphcdn.app/',
+        baseUrl: 'https://graphql-pokeapi.graphcdn.app/graphql',
         revalidate: 300,
       },
     )
