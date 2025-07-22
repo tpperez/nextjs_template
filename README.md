@@ -42,6 +42,7 @@ For detailed information about development practices and project architecture:
 - [Stack](docs/stack.md)
 - [Scripts](docs/scripts.md)
 - [Code Organization](docs/code-organization.md)
+- [Architecture](docs/architecture.md)
 - [Code Quality Standards](docs/code-quality.md)
 - [Data Fetching](docs/data-fetching.md)
 - [State Management](docs/state-management.md)
