@@ -27,22 +27,6 @@ vi.mock('./components/section-with-icons', () => {
   }
 })
 
-vi.mock('./components/header', () => {
-  return {
-    default: vi.fn(() => {
-      return <div data-testid='header'>Header</div>
-    }),
-  }
-})
-
-vi.mock('./components/footer', () => {
-  return {
-    default: vi.fn(() => {
-      return <div data-testid='footer'>Footer</div>
-    }),
-  }
-})
-
 describe('ViewDatocms', () => {
   it('should render error message when `success` is false', () => {
     render(
@@ -61,14 +45,6 @@ describe('ViewDatocms', () => {
       <ViewDatocms
         success
         data={{
-          header: {
-            logo: {
-              alt: 'Logo Alt',
-              url: 'https://example.com/logo.png',
-              title: 'Logo Title',
-            },
-            menulinks: [],
-          },
           home: {
             sectionone: {
               title: 'Title 1',
@@ -88,18 +64,12 @@ describe('ViewDatocms', () => {
               items: [],
             },
           },
-          footer: {
-            copyrighttext: '© 2025 Example',
-            footerlinks: [],
-          },
         }}
       />,
     )
 
-    expect(screen.getByTestId('header')).toBeInTheDocument()
     expect(screen.getByTestId('section-with-cards')).toBeInTheDocument()
     expect(screen.getByTestId('section-with-content')).toBeInTheDocument()
     expect(screen.getByTestId('section-with-icons')).toBeInTheDocument()
-    expect(screen.getByTestId('footer')).toBeInTheDocument()
   })
 })

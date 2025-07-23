@@ -1,22 +1,5 @@
 export interface IDatocmsResponse {
-  header: IHeader
   home: IDatocms
-  footer: IFooter
-}
-
-export interface IHeader {
-  logo: {
-    alt: string
-    url: string
-    title: string
-  }
-  menulinks: IMenuLink[]
-}
-
-export interface IMenuLink {
-  id: string
-  label: string
-  url: string
 }
 
 export interface IDatocms {
@@ -46,15 +29,4 @@ export interface IContentSection {
   image: {
     url: string
   }
-}
-
-export interface IFooter {
-  copyrighttext: string
-  footerlinks: IFooterLink[]
-}
-
-export interface IFooterLink {
-  id: string
-  label: string
-  url: string
 }

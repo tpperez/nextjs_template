@@ -1,9 +1,3 @@
-export interface IPokemon {
-  url: string
-  name: string
-  image: string
-}
-
 export interface IPokemonsResponse {
   pokemons: {
     count: number
@@ -13,4 +7,10 @@ export interface IPokemonsResponse {
     message: string
     results: IPokemon[]
   }
+}
+
+export interface IPokemon {
+  url: string
+  name: string
+  image: string
 }

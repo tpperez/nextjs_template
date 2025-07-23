@@ -1,8 +1,13 @@
+import FooterContainer from '@/app/views/datocms/components/footer'
+import HeaderContainer from '@/app/views/datocms/components/header'
+
 const LayoutDatocms = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className='min-h-screen bg-gradient-to-br from-gray-50 to-gray-100'>
+    <>
+      <HeaderContainer />
       <main className='flex-1'>{children}</main>
-    </div>
+      <FooterContainer />
+    </>
   )
 }
 

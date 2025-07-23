@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 import Button from '@/app/components/ui/button'
 
-import type { IHeaderProps } from '../../datocms.type'
+import type { IHeaderProps } from './header.type'
 
 const Header = ({ data }: IHeaderProps) => {
   return (

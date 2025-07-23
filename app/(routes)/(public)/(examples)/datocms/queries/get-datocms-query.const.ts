@@ -1,18 +1,5 @@
 export const GET_DATOCMS_QUERY = `
 {
-  header {
-    logo {
-      alt
-      url
-      title
-    }
-    menulinks {
-      id
-      label
-      url
-    }
-  }
-
   home {
     sectionone {
       title
@@ -26,7 +13,6 @@ export const GET_DATOCMS_QUERY = `
         }
       }
     }
-
     sectiontwo {
       title
       description
@@ -34,7 +20,6 @@ export const GET_DATOCMS_QUERY = `
         url
       }
     }
-
     sectionthree {
       title
       description
@@ -46,15 +31,6 @@ export const GET_DATOCMS_QUERY = `
           url
         }
       }
-    }
-  }
-
-  footer {
-    copyrighttext
-    footerlinks {
-      id
-      label
-      url
     }
   }
 }

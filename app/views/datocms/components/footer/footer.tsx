@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-import type { IFooterProps } from '../../datocms.type'
+import type { IFooterProps } from './footer.type'
 
 const Footer = ({ data }: IFooterProps) => {
   return (
