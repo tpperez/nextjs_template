@@ -6,11 +6,35 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "always"
   },
+
+  // css validation settings to fix "unknown at rule @apply and @theme" errors
+  "css.validate": false,
+  "postcss.validate": false,
+  "scss.validate": false,
+
+  // file associations for tailwind css
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+
+  // tailwind css configuration
   "tailwindCSS.lint.cssConflict": "ignore",
   "tailwindCSS.experimental.classRegex": [
     ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
     ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
   ],
+  "tailwindCSS.includeLanguages": {
+    "html": "html",
+    "javascript": "javascript",
+    "typescript": "typescript"
+  },
+
+  // improve autocompletion for strings
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+
+  // typescript configuration
   "typescript.preferences.importModuleSpecifier": "relative",
   "typescript.suggest.autoImports": true,
   "typescript.updateImportsOnFileMove.enabled": "always"
