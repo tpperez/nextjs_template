@@ -4,19 +4,29 @@ import type { IContentSection } from '@/app/(routes)/(public)/(examples)/datocms
 
 const SectionWithContent = ({ title, description, image }: IContentSection) => {
   return (
-    <section className='mx-auto max-w-5xl px-4 text-center'>
-      <h2 className='mb-4 text-3xl font-bold text-black'>{title}</h2>
-      <p className='mb-6 text-gray-600'>{description}</p>
+    <section className='mx-auto max-w-6xl px-6 py-16'>
+      <div className='grid grid-cols-1 items-center gap-12 lg:grid-cols-2'>
+        <div className='relative order-2 lg:order-1'>
+          <div className='relative mx-auto aspect-video w-full max-w-md'>
+            <Image
+              src={image.url}
+              alt={title}
+              fill
+              className='object-contain'
+              quality={85}
+            />
+          </div>
+        </div>
 
-      <div className='relative mx-auto aspect-video max-w-full overflow-hidden rounded-lg'>
-        <Image
-          src={image.url}
-          alt={title}
-          fill
-          className='object-contain'
-          sizes='(max-width: 768px) 100vw, 800px'
-          quality={85}
-        />
+        <div className='order-1 text-left lg:order-2 lg:pl-8'>
+          <h2 className='text-foreground mb-6 text-4xl font-bold leading-tight lg:text-5xl'>
+            {title}
+          </h2>
+
+          <p className='text-muted-foreground mb-8 text-lg leading-relaxed'>
+            {description}
+          </p>
+        </div>
       </div>
     </section>
   )
