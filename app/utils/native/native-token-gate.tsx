@@ -6,6 +6,10 @@ import Cookies from 'js-cookie'
 
 import { webviewManagement } from '@/app/utils/native/webview-client'
 
+const TOKEN_COOKIE_NAME = 'token'
+const TOKEN_EXPIRATION_MINUTES = 15
+const MILLISECONDS_PER_MINUTE = 60 * 1000
+
 export const NativeTokenGate = ({
   children,
 }: {
@@ -13,21 +17,29 @@ export const NativeTokenGate = ({
 }) => {
   const [hasToken, setHasToken] = useState(false)
 
-  const checkIfTokenExists = () => {
-    const jwt = Cookies.get('token')
-    if (jwt) {
-      setHasToken(true)
-      return true
-    }
-    return false
+  const getTokenExpiration = () => {
+    return new Date(
+      Date.now() + TOKEN_EXPIRATION_MINUTES * MILLISECONDS_PER_MINUTE,
+    )
+  }
+
+  const checkIfTokenExists = (): boolean => {
+    const jwt = Cookies.get(TOKEN_COOKIE_NAME)
+    const tokenExists = Boolean(jwt)
+    setHasToken(tokenExists)
+    return tokenExists
   }
 
   const handleJWTReceived = (payload: { jwt: string }) => {
-    Cookies.set('token', payload.jwt, {
-      secure: true,
+    if (!payload.jwt) return
+
+    Cookies.set(TOKEN_COOKIE_NAME, payload.jwt, {
       sameSite: 'Strict',
-      maxAge: 900,
+      secure: process.env.NODE_ENV === 'production',
+      expires: getTokenExpiration(),
+      path: '/',
     })
+
     setHasToken(true)
   }
 
@@ -41,8 +53,7 @@ export const NativeTokenGate = ({
   }
 
   useEffect(() => {
-    const alreadyHasToken = checkIfTokenExists()
-    if (!alreadyHasToken) {
+    if (!checkIfTokenExists()) {
       return subscribeToJWT()
     }
   }, [])
