@@ -4,11 +4,8 @@ import { useEffect, useState } from 'react'
 
 import Cookies from 'js-cookie'
 
-import { webviewManagement } from '@/app/utils/native/webview-client'
-
-const TOKEN_COOKIE_NAME = 'token'
-const TOKEN_EXPIRATION_MINUTES = 15
-const MILLISECONDS_PER_MINUTE = 60 * 1000
+import { getTokenExpiration, TOKEN_COOKIE_NAME } from './token.utils'
+import { webviewManagement } from './webview-client'
 
 export const NativeTokenGate = ({
   children,
@@ -16,12 +13,6 @@ export const NativeTokenGate = ({
   children: React.ReactNode
 }) => {
   const [hasToken, setHasToken] = useState(false)
-
-  const getTokenExpiration = () => {
-    return new Date(
-      Date.now() + TOKEN_EXPIRATION_MINUTES * MILLISECONDS_PER_MINUTE,
-    )
-  }
 
   const checkIfTokenExists = (): boolean => {
     const jwt = Cookies.get(TOKEN_COOKIE_NAME)
