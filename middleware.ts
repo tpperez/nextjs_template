@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const isDev = process.env.NODE_ENV === 'development'
+import isDev from '@/app/utils/is-dev'
 
 export const middleware = (request: NextRequest) => {
-  if (!isDev) {
+  if (!isDev()) {
     const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
     const cspHeader = `
     default-src 'self';

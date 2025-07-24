@@ -1,11 +1,8 @@
 import Footer from '@/app/components/structure/footer'
 import Header from '@/app/components/structure/header'
+import type ILayout from '@/app/types/layout'
 
-interface HomeLayoutProps {
-  children: React.ReactNode
-}
-
-const LayoutHome = ({ children }: HomeLayoutProps) => {
+const LayoutHome = ({ children }: ILayout) => {
   return (
     <>
       <Header />

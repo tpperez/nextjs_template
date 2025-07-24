@@ -2,13 +2,12 @@ import { Roboto } from 'next/font/google'
 
 import type { Metadata } from 'next'
 
+import { LANGUAGE } from '@/app/constants/config'
+import type ILayout from '@/app/types/layout'
+
 import { HttpProvider } from './services/http'
 
 import '@/app/styles/globals.css'
-
-export type TRootLayout = Readonly<{
-  children: React.ReactNode
-}>
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -24,9 +23,9 @@ export const metadata: Metadata = {
   description: 'Here you can find our defitions and examples.',
 }
 
-const LayoutRoot = ({ children }: TRootLayout) => {
+const LayoutRoot = ({ children }: ILayout) => {
   return (
-    <html lang='es-PE'>
+    <html lang={LANGUAGE}>
       <body
         className={`${roboto.variable} font-roboto antialiased`}
         suppressHydrationWarning={true}
