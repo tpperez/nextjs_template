@@ -15,6 +15,7 @@ export const middleware = (request: NextRequest) => {
     object-src 'none';
     base-uri 'self';
     form-action 'self';
+    frame-src 'self' js2ios:;
     frame-ancestors 'none';
     upgrade-insecure-requests;
   `
