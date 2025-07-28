@@ -1,715 +1,478 @@
 # Testing Framework
 
-Testing framework configuration and patterns for comprehensive test coverage and reliable code quality assurance.
+Testing patterns and configurations implemented in this Next.js template. The template provides working examples of component, hook, service, and store testing that teams can reference and extend for their applications.
 
-## vitest configuration
+**Reference Implementation:** The Pokemon examples demonstrate real testing patterns across [`app/views/pokemon/`](../app/views/pokemon/), [`app/components/ui/`](../app/components/ui/), [`app/services/http/`](../app/services/http/), and [`app/stores/pokemon-history/`](../app/stores/pokemon-history/).
 
-### test environment setup
+---
 
-vitest provides fast testing with typescript support and react integration:
+## Table of Contents
+
+1. [Testing Strategy Guidance](#testing-strategy-guidance)
+2. [Environment Setup Reference](#environment-setup-reference)
+3. [Component Testing Patterns](#component-testing-patterns)
+4. [Hook Testing Guidelines](#hook-testing-guidelines)
+5. [Service Testing Approaches](#service-testing-approaches)
+6. [Mocking Strategy Reference](#mocking-strategy-reference)
+7. [Testing Utilities Guide](#testing-utilities-guide)
+8. [Quality Standards Implementation](#quality-standards-implementation)
+9. [Team Workflow Integration](#team-workflow-integration)
+
+---
+
+## Testing Strategy Guidance
+
+### Implemented Testing Patterns
+
+The template demonstrates comprehensive testing patterns through real implementations across different layers of the application. Teams can follow these established patterns when building their applications.
+
+| Testing Pattern       | Implementation Examples                          | Test Files                                                         |
+| --------------------- | ------------------------------------------------ | ------------------------------------------------------------------ |
+| **Component Testing** | Button, Spinner, PokemonCard, PokemonSpeciesInfo | `button.test.tsx`, `spinner.test.tsx`, `pokemon-card.test.tsx`     |
+| **Hook Testing**      | Data fetching, search, species info              | `pokemon-species-info.hook.test.ts`, `pokemon-search.hook.test.ts` |
+| **Service Testing**   | REST client, GraphQL client, HTTP adapters       | `rest.test.ts`, `graphql.test.ts`, `fetch-rest.test.ts`            |
+| **Store Testing**     | Zustand state management, persistence            | `pokemon-history.test.ts`                                          |
+| **Utility Testing**   | Formatters, helpers, pure functions              | `pokemon.util.test.ts`, `cn.test.ts`                               |
+| **View Testing**      | Page components, integration                     | `pokemon.test.tsx`, `pokemons.test.tsx`, `home.test.tsx`           |
+
+**Testing Infrastructure:**
+
+- **Test Runner**: Vitest with jsdom environment
+- **Component Testing**: React Testing Library with semantic queries
+- **Type Safety**: TypeScript integration throughout test suite
+- **Coverage**: 80% threshold across branches, functions, lines, statements
+
+### Testing Approach from Real Implementation
+
+**Component Testing Patterns:**
+
+The template demonstrates component testing through UI components like `Button` and `Spinner`, Pokemon-specific components like `PokemonCard`, and complex components like `PokemonSpeciesInfo`. Tests focus on rendering, user interactions, and integration with stores.
+
+**Hook Testing Implementation:**
+
+Custom hooks receive comprehensive testing as shown in `pokemon-species-info.hook.test.ts` and `pokemon-search.hook.test.ts`. These tests validate data fetching, loading states, error handling, and cache behavior with TanStack Query integration.
+
+**Service Layer Testing:**
+
+Both REST and GraphQL clients have complete test coverage demonstrating request handling, response processing, error scenarios, and TypeScript integration. The template shows how to test HTTP adapters and service methods.
+
+**Store Integration Testing:**
+
+The `pokemon-history` store demonstrates testing of Zustand state management, including state mutations, persistence behavior, and edge cases like duplicate handling and size limits.
+
+**Quality Standards Implementation:**
+
+The template enforces 80% coverage thresholds across all test types, focusing on business logic while excluding configuration files. Tests emphasize user behavior over implementation details.
+
+### File Organization Patterns
+
+**Naming Conventions from Implementation:**
+
+- **Component tests**: `component.test.tsx`
+- **Hook tests**: `hook-name.hook.test.ts`
+- **Service tests**: `service-name.test.ts`
+- **Utility tests**: `utility-name.test.ts`
+- **View tests**: `view-name.test.tsx`
+
+**Co-location Strategy:**
+
+Tests are co-located with their implementations, as demonstrated in the Pokemon examples where components, hooks, and tests are grouped together for maintainability.
+
+### Testing Philosophy from Template Implementation
+
+**User-Centric Testing Approach:**
+
+The template uses React Testing Library with semantic queries like `getByRole` and `getByLabelText`, as demonstrated in the Button and PokemonCard tests. This approach ensures components work correctly for actual users and remain stable during refactoring.
+
+**Quality Standards Applied:**
+
+The template implements 80% coverage thresholds across branches, functions, lines, and statements. Coverage focuses on business logic (components, hooks, services, stores, utilities) while excluding configuration files and generated content.
+
+**Test Organization Strategy:**
+
+Tests are co-located with their implementations and follow consistent naming patterns. The Pokemon examples demonstrate how to structure tests for maintainability and clarity, with clear separation between component behavior, hook logic, and service integration.
+
+---
+
+## Environment Setup Reference
+
+### Vitest Configuration Guide
+
+The template provides a production-ready Vitest configuration optimized for React applications. Teams can customize this foundation while maintaining essential testing capabilities.
+
+**Key Configuration Elements:**
+
+- **Test Runner**: Vitest with React plugin for JSX support
+- **Environment**: jsdom for browser API simulation
+- **Setup**: Global test setup in `vitest.setup.ts`
+- **Coverage**: V8 provider with 80% thresholds
+- **Development**: Watch mode and UI mode for debugging
+- **TypeScript**: Full type safety integration
+
+**Configuration Foundation:** [`vitest.config.ts`](../vitest.config.ts)
 
 ```typescript
-// vitest.config.mts
-import { defineConfig } from 'vitest/config'
-import react from '@vitejs/plugin-react'
-import { resolve } from 'path'
-
 export default defineConfig({
   plugins: [react()],
   test: {
-    globals: true,
     environment: 'jsdom',
-    setupFiles: ['./src/test/setup.ts'],
-    css: true,
+    setupFiles: ['./vitest.setup.ts'],
+    globals: true,
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
-      exclude: [
-        'node_modules/',
-        'dist/',
-        '**/*.d.ts',
-        '**/*.config.*',
-        '**/coverage/**',
-        '**/*.test.{ts,tsx}',
-        '**/test/**',
-      ],
+      reporter: ['text', 'lcov', 'html'],
       thresholds: {
-        global: {
-          branches: 80,
-          functions: 80,
-          lines: 80,
-          statements: 80,
-        },
+        branches: 80,
+        functions: 80,
+        lines: 80,
+        statements: 80,
       },
     },
   },
-  resolve: {
-    alias: {
-      '@': resolve(__dirname, './app'),
-    },
-  },
 })
 ```
 
-### test setup configuration
+### Global Setup Recommendations
 
-global test setup provides consistent testing environment:
+The template includes essential global configurations that teams should maintain and extend based on their application needs.
 
-```typescript
-// src/test/setup.ts
-import '@testing-library/jest-dom'
-import { beforeAll, afterAll, afterEach, beforeEach } from 'vitest'
-import { cleanup } from '@testing-library/react'
-import { server } from './mocks/server'
-
-// msw server setup
-beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
-afterEach(() => server.resetHandlers())
-afterAll(() => server.close())
-
-// cleanup dom after each test
-afterEach(() => {
-  cleanup()
-})
-
-// global mocks
-Object.defineProperty(window, 'matchMedia', {
-  writable: true,
-  value: vi.fn().mockImplementation((query) => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: vi.fn(),
-    removeListener: vi.fn(),
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  })),
-})
-
-// intersection observer mock
-const mockIntersectionObserver = vi.fn()
-mockIntersectionObserver.mockReturnValue({
-  observe: () => null,
-  unobserve: () => null,
-  disconnect: () => null,
-})
-window.IntersectionObserver = mockIntersectionObserver
-
-// resize observer mock
-window.ResizeObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
-}))
-```
-
-## component testing patterns
-
-### react component testing
-
-comprehensive component testing with react testing library:
+**Setup Foundation:** [`vitest.setup.ts`](../vitest.setup.ts)
 
 ```typescript
-// spinner.test.tsx
-import { render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
-import Spinner from './spinner'
-import { ISpinnerProps } from './spinner.type'
-
-describe('Spinner Component', () => {
-  const defaultProps: ISpinnerProps = {
-    size: 'md',
-    color: 'blue'
-  }
-
-  describe('Rendering', () => {
-    it('should render with default props', () => {
-      render(<Spinner />)
-
-      const spinner = screen.getByRole('status')
-      expect(spinner).toBeInTheDocument()
-      expect(spinner).toHaveClass('h-6', 'w-6', 'border-blue-400')
-    })
-
-    it('should apply size classes correctly', () => {
-      render(<Spinner size="lg" />)
-
-      const spinner = screen.getByRole('status')
-      expect(spinner).toHaveClass('h-8', 'w-8')
-    })
-
-    it('should apply color classes correctly', () => {
-      render(<Spinner color="green" />)
-
-      const spinner = screen.getByRole('status')
-      expect(spinner).toHaveClass('border-green-400')
-    })
-
-    it('should display text when provided', () => {
-      const text = 'loading data...'
-      render(<Spinner text={text} />)
-
-      expect(screen.getByText(text)).toBeInTheDocument()
-    })
-
-    it('should apply custom className', () => {
-      const customClass = 'custom-spinner'
-      render(<Spinner className={customClass} />)
-
-      const spinner = screen.getByRole('status')
-      expect(spinner).toHaveClass(customClass)
-    })
-  })
-
-  describe('Accessibility', () => {
-    it('should have proper aria attributes', () => {
-      render(<Spinner />)
-
-      const spinner = screen.getByRole('status')
-      expect(spinner).toHaveAttribute('aria-label', 'loading')
-    })
-
-    it('should be hidden from screen readers when decorative', () => {
-      render(<Spinner decorative />)
-
-      const spinner = screen.getByTestId('spinner')
-      expect(spinner).toHaveAttribute('aria-hidden', 'true')
-    })
-  })
-})
-```
-
-### hook testing patterns
-
-custom hook testing with react hooks testing library:
-
-```typescript
-// pokemon-species.hook.test.ts
-import { renderHook, waitFor } from '@testing-library/react'
-import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { usePokemonSpecies } from './pokemon-species.hook'
-import { createMockPokemonSpecies } from '@/test/mocks/pokemon'
-import * as restClient from '@/services/http/rest'
-
-// mock rest client
-vi.mock('@/services/http/rest')
-const mockRestGet = vi.mocked(restClient.get)
-
-describe('usePokemonSpecies Hook', () => {
-  let queryClient: QueryClient
-  let wrapper: React.FC<{ children: React.ReactNode }>
-
-  beforeEach(() => {
-    queryClient = new QueryClient({
-      defaultOptions: {
-        queries: { retry: false },
-        mutations: { retry: false }
-      }
-    })
-
-    wrapper = ({ children }) => (
-      <QueryClientProvider client={queryClient}>
-        {children}
-      </QueryClientProvider>
-    )
-  })
-
-  afterEach(() => {
-    queryClient.clear()
-    vi.clearAllMocks()
-  })
-
-  describe('Data Fetching', () => {
-    it('should fetch pokemon species successfully', async () => {
-      const mockSpecies = createMockPokemonSpecies({ id: 25, name: 'pikachu' })
-      mockRestGet.mockResolvedValue(mockSpecies)
-
-      const { result } = renderHook(() => usePokemonSpecies(25), { wrapper })
-
-      expect(result.current.isLoading).toBe(true)
-      expect(result.current.data).toBeUndefined()
-
-      await waitFor(() => {
-        expect(result.current.isSuccess).toBe(true)
-      })
-
-      expect(result.current.data).toEqual(mockSpecies)
-      expect(mockRestGet).toHaveBeenCalledWith('/pokemon-species/25', {
-        baseUrl: 'https://pokeapi.co/api/v2'
-      })
-    })
-
-    it('should handle loading states correctly', () => {
-      mockRestGet.mockImplementation(() => new Promise(() => {})) // never resolves
-
-      const { result } = renderHook(() => usePokemonSpecies(25), { wrapper })
-
-      expect(result.current.isLoading).toBe(true)
-      expect(result.current.isError).toBe(false)
-      expect(result.current.isFetching).toBe(true)
-    })
-
-    it('should not fetch when id is falsy', () => {
-      const { result } = renderHook(() => usePokemonSpecies(0), { wrapper })
-
-      expect(result.current.data).toBeUndefined()
-      expect(result.current.isLoading).toBe(false)
-      expect(mockRestGet).not.toHaveBeenCalled()
-    })
-  })
-
-  describe('Error Handling', () => {
-    it('should handle api errors gracefully', async () => {
-      const error = new Error('pokemon not found')
-      mockRestGet.mockRejectedValue(error)
-
-      const { result } = renderHook(() => usePokemonSpecies(999), { wrapper })
-
-      await waitFor(() => {
-        expect(result.current.isError).toBe(true)
-      })
-
-      expect(result.current.error).toEqual(error)
-      expect(result.current.data).toBeUndefined()
-    })
-
-    it('should retry failed requests appropriately', async () => {
-      mockRestGet
-        .mockRejectedValueOnce(new Error('network error'))
-        .mockRejectedValueOnce(new Error('network error'))
-        .mockResolvedValue(createMockPokemonSpecies())
-
-      const { result } = renderHook(() => usePokemonSpecies(25), { wrapper })
-
-      await waitFor(() => {
-        expect(result.current.isSuccess).toBe(true)
-      })
-
-      // should have retried 2 times (initial + 2 retries)
-      expect(mockRestGet).toHaveBeenCalledTimes(3)
-    })
-  })
-
-  describe('Query Configuration', () => {
-    it('should use correct query key', () => {
-      renderHook(() => usePokemonSpecies(25), { wrapper })
-
-      const queries = queryClient.getQueryCache().getAll()
-      const speciesQuery = queries.find(q =>
-        JSON.stringify(q.queryKey) === JSON.stringify(['pokemon-species', 25])
-      )
-
-      expect(speciesQuery).toBeDefined()
-    })
-
-    it('should respect cache configuration', async () => {
-      const mockSpecies = createMockPokemonSpecies()
-      mockRestGet.mockResolvedValue(mockSpecies)
-
-      const { result, rerender } = renderHook(
-        ({ id }) => usePokemonSpecies(id),
-        { wrapper, initialProps: { id: 25 } }
-      )
-
-      await waitFor(() => {
-        expect(result.current.isSuccess).toBe(true)
-      })
-
-      // should use cached data for same id
-      mockRestGet.mockClear()
-      rerender({ id: 25 })
-
-      expect(mockRestGet).not.toHaveBeenCalled()
-      expect(result.current.data).toEqual(mockSpecies)
-    })
-  })
-})
-```
-
-## integration testing
-
-### component integration testing
-
-test component integration with external dependencies:
-
-```typescript
-// tech-radar.integration.test.tsx
-import { render, screen, waitFor } from '@testing-library/react'
-import { describe, expect, it, beforeEach, vi } from 'vitest'
-import TechRadar from './tech-radar'
-import { TECH_RADAR_CONFIG } from './tech-radar.const'
-
-// mock external dependencies
-vi.mock('next/script', () => ({
-  default: vi.fn(({ children, onLoad, ...props }) => {
-    // simulate script loading
-    setTimeout(() => onLoad?.(), 100)
-    return <script {...props}>{children}</script>
-  })
-}))
-
-const mockRadarVisualization = vi.fn()
-const mockD3 = {
-  select: vi.fn(() => ({
-    selectAll: vi.fn(() => ({
-      remove: vi.fn()
-    }))
-  }))
-}
-
-describe('TechRadar Integration', () => {
-  beforeEach(() => {
-    vi.useFakeTimers()
-
-    // setup global dependencies
-    Object.defineProperty(window, 'radar_visualization', {
-      value: mockRadarVisualization,
-      writable: true
-    })
-
-    Object.defineProperty(window, 'd3', {
-      value: mockD3,
-      writable: true
-    })
-  })
-
-  afterEach(() => {
-    vi.useRealTimers()
-    vi.clearAllMocks()
-  })
-
-  it('should initialize radar visualization after scripts load', async () => {
-    render(<TechRadar />)
-
-    // advance timers to simulate script loading
-    vi.advanceTimersByTime(100)
-
-    await waitFor(() => {
-      expect(mockRadarVisualization).toHaveBeenCalledWith(TECH_RADAR_CONFIG)
-    })
-  })
-
-  it('should handle script loading failures gracefully', async () => {
-    // simulate missing dependencies
-    delete window.radar_visualization
-    delete window.d3
-
-    render(<TechRadar />)
-
-    vi.advanceTimersByTime(200)
-
-    // should not throw errors
-    expect(() => {
-      vi.advanceTimersByTime(100)
-    }).not.toThrow()
-  })
-
-  it('should cleanup on unmount', () => {
-    const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout')
-
-    const { unmount } = render(<TechRadar />)
-    unmount()
-
-    expect(clearTimeoutSpy).toHaveBeenCalled()
-    clearTimeoutSpy.mockRestore()
-  })
-})
-```
-
-### api integration testing
-
-test api integration with mock service worker:
-
-```typescript
-// pokemon.integration.test.tsx
-import { render, screen, waitFor, fireEvent } from '@testing-library/react'
-import { rest } from 'msw'
-import { server } from '@/test/mocks/server'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import PokemonList from './pokemon-list'
-
-describe('Pokemon API Integration', () => {
-  let queryClient: QueryClient
-
-  beforeEach(() => {
-    queryClient = new QueryClient({
-      defaultOptions: {
-        queries: { retry: false },
-        mutations: { retry: false }
-      }
-    })
-  })
-
-  afterEach(() => {
-    queryClient.clear()
-  })
-
-  it('should load and display pokemon list', async () => {
-    server.use(
-      rest.get('https://pokeapi.co/api/v2/pokemon', (req, res, ctx) => {
-        return res(ctx.json({
-          results: [
-            { id: 1, name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1/' },
-            { id: 25, name: 'pikachu', url: 'https://pokeapi.co/api/v2/pokemon/25/' }
-          ]
-        }))
-      })
-    )
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <PokemonList />
-      </QueryClientProvider>
-    )
-
-    // should show loading initially
-    expect(screen.getByText(/loading/i)).toBeInTheDocument()
-
-    // should display pokemon after loading
-    await waitFor(() => {
-      expect(screen.getByText('bulbasaur')).toBeInTheDocument()
-      expect(screen.getByText('pikachu')).toBeInTheDocument()
-    })
-  })
-
-  it('should handle api errors gracefully', async () => {
-    server.use(
-      rest.get('https://pokeapi.co/api/v2/pokemon', (req, res, ctx) => {
-        return res(ctx.status(500), ctx.json({ message: 'server error' }))
-      })
-    )
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <PokemonList />
-      </QueryClientProvider>
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText(/error loading pokemon/i)).toBeInTheDocument()
-    })
-
-    // should have retry button
-    const retryButton = screen.getByText(/try again/i)
-    expect(retryButton).toBeInTheDocument()
-  })
-
-  it('should retry failed requests', async () => {
-    let callCount = 0
-    server.use(
-      rest.get('https://pokeapi.co/api/v2/pokemon', (req, res, ctx) => {
-        callCount++
-        if (callCount === 1) {
-          return res(ctx.status(500))
-        }
-        return res(ctx.json({ results: [] }))
-      })
-    )
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <PokemonList />
-      </QueryClientProvider>
-    )
-
-    // wait for error state
-    await waitFor(() => {
-      expect(screen.getByText(/error/i)).toBeInTheDocument()
-    })
-
-    // click retry
-    fireEvent.click(screen.getByText(/try again/i))
-
-    // should succeed on retry
-    await waitFor(() => {
-      expect(screen.getByText(/no pokemon found/i)).toBeInTheDocument()
-    })
-
-    expect(callCount).toBe(2)
-  })
-})
-```
-
-## mock strategies
-
-### service mocking
-
-comprehensive service layer mocking:
-
-```typescript
-// test/mocks/services.ts
 import { vi } from 'vitest'
-import type {
-  IRestHttpAdapter,
-  IGraphQLHttpAdapter,
-} from '@/services/http/core/core.type'
+import '@testing-library/jest-dom'
 
-export const createMockRestClient = (): jest.Mocked<IRestHttpAdapter> => ({
-  name: 'mock-rest-client',
-  request: vi.fn(),
-})
+// Next.js component mocks
+vi.mock('next/navigation', () => ({
+  useRouter: vi.fn(() => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    back: vi.fn(),
+  })),
+  usePathname: vi.fn(() => '/'),
+}))
 
-export const createMockGraphQLClient =
-  (): jest.Mocked<IGraphQLHttpAdapter> => ({
-    name: 'mock-graphql-client',
-    request: vi.fn(),
-  })
-
-// service-specific mocks
-export const mockPokemonService = {
-  fetchPokemonSpecies: vi.fn(),
-  fetchPokemonList: vi.fn(),
-  searchPokemon: vi.fn(),
-}
-
-export const mockAuthService = {
-  login: vi.fn(),
-  logout: vi.fn(),
-  refreshToken: vi.fn(),
-  getCurrentUser: vi.fn(),
-  validateToken: vi.fn(),
-}
+// Additional framework mocks
+vi.mock('next/image', () => ({
+  default: vi.fn(() => 'NextImage'),
+}))
 ```
 
-### data mocking utilities
+**Setup Guidelines for Teams:**
 
-factory functions for test data generation:
+- **Framework Mocks**: Maintain Next.js mocks for consistent testing environment
+- **Browser API Simulation**: Add mocks for browser APIs not available in jsdom as needed
+- **Global Test Utilities**: Include shared testing utilities that apply across your entire application
+- **Environment Configuration**: Set up test-specific environment variables and configurations
+
+---
+
+## Component Testing Patterns
+
+### User-Centric Testing Approach
+
+When testing components built with this template, prioritize user interactions and accessibility over implementation details. This approach creates resilient tests that support long-term maintainability.
+
+**Component Testing Approach:**
+
+- **User Interactions**: Test real user behavior, not implementation details
+- **Semantic Queries**: Use `getByRole`, `getByLabelText` for accessibility
+- **Visual Validation**: Test CSS classes and design system integration
+- **Props Testing**: Validate component API and prop variations
+- **Test Organization**: Group tests by feature with clear describe blocks
+- **Accessibility**: Ensure components work with screen readers
+
+**Component Testing Example:** [`app/components/ui/button/button.test.tsx`](../app/components/ui/button/button.test.tsx)
 
 ```typescript
-// test/mocks/pokemon.ts
-import type { IPokemonSpecies, IPokemon } from '@/types/pokemon'
+describe('Button Component', () => {
+  it('should render correctly with default props', () => {
+    render(<Button>Click me</Button>)
 
+    const button = screen.getByRole('button')
+    expect(button).toBeInTheDocument()
+    expect(button).toHaveTextContent('Click me')
+  })
+
+  it('should handle user interactions', () => {
+    const handleClick = vi.fn()
+    render(<Button onClick={handleClick}>Click me</Button>)
+
+    const button = screen.getByRole('button')
+    fireEvent.click(button)
+
+    expect(handleClick).toHaveBeenCalledTimes(1)
+  })
+})
+```
+
+### Component Testing Guidelines for Teams
+
+**Rendering Validation:**
+
+Test component rendering with various props and states using semantic queries. Focus on what users see and interact with rather than internal component structure.
+
+**Interaction Testing:**
+
+Validate user interactions like clicks, form submissions, and keyboard navigation. Test the complete interaction cycle from user action to expected outcome.
+
+**Accessibility Integration:**
+
+Use semantic queries (`getByRole`, `getByLabelText`) that validate accessibility patterns. This ensures components work correctly with assistive technologies.
+
+**Design System Validation:**
+
+Test visual consistency through CSS class validation, ensuring proper application of design system tokens and responsive behavior.
+
+---
+
+## Hook Testing Guidelines
+
+### Custom Hook Testing Strategy
+
+When building custom hooks for applications using this template, adopt testing patterns that validate business logic while maintaining proper React context integration.
+
+**Hook Testing Approach:**
+
+- **Hook Isolation**: Use `renderHook` for testing hook logic separately
+- **Provider Wrapping**: Wrap hooks with necessary React context providers
+- **State Validation**: Test hook return values and interface contracts
+- **Async Handling**: Test loading states, success scenarios, and error handling
+- **TanStack Query**: Test cache management and query state behavior
+- **Test Lifecycle**: Clean setup, execution, validation, and cleanup
+
+**Hook Testing Example:** [`app/views/pokemon/components/pokemon-species-info/pokemon-species-info.hook.test.ts`](../app/views/pokemon/components/pokemon-species-info/pokemon-species-info.hook.test.ts)
+
+```typescript
+describe('Custom Data Fetching Hook', () => {
+  let queryClient: QueryClient
+
+  beforeEach(() => {
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+        mutations: { retry: false },
+      },
+    })
+  })
+
+  const wrapper = ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={queryClient}>
+      {children}
+    </QueryClientProvider>
+  )
+
+  it('should handle successful data fetching', async () => {
+    mockRestGet.mockResolvedValue(mockData)
+
+    const { result } = renderHook(() => useCustomHook(id), { wrapper })
+
+    await waitFor(() => {
+      expect(result.current.data).toEqual(mockData)
+      expect(result.current.isLoading).toBe(false)
+    })
+  })
+})
+```
+
+### Hook Testing Best Practices for Teams
+
+**Provider Wrapper Patterns:**
+
+Create reusable wrapper components for hooks that require React context. This ensures hooks execute within proper context boundaries during testing.
+
+**Async State Management:**
+
+For hooks using TanStack Query, test the complete async lifecycle including loading states, success scenarios, error handling, and cache behavior.
+
+**Mock Strategy Integration:**
+
+Mock external dependencies at the service layer rather than individual API calls. This creates predictable test scenarios while validating actual hook behavior.
+
+**Configuration Testing:**
+
+Validate hook configuration such as cache settings, retry logic, and query parameters to ensure hooks behave correctly under different conditions.
+
+---
+
+## Service Testing Approaches
+
+### API Integration Testing Patterns
+
+When building services for applications using this template, implement testing strategies that validate integration points while maintaining proper isolation and predictability.
+
+**Service Testing Strategy:**
+
+- **HTTP/GraphQL Clients**: Test request building and response processing
+- **Adapter Mocking**: Mock at adapter level for isolated unit testing
+- **Request Validation**: Test URL building and parameter handling
+- **Response Processing**: Validate data transformation and type conversion
+- **Error Scenarios**: Test failure handling and resilience patterns
+- **Integration Points**: Test caching, retry logic, auth, and rate limiting
+
+**Service Testing Example:** [`app/services/http/rest/rest.test.ts`](../app/services/http/rest/rest.test.ts)
+
+```typescript
+describe('HTTP Service Integration', () => {
+  let mockAdapter: { request: ReturnType<typeof vi.fn> }
+
+  beforeEach(() => {
+    mockAdapter = (
+      restClient as unknown as {
+        adapter: { request: ReturnType<typeof vi.fn> }
+      }
+    ).adapter
+  })
+
+  it('should handle request formation correctly', async () => {
+    const mockResponse = { data: 'test' }
+    mockAdapter.request.mockResolvedValue(mockResponse)
+
+    const result = await restClient.request('users', {
+      method: 'POST',
+      body: { name: 'test' },
+      headers: { 'X-Test': 'value' },
+      baseUrl: 'https://custom-api.com',
+    })
+
+    expect(mockAdapter.request).toHaveBeenCalledWith(
+      'https://custom-api.com/users',
+      expect.objectContaining({
+        method: 'POST',
+        body: { name: 'test' },
+        headers: { 'X-Test': 'value' },
+      }),
+    )
+    expect(result).toBe(mockResponse)
+  })
+})
+```
+
+### Service Testing Guidelines for Teams
+
+**Adapter Layer Focus:**
+
+Test service behavior by mocking at the adapter level to isolate business logic while validating request formation, parameter handling, and response processing.
+
+**Type Safety Validation:**
+
+Verify TypeScript interfaces and data transformation to ensure services maintain type safety and proper data conversion between external APIs and internal application state.
+
+**Error Handling Patterns:**
+
+Implement comprehensive error testing covering network failures, API errors, timeout scenarios, and retry logic to validate service resilience.
+
+**Configuration Management:**
+
+Test service configuration including base URLs, headers, timeouts, and retry settings to ensure services behave correctly across different environments.
+
+---
+
+## Mocking Strategy Reference
+
+### Comprehensive Mocking Patterns
+
+The template provides mocking strategies that teams can extend to create predictable test scenarios while maintaining realistic behavior patterns.
+
+**Mocking Strategy Elements:**
+
+- **Service Layer Mocks**: Mock at service interfaces for predictable APIs
+- **Data Factory Patterns**: Create consistent test objects with defaults
+- **Network Layer Mocking**: HTTP interception for request simulation
+- **Browser API Mocks**: Global setup for environment simulation
+- **Factory Functions**: Generate customizable test data
+- **Interface Mocking**: Maintain type safety and contract compliance
+- **Test Scenarios**: Support success, error, edge cases, and loading states
+
+### Data Factory Patterns for Teams
+
+**Factory Function Implementation:**
+
+Create factory functions that provide consistent test objects with reasonable defaults and customizable properties for different test scenarios.
+
+```typescript
+// Recommended factory pattern
 export const createMockPokemonSpecies = (
   overrides: Partial<IPokemonSpecies> = {},
 ): IPokemonSpecies => ({
   id: 25,
   name: 'pikachu',
-  evolutionChain: 'pichu-pikachu-raichu',
-  habitat: 'forest',
-  flavorText:
-    'when several of these pokemon gather, their electricity could build and cause lightning storms.',
+  base_happiness: 50,
+  capture_rate: 190,
+  color: { name: 'yellow', url: 'https://example.com/yellow' },
+  evolution_chain: { url: 'https://example.com/evolution' },
+  flavor_text_entries: [
+    {
+      flavor_text: 'A cute electric mouse Pokemon',
+      language: { name: 'en', url: 'https://example.com/en' },
+    },
+  ],
   ...overrides,
 })
+```
 
-export const createMockPokemon = (
-  overrides: Partial<IPokemon> = {},
-): IPokemon => ({
-  id: 25,
-  name: 'pikachu',
-  height: 4,
-  weight: 60,
-  types: ['electric'],
-  abilities: ['static', 'lightning-rod'],
-  sprites: {
-    front_default:
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png',
+### Service Mocking Guidelines
+
+**Interface-Based Mocking:**
+
+Implement service mocks that comply with actual service interfaces, ensuring mock behavior matches production service contracts.
+
+```typescript
+// Service interface mocking pattern
+vi.mock('@/app/services/http', () => ({
+  restClient: {
+    get: vi.fn(),
+    post: vi.fn(),
+    put: vi.fn(),
+    delete: vi.fn(),
   },
-  ...overrides,
-})
-
-export const createMockPokemonList = (count: number = 5): IPokemon[] => {
-  return Array.from({ length: count }, (_, index) =>
-    createMockPokemon({
-      id: index + 1,
-      name: `pokemon-${index + 1}`,
-    }),
-  )
-}
+  graphqlClient: {
+    query: vi.fn(),
+    mutation: vi.fn(),
+  },
+}))
 ```
 
-### msw server configuration
+**Mocking Best Practices for Teams:**
 
-mock service worker for api mocking:
+- **Interface Compliance**: Ensure mocks implement actual service interfaces for type safety
+- **Predictable Responses**: Design mock responses that support deterministic test scenarios
+- **Isolation Focus**: Use service mocks to eliminate external dependencies during testing
+- **Performance Optimization**: Leverage mock responses for instant test execution without network delays
 
-```typescript
-// test/mocks/handlers.ts
-import { rest } from 'msw'
-import { createMockPokemonSpecies, createMockPokemonList } from './pokemon'
+---
 
-export const handlers = [
-  // pokemon species endpoint
-  rest.get('https://pokeapi.co/api/v2/pokemon-species/:id', (req, res, ctx) => {
-    const { id } = req.params
-    const pokemonId = parseInt(id as string)
+## Testing Utilities Guide
 
-    if (pokemonId === 999) {
-      return res(ctx.status(404), ctx.json({ message: 'pokemon not found' }))
-    }
+### Custom Testing Infrastructure
 
-    return res(ctx.json(createMockPokemonSpecies({ id: pokemonId })))
-  }),
+The template provides foundational testing utilities that teams can extend to create efficient and maintainable test suites.
 
-  // pokemon list endpoint
-  rest.get('https://pokeapi.co/api/v2/pokemon', (req, res, ctx) => {
-    const limit = req.url.searchParams.get('limit') || '20'
-    const offset = req.url.searchParams.get('offset') || '0'
+**Testing Utilities Available:**
 
-    const pokemonList = createMockPokemonList(parseInt(limit))
+- **Render Utilities**: Provider wrappers for component testing
+- **Custom Matchers**: Domain-specific assertion helpers
+- **Mock Factories**: Data generation for consistent test objects
+- **Setup Utilities**: Environment configuration helpers
+- **Provider Integration**: TanStack Query, Next.js Router, React Context wrappers
+- **Testing Enhancements**: Domain matchers, accessibility helpers, API validation
 
-    return res(
-      ctx.json({
-        count: 1000,
-        next: `https://pokeapi.co/api/v2/pokemon?offset=${parseInt(offset) + parseInt(limit)}&limit=${limit}`,
-        previous: null,
-        results: pokemonList,
-      }),
-    )
-  }),
+### Render Utility Patterns
 
-  // error simulation endpoint
-  rest.get('https://api.example.com/error', (req, res, ctx) => {
-    return res(ctx.status(500), ctx.json({ message: 'internal server error' }))
-  }),
-]
+**Provider Wrapper Implementation:**
 
-// test/mocks/server.ts
-import { setupServer } from 'msw/node'
-import { handlers } from './handlers'
-
-export const server = setupServer(...handlers)
-```
-
-## testing utilities
-
-### custom render utilities
-
-enhanced render functions with providers:
+Create reusable render utilities that automatically wrap components with necessary providers, reducing boilerplate and ensuring consistent test environment setup.
 
 ```typescript
-// test/utils/render.tsx
-import { render, RenderOptions } from '@testing-library/react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { MemoryRouter } from 'react-router-dom'
-import { ReactElement, ReactNode } from 'react'
+// Enhanced render utility pattern
+export const renderWithProviders = (
+  ui: ReactElement,
+  options: CustomRenderOptions = {},
+) => {
+  const { initialEntries, queryClient, ...renderOptions } = options
+  const Wrapper = createTestWrapper({ initialEntries, queryClient })
 
-interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
-  initialEntries?: string[]
-  queryClient?: QueryClient
-}
-
-export const createQueryWrapper = (queryClient?: QueryClient) => {
-  const client = queryClient || new QueryClient({
-    defaultOptions: {
-      queries: { retry: false },
-      mutations: { retry: false }
-    }
-  })
-
-  return ({ children }: { children: ReactNode }) => (
-    <QueryClientProvider client={client}>
-      {children}
-    </QueryClientProvider>
-  )
-}
-
-export const createRouterWrapper = (initialEntries: string[] = ['/']) => {
-  return ({ children }: { children: ReactNode }) => (
-    <MemoryRouter initialEntries={initialEntries}>
-      {children}
-    </MemoryRouter>
-  )
+  return render(ui, { wrapper: Wrapper, ...renderOptions })
 }
 
 export const createTestWrapper = (options: {
@@ -720,8 +483,8 @@ export const createTestWrapper = (options: {
   const client = queryClient || new QueryClient({
     defaultOptions: {
       queries: { retry: false },
-      mutations: { retry: false }
-    }
+      mutations: { retry: false },
+    },
   })
 
   return ({ children }: { children: ReactNode }) => (
@@ -732,40 +495,16 @@ export const createTestWrapper = (options: {
     </QueryClientProvider>
   )
 }
-
-export const renderWithProviders = (
-  ui: ReactElement,
-  options: CustomRenderOptions = {}
-) => {
-  const { initialEntries, queryClient, ...renderOptions } = options
-  const Wrapper = createTestWrapper({ initialEntries, queryClient })
-
-  return render(ui, { wrapper: Wrapper, ...renderOptions })
-}
 ```
 
-### assertion utilities
+### Custom Matcher Development
 
-custom matchers and assertion helpers:
+**Domain-Specific Assertions:**
+
+Develop custom matchers that reflect your application's business domain, improving test readability and enabling specialized validation patterns.
 
 ```typescript
-// test/utils/assertions.ts
-import { expect } from 'vitest'
-
-// custom matchers
-interface CustomMatchers<R = unknown> {
-  toHaveBeenCalledWithPokemonId(id: number): R
-  toMatchPokemonSpecies(expected: Partial<IPokemonSpecies>): R
-}
-
-declare global {
-  namespace Vi {
-    interface Assertion<T = any> extends CustomMatchers<T> {}
-    interface AsymmetricMatchersContaining extends CustomMatchers {}
-  }
-}
-
-// custom matcher implementations
+// Custom matcher example
 expect.extend({
   toHaveBeenCalledWithPokemonId(received, expectedId) {
     const calls = received.mock.calls
@@ -792,20 +531,100 @@ expect.extend({
     }
   },
 })
-
-// assertion helpers
-export const expectPokemonSpecies = (species: IPokemonSpecies) => ({
-  toHaveValidId: () => expect(species.id).toBeGreaterThan(0),
-  toHaveValidName: () => expect(species.name).toBeTruthy(),
-  toHaveEvolutionChain: () => expect(species.evolutionChain).toBeTruthy(),
-})
 ```
 
-## test scripts and automation
+**Utility Development Guidelines:**
 
-### npm scripts configuration
+- **Domain Relevance**: Create matchers that reflect your application's business concepts
+- **Improved Readability**: Design assertions that make tests read more naturally
+- **Error Messages**: Provide meaningful error messages for test failures
+- **Reusability**: Build shared utilities that eliminate duplication across test files
 
-testing scripts in package.json:
+---
+
+## Quality Standards Implementation
+
+### Coverage Strategy Guidance
+
+The template establishes coverage standards that teams can customize while maintaining quality assurance principles.
+
+**Coverage Standards Implemented:**
+
+- **Provider**: V8 for fast and accurate coverage analysis
+- **Thresholds**: 80% minimum across branches, functions, lines, statements
+- **Include Patterns**: Target business logic (components, hooks, services, stores, utilities)
+- **Exclude Patterns**: Skip config files, generated content, and test files
+- **Quality Integration**: Pre-commit gates
+- **Reporting**: Text, lcov, and HTML reports for team visibility
+
+**Coverage Configuration Reference:** [`vitest.config.ts`](../vitest.config.ts)
+
+```typescript
+coverage: {
+  provider: 'v8',
+  reporter: ['text', 'lcov', 'html'],
+  reportsDirectory: './coverage',
+
+  include: [
+    'app/components/**/*.{ts,tsx}',
+    'app/hooks/**/*.{ts,tsx}',
+    'app/services/**/*.{ts,tsx}',
+    'app/stores/**/*.{ts,tsx}',
+    'app/utils/**/*.{ts,tsx}',
+    'app/views/**/*.{ts,tsx}',
+  ],
+
+  exclude: [
+    '**/*.const.ts',
+    '**/*.{test}.{ts,tsx}',
+    '**/*.{type}.ts',
+    '**/*.config.{js,ts,mjs}',
+    '**/index.ts',
+    '**/layout.tsx',
+    '**/page.tsx',
+  ],
+
+  thresholds: {
+    branches: 80,
+    functions: 80,
+    lines: 80,
+    statements: 80,
+  },
+}
+```
+
+### Quality Standards for Teams
+
+**Coverage Threshold Guidelines:**
+
+- **80% Baseline**: Provides quality assurance without excessive testing overhead
+- **Business Logic Focus**: Include patterns target functional code while excluding configuration
+- **Multiple Metrics**: Comprehensive measurement across branches, functions, lines, and statements
+- **Quality Gates**: Threshold enforcement prevents quality regression during development
+
+---
+
+## Team Workflow Integration
+
+### Development Script Patterns
+
+The template provides testing scripts that teams can extend to support various development workflows and quality requirements.
+
+**Available Testing Scripts:**
+
+- **`test`**: Single run for execution and production validation
+- **`test:watch`**: Development loop with auto-rerun on file changes
+- **`test:ui`**: Visual interface for interactive debugging and analysis
+- **`test:coverage`**: Quality reports for pre-commit validation
+
+**Team Workflow Integration:**
+
+- **Development**: Use watch mode for rapid feedback during feature development
+- **Quality Gates**: Run coverage reports before commits
+- **Code Reviews**: Include testing considerations in review processes
+- **Release Process**: Comprehensive testing before production deployment
+
+**Script Configuration Reference:** [`package.json`](../package.json)
 
 ```json
 {
@@ -814,37 +633,56 @@ testing scripts in package.json:
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
-    "test:integration": "vitest run --config vitest.integration.config.ts",
-    "test:e2e": "playwright test"
+    "tsc": "tsc"
   }
 }
 ```
 
-### continuous integration
+### Workflow Integration Guidelines for Teams
 
-testing in ci/cd pipeline:
+**Development Workflow Optimization:**
 
-```yaml
-# .github/workflows/test.yml
-name: Tests
-on: [push, pull_request]
+- **Watch Mode**: Use `test:watch` during active development for immediate feedback
+- **UI Mode**: Leverage `test:ui` for visual test debugging and analysis
+- **Coverage Reports**: Run `test:coverage` before commits to validate quality standards
+- **CI Integration**: Use `test` for automated pipeline execution and deployment gates
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          cache: 'npm'
+**Team Collaboration Patterns:**
 
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run tsc
-      - run: npm run test:coverage
+- **Consistent Standards**: Shared testing patterns across team members
+- **Quality Gates**: Automated enforcement of testing requirements
+- **Review Integration**: Testing considerations in code review processes
+- **Documentation**: Test examples and patterns serve as team reference
 
-      - uses: codecov/codecov-action@v3
-        with:
-          files: ./coverage/lcov.info
-```
+---
+
+## Implementation Guidance for Teams
+
+### Getting Started with Testing
+
+When beginning a new project with this template, teams should establish testing practices early in the development process to maximize long-term benefits.
+
+**Initial Setup Checklist:**
+
+1. **Environment Configuration**: Verify Vitest configuration meets project requirements
+2. **Global Setup**: Customize `vitest.setup.ts` for project-specific needs
+3. **Coverage Targets**: Adjust coverage thresholds based on team standards
+4. **Mock Strategies**: Establish mocking patterns for external dependencies
+5. **Utility Development**: Create project-specific testing utilities and helpers
+
+**Development Process Integration:**
+
+- **Feature Development**: Write tests alongside feature implementation
+- **Code Reviews**: Include testing considerations in review criteria
+- **Team Training**: Ensure all team members understand testing patterns and tools
+
+### Scaling Testing Practices
+
+As applications grow in complexity, teams should evolve their testing practices to maintain quality and development velocity.
+
+**Scaling Considerations:**
+
+- **Test Organization**: Organize tests to reflect application architecture
+- **Performance Optimization**: Monitor and optimize test execution time
+- **Maintenance Strategies**: Regular review and refactoring of test suites
+- **Documentation Updates**: Keep testing documentation current with application changes

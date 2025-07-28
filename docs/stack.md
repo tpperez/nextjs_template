@@ -2,36 +2,36 @@
 
 Core architectural decisions and technologies defining the project.
 
-## framework and language
+## Framework and language
 
 - **next.js** - full-stack react framework with ssr and routing
 - **typescript** - static type checking and enhanced developer experience
 
-## styling
+## Styling
 
 - **tailwind css** - utility-first css framework for design system
 
-## state and data management
+## State and data management
 
 - **tanstack query** - server state management and caching
 - **zustand** - client-side state management
 
-## forms and validation
+## Forms and validation
 
 - **react hook form** - form state management with validation
 - **zod** - runtime schema validation and type inference
 
-## api clients
+## API clients
 
 - **axios** - http client for rest apis
 - **graphql-request** - minimal graphql client for graphql apis
 
-## testing
+## Testing
 
 - **vitest** - testing framework with typescript support
 - **testing library** - component testing utilities
 
-## code quality
+## Code quality
 
 - **eslint** - code linting and quality enforcement
 - **prettier** - automatic code formatting standards
