@@ -1,12 +1,12 @@
-import FooterContainer from '@/app/views/datocms/components/footer'
-import HeaderContainer from '@/app/views/datocms/components/header'
+import Header from '@/app/views/datocms/components/footer'
+import Footer from '@/app/views/datocms/components/header'
 
 const LayoutDatocms = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
-      <HeaderContainer />
+      <Header />
       <main className='flex-1'>{children}</main>
-      <FooterContainer />
+      <Footer />
     </>
   )
 }
