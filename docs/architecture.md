@@ -37,7 +37,7 @@ Views act as coordinators that orchestrate data fetching, state management, comp
 
 The application follows a layered architecture with clear separation of responsibilities and explicit data flow patterns:
 
-## Application Architecture Layers
+### Application Architecture Layers
 
 ```mermaid
 graph TB
@@ -622,13 +622,13 @@ The architecture provides flexibility for teams to make technology choices withi
 
 ## References
 
-| Technology         | Resource                                                                                                                                     | Description                                                      |
-| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| **Next.js**        | [App Router Caching](https://nextjs.org/docs/app/building-your-application/caching)                                                          | Comprehensive guide to Next.js caching strategies and mechanisms |
-| **Next.js**        | [generateStaticParams](https://nextjs.org/docs/app/api-reference/functions/generate-static-params)                                           | API reference for static route generation at build time          |
-| **Next.js**        | [generateMetadata](https://nextjs.org/docs/app/api-reference/functions/generate-metadata)                                                    | Dynamic metadata generation for SEO and social sharing           |
-| **Next.js**        | [Data Revalidation](https://nextjs.org/docs/app/building-your-application/data-fetching/fetching-caching-and-revalidating#revalidating-data) | ISR configuration and data revalidation strategies               |
-| **TanStack Query** | [React Overview](https://tanstack.com/query/latest/docs/framework/react/overview)                                                            | Complete React integration guide for client-side caching         |
-| **TanStack Query** | [Main Documentation](https://tanstack.com/query/latest)                                                                                      | Core concepts and API reference for reactive data fetching       |
-| **Zustand**        | [Demo & Documentation](https://zustand-demo.pmnd.rs/)                                                                                        | Interactive demos and complete state management guide            |
-| **Zustand**        | [Persist Middleware](https://github.com/pmndrs/zustand#persist-middleware)                                                                   | Local storage integration for cross-session state persistence    |
+| Documentation                                                                                                                                | Description                                                      |
+| -------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| [App Router Caching](https://nextjs.org/docs/app/building-your-application/caching)                                                          | Comprehensive guide to Next.js caching strategies and mechanisms |
+| [generateStaticParams](https://nextjs.org/docs/app/api-reference/functions/generate-static-params)                                           | API reference for static route generation at build time          |
+| [generateMetadata](https://nextjs.org/docs/app/api-reference/functions/generate-metadata)                                                    | Dynamic metadata generation for SEO and social sharing           |
+| [Data Revalidation](https://nextjs.org/docs/app/building-your-application/data-fetching/fetching-caching-and-revalidating#revalidating-data) | ISR configuration and data revalidation strategies               |
+| [React Overview](https://tanstack.com/query/latest/docs/framework/react/overview)                                                            | Complete React integration guide for client-side caching         |
+| [Main Documentation](https://tanstack.com/query/latest)                                                                                      | Core concepts and API reference for reactive data fetching       |
+| [Demo & Documentation](https://zustand-demo.pmnd.rs/)                                                                                        | Interactive demos and complete state management guide            |
+| [Persist Middleware](https://github.com/pmndrs/zustand#persist-middleware)                                                                   | Local storage integration for cross-session state persistence    |
