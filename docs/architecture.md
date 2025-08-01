@@ -13,11 +13,11 @@ Application architecture patterns and design principles for scalable development
 
 ## Related Documentation
 
-- **[Code Organization](./code-organization.md)** - Project structure and module organization patterns
-- **[Data Fetching](./data-fetching.md)** - Service layer implementation and API integration
-- **[Caching](./caching.md)** - Performance optimization and cache coordination
-- **[State Management](./state-management.md)** - Coordinator pattern and state architecture
-- **[Examples](./examples.md)** - Practical implementation samples of architectural patterns
+- [Code Organization](./code-organization.md) - Project structure and module organization patterns
+- [Data Fetching](./data-fetching.md) - Service layer implementation and API integration
+- [Caching](./caching.md) - Performance optimization and cache coordination
+- [State Management](./state-management.md) - Coordinator pattern and state architecture
+- [Examples](./examples.md) - Practical implementation samples of architectural patterns
 
 ---
 

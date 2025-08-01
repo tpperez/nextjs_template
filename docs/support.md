@@ -17,8 +17,8 @@ Browser compatibility strategy for modern web applications.
 
 ## Related Documentation
 
-- **[Stack](./stack.md)** - Technology stack and browser engine compatibility
-- **[Code Quality](./code-quality.md)** - Build target configuration and compatibility standards
+- [Stack](./stack.md) - Technology stack and browser engine compatibility
+- [Code Quality](./code-quality.md) - Build target configuration and compatibility standards
 
 ---
 

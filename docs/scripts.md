@@ -12,9 +12,9 @@ Available npm scripts for development workflow automation and quality assurance.
 
 ## Related Documentation
 
-- **[Contributing](./contributing.md)** - Development workflow and script usage guidelines
-- **[Code Quality](./code-quality.md)** - Quality assurance commands and automation
-- **[Testing](./testing.md)** - Test execution commands and framework scripts
+- [Contributing](./contributing.md) - Development workflow and script usage guidelines
+- [Code Quality](./code-quality.md) - Quality assurance commands and automation
+- [Testing](./testing.md) - Test execution commands and framework scripts
 
 ---
 

@@ -16,12 +16,12 @@ Patterns for API integration and server state management that balance developer 
 
 ## Related Documentation
 
-- **[Architecture](./architecture.md)** - Service layer architecture and coordinator patterns
-- **[Caching](./caching.md)** - Cache integration and performance optimization strategies
-- **[State Management](./state-management.md)** - Server state management with TanStack Query
+- [Architecture](./architecture.md) - Service layer architecture and coordinator patterns
+- [Caching](./caching.md) - Cache integration and performance optimization strategies
+- [State Management](./state-management.md) - Server state management with TanStack Query
 - **[Authentication](./authentication.md)** - Secure API requests and authentication integration
-- **[Testing](./testing.md)** - Service testing patterns and HTTP client validation
-- **[Examples](./examples.md)** - Practical data fetching implementation examples
+- [Testing](./testing.md) - Service testing patterns and HTTP client validation
+- [Examples](./examples.md) - Practical data fetching implementation examples
 
 ## HTTP Service Architecture
 

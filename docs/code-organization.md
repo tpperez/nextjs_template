@@ -13,10 +13,10 @@ Codebase organization, architectural patterns, and standardized naming conventio
 
 ## Related Documentation
 
-- **[Architecture](./architecture.md)** - Architectural patterns and component organization principles
-- **[Testing](./testing.md)** - Test organization and file structure patterns
-- **[Contributing](./contributing.md)** - Development workflow and project structure guidelines
-- **[Examples](./examples.md)** - Practical examples of code organization patterns
+- [Architecture](./architecture.md) - Architectural patterns and component organization principles
+- [Testing](./testing.md) - Test organization and file structure patterns
+- [Contributing](./contributing.md) - Development workflow and project structure guidelines
+- [Examples](./examples.md) - Practical examples of code organization patterns
 
 ---
 

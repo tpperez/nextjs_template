@@ -14,10 +14,10 @@ Core architectural decisions and technologies defining the project foundation.
 
 ## Related Documentation
 
-- **[Contributing](./contributing.md)** - Development environment setup and technology requirements
-- **[Support](./support.md)** - Browser compatibility and technology support matrix
-- **[Testing](./testing.md)** - Testing framework implementation and configuration
-- **[Code Quality](./code-quality.md)** - Quality tools and enforcement standards
+- [Contributing](./contributing.md) - Development environment setup and technology requirements
+- [Support](./support.md) - Browser compatibility and technology support matrix
+- [Testing](./testing.md) - Testing framework implementation and configuration
+- [Code Quality](./code-quality.md) - Quality tools and enforcement standards
 
 ---
 

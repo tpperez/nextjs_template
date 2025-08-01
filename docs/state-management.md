@@ -4,12 +4,12 @@ This document outlines the state management architecture that coordinates applic
 
 ## Related Documentation
 
-- **[Architecture](./architecture.md)** - Coordinator pattern and architectural state integration
-- **[Data Fetching](./data-fetching.md)** - Server state management with TanStack Query
-- **[Caching](./caching.md)** - Cache coordination and state synchronization strategies
-- **[Testing](./testing.md)** - State management testing patterns and store validation
-- **[Authentication](./authentication.md)** - Authentication state patterns and security integration
-- **[Examples](./examples.md)** - Practical state management implementation examples
+- [Architecture](./architecture.md) - Coordinator pattern and architectural state integration
+- [Data Fetching](./data-fetching.md) - Server state management with TanStack Query
+- [Caching](./caching.md) - Cache coordination and state synchronization strategies
+- [Testing](./testing.md) - State management testing patterns and store validation
+- [Authentication](./authentication.md) - Authentication state patterns and security integration
+- [Examples](./examples.md) - Practical state management implementation examples
 
 ---
 

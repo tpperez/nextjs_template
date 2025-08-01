@@ -18,14 +18,14 @@ Testing patterns and configurations for this Next.js template. The template prov
 
 ## Related Documentation
 
-- **[Code Quality](./code-quality.md)** - Quality standards integration and automated testing gates
-- **[Contributing](./contributing.md)** - Testing workflow requirements and development standards
-- **[Scripts](./scripts.md)** - Test execution commands and development scripts
-- **[Data Fetching](./data-fetching.md)** - Service testing patterns and HTTP client validation
-- **[State Management](./state-management.md)** - State testing patterns and store validation
-- **[Authentication](./authentication.md)** - Authentication testing and security validation
-- **[Stack](./stack.md)** - Testing framework technology and configuration
-- **[Examples](./examples.md)** - Practical testing implementation examples
+- [Code Quality](./code-quality.md) - Quality standards integration and automated testing gates
+- [Contributing](./contributing.md) - Testing workflow requirements and development standards
+- [Scripts](./scripts.md) - Test execution commands and development scripts
+- [Data Fetching](./data-fetching.md) - Service testing patterns and HTTP client validation
+- [State Management](./state-management.md) - State testing patterns and store validation
+- [Authentication](./authentication.md) - Authentication testing and security validation
+- [Stack](./stack.md) - Testing framework technology and configuration
+- [Examples](./examples.md) - Practical testing implementation examples
 
 ---
 

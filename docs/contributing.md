@@ -18,11 +18,11 @@ Development workflow specifications and standards for contributing to this proje
 
 ## Related Documentation
 
-- **[Code Quality](./code-quality.md)** - Quality standards and automated enforcement
-- **[Testing](./testing.md)** - Testing requirements and framework guidelines
-- **[Scripts](./scripts.md)** - Development commands and workflow automation
-- **[Stack](./stack.md)** - Technology requirements and setup dependencies
-- **[Code Organization](./code-organization.md)** - Project structure and naming conventions
+- [Code Quality](./code-quality.md) - Quality standards and automated enforcement
+- [Testing](./testing.md) - Testing requirements and framework guidelines
+- [Scripts](./scripts.md) - Development commands and workflow automation
+- [Stack](./stack.md) - Technology requirements and setup dependencies
+- [Code Organization](./code-organization.md) - Project structure and naming conventions
 
 ---
 

@@ -13,10 +13,10 @@ Code standards enforcement and quality assurance patterns for maintainable devel
 
 ## Related Documentation
 
-- **[Testing](./testing.md)** - Testing framework and quality assurance patterns
-- **[Contributing](./contributing.md)** - Development workflow standards and quality requirements
-- **[Scripts](./scripts.md)** - Quality assurance scripts and development commands
-- **[Examples](./examples.md)** - Quality implementation examples and testing patterns
+- [Testing](./testing.md) - Testing framework and quality assurance patterns
+- [Contributing](./contributing.md) - Development workflow standards and quality requirements
+- [Scripts](./scripts.md) - Quality assurance scripts and development commands
+- [Examples](./examples.md) - Quality implementation examples and testing patterns
 
 ---
 

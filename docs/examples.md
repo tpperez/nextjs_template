@@ -15,12 +15,12 @@ Implementation examples showing architectural patterns, component composition, a
 
 ## Related Documentation
 
-- **[Architecture](./architecture.md)** - Architectural principles and coordinator patterns implemented in examples
-- **[Code Organization](./code-organization.md)** - Module structure and naming conventions used throughout examples
-- **[Data Fetching](./data-fetching.md)** - HTTP service integration and query implementation patterns
-- **[State Management](./state-management.md)** - Client and server state coordination examples
-- **[Testing](./testing.md)** - Testing strategies for components and hooks shown in examples
-- **[Caching](./caching.md)** - Performance optimization and cache integration examples
+- [Architecture](./architecture.md) - Architectural principles and coordinator patterns implemented in examples
+- [Code Organization](./code-organization.md) - Module structure and naming conventions used throughout examples
+- [Data Fetching](./data-fetching.md) - HTTP service integration and query implementation patterns
+- [State Management](./state-management.md) - Client and server state coordination examples
+- [Testing](./testing.md) - Testing strategies for components and hooks shown in examples
+- [Caching](./caching.md) - Performance optimization and cache integration examples
 
 ---
 
