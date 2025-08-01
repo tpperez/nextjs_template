@@ -1,12 +1,52 @@
-# Implementation Examples
+# Examples
 
-Comprehensive code samples, usage patterns, integration examples, and template demonstrations for effective development practices.
+Implementation examples showing architectural patterns, component composition, and integration strategies used in the template.
 
-## component patterns
+## Table of Contents
 
-### basic ui component
+- [Overview](#overview)
+- [Component Patterns](#component-patterns)
+- [Data Fetching Patterns](#data-fetching-patterns)
+- [State Management Integration](#state-management-integration)
+- [Form Handling Patterns](#form-handling-patterns)
+- [Layout Patterns](#layout-patterns)
+- [Error Handling Patterns](#error-handling-patterns)
+- [Performance Optimization Patterns](#performance-optimization-patterns)
 
-spinner component with typescript and tailwind integration:
+## Related Documentation
+
+- **[Architecture](./architecture.md)** - Architectural principles and coordinator patterns implemented in examples
+- **[Code Organization](./code-organization.md)** - Module structure and naming conventions used throughout examples
+- **[Data Fetching](./data-fetching.md)** - HTTP service integration and query implementation patterns
+- **[State Management](./state-management.md)** - Client and server state coordination examples
+- **[Testing](./testing.md)** - Testing strategies for components and hooks shown in examples
+- **[Caching](./caching.md)** - Performance optimization and cache integration examples
+
+---
+
+## Overview
+
+This documentation provides implementation examples that show the template's architectural patterns and development practices. The examples range from simple UI components to feature integrations, showing how different parts of the system work together.
+
+### Example Categories
+
+The examples are organized by architectural concern:
+
+- **Component Architecture**: UI component patterns and composition strategies
+- **Data Integration**: Server and client-side data fetching with error handling
+- **State Coordination**: Cross-component communication and state management
+- **User Experience**: Forms, layouts, and interactive patterns
+- **Performance**: Optimization techniques and code splitting strategies
+
+Each example shows both the implementation and the reasoning behind architectural decisions.
+
+---
+
+## Component Patterns
+
+### Basic UI Component
+
+Basic component structure showing UI component patterns with TypeScript integration:
 
 ```typescript
 // app/components/ui/spinner/spinner.type.ts
@@ -76,9 +116,9 @@ export { default } from './spinner'
 export type { ISpinnerProps, TSpinnerSize, TSpinnerColor } from './spinner.type'
 ```
 
-### complex feature component
+### Complex Feature Component
 
-tech radar component with external library integration:
+Component implementation showing external library integration and script management:
 
 ```typescript
 // app/views/home/components/tech-radar/tech-radar.type.ts
@@ -209,11 +249,11 @@ const TechRadar: React.FC<ITechRadarProps> = ({
 export default TechRadar
 ```
 
-## data fetching patterns
+## Data Fetching Patterns
 
-### rest api integration
+### REST API Integration
 
-pokemon species data fetching with tanstack query:
+Data fetching implementation showing the HTTP service layer with TanStack Query integration:
 
 ```typescript
 // app/services/http/rest/rest.client.ts
@@ -363,9 +403,11 @@ const PokemonSpeciesInfo: React.FC<IPokemonSpeciesInfoProps> = ({ pokemonId }) =
 export default PokemonSpeciesInfo
 ```
 
-### state management integration
+## State Management Integration
 
-zustand store with persistent state:
+### Persistent State with Zustand
+
+State management implementation showing client state patterns with cross-session persistence:
 
 ```typescript
 // app/stores/auth/auth.store.ts
@@ -490,11 +532,11 @@ export const useAuthActions = () => {
 }
 ```
 
-## form handling patterns
+## Form Handling Patterns
 
-### react hook form with zod validation
+### React Hook Form with Zod Validation
 
-comprehensive form implementation:
+Form implementation showing validation, error handling, and state coordination patterns:
 
 ```typescript
 // app/views/auth/components/login-form/login-form.schema.ts
@@ -642,11 +684,9 @@ const LoginForm: React.FC = () => {
 export default LoginForm
 ```
 
-## testing patterns
+### Component Testing with React Testing Library
 
-### component testing with react testing library
-
-comprehensive test examples:
+Testing implementation showing testing strategies and quality assurance patterns:
 
 ```typescript
 // app/components/ui/spinner/spinner.test.tsx
@@ -777,11 +817,11 @@ describe('usePokemonSpecies Hook', () => {
 })
 ```
 
-## layout patterns
+## Layout Patterns
 
-### responsive layout components
+### Responsive Layout Components
 
-header and footer with navigation:
+Layout implementation showing structure patterns with navigation and authentication integration:
 
 ```typescript
 // app/components/structure/header/header.tsx
@@ -901,11 +941,11 @@ const PublicLayout: React.FC<IPublicLayoutProps> = ({ children }) => {
 export default PublicLayout
 ```
 
-## error handling patterns
+## Error Handling Patterns
 
-### error boundaries and error states
+### Error Boundaries and Error States
 
-comprehensive error handling:
+Error handling implementation showing error recovery and user experience patterns:
 
 ```typescript
 // app/components/error/error-boundary.tsx
@@ -1038,11 +1078,11 @@ const ErrorPage: React.FC<IErrorPageProps> = ({ error, reset }) => {
 export default ErrorPage
 ```
 
-## performance optimization patterns
+## Performance Optimization Patterns
 
-### code splitting and lazy loading
+### Code Splitting and Lazy Loading
 
-dynamic imports for performance optimization:
+Performance optimization showing code splitting patterns and dynamic import strategies:
 
 ```typescript
 // app/views/dashboard/dashboard.tsx
@@ -1126,4 +1166,21 @@ const LazyTechRadar = createDynamicImport(
 )
 ```
 
-This comprehensive `docs/examples.md` file provides practical and extensive implementation examples covering the main patterns used in the project, from basic components to complex API integration and state management. The examples follow the conventions established in the documentation and demonstrate good development practices.
+These implementation examples show the template's architectural patterns in action, providing practical guidance for teams building applications. Each example follows the conventions established in the template and shows how different architectural layers integrate.
+
+The examples serve as reference implementations and starting points for teams developing similar functionality. They show both the implementation details and the reasoning behind architectural decisions.
+
+---
+
+## References
+
+| Resource                                                                               | Description                                                   |
+| -------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| [React Documentation](https://react.dev/)                                              | Official React library documentation and component patterns   |
+| [TypeScript Handbook](https://www.typescriptlang.org/docs/)                            | Complete TypeScript language documentation and best practices |
+| [TanStack Query](https://tanstack.com/query/latest)                                    | Data synchronization library for React applications           |
+| [Zustand](https://zustand-demo.pmnd.rs/)                                               | Small, fast, and scalable state management library            |
+| [React Hook Form](https://react-hook-form.com/)                                        | Performant forms library with easy validation                 |
+| [Zod](https://zod.dev/)                                                                | TypeScript-first schema validation library                    |
+| [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) | Testing utilities for React components                        |
+| [Tailwind CSS](https://tailwindcss.com/)                                               | Utility-first CSS framework for rapid UI development          |
