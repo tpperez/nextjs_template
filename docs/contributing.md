@@ -2,263 +2,349 @@
 
 Development workflow specifications and standards for contributing to this project.
 
-## development environment setup
+## Table of Contents
 
-### prerequisites
+- [Overview](#overview)
+- [Development Environment Setup](#development-environment-setup)
+- [Development Workflow](#development-workflow)
+- [Code Quality Standards](#code-quality-standards)
+- [Pull Request Requirements](#pull-request-requirements)
+- [Commit Standards](#commit-standards)
+- [Testing Guidelines](#testing-guidelines)
+- [Code Standards](#code-standards)
+- [Documentation Standards](#documentation-standards)
+- [Issue Reporting](#issue-reporting)
+- [Support and Communication](#support-and-communication)
 
-- node.js via nvm (version specified in .nvmrc)
-- npm (included with node.js)
+## Related Documentation
 
-### initial setup
+- [Code Quality](./code-quality.md) - Quality standards and automated enforcement
+- [Testing](./testing.md) - Testing requirements and framework guidelines
+- [Scripts](./scripts.md) - Development commands and workflow automation
+- [Stack](./stack.md) - Technology requirements and setup dependencies
+- [Code Organization](./code-organization.md) - Project structure and naming conventions
+
+---
+
+## Overview
+
+This document defines the development workflow specifications and standards for contributing to this project, ensuring consistent code quality, maintainable architecture, and effective collaboration across all team members.
+
+#### Core Principles
+
+- Automated quality assurance through pre-commit hooks
+- [Conventional commit standards](https://www.conventionalcommits.org/) for clear project history
+- Testing coverage with minimum 80% threshold
+- TypeScript-first development with strict type checking
+
+#### Quality Philosophy
+
+All contributions undergo automated quality checks and peer review to maintain high standards while supporting developer productivity through established tooling and clear guidelines.
+
+---
+
+## Development Environment Setup
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) via [nvm](https://github.com/nvm-sh/nvm) (version specified in .nvmrc)
+- npm (included with Node.js)
+
+### Initial Setup
 
 ```bash
-# install and activate node version
+# Install and activate Node.js version
 nvm install
 nvm use
 
-# install dependencies
+# Install project dependencies
 npm install
 
-# verify setup
+# Verify setup
 npm run test
 npm run lint
 npm run tsc
 ```
 
-## development workflow
+---
 
-### branch strategy
+## Development Workflow
 
-- main branch contains production-ready code
-- feature branches follow naming pattern: feature/descriptive-name
-- bug fix branches follow pattern: fix/descriptive-name
-- hotfix branches follow pattern: hotfix/descriptive-name
+### Branch Strategy
 
-### development process
+Follow [GitHub Flow](https://guides.github.com/introduction/flow/) pattern:
+
+- `main` branch contains production-ready code
+- Feature branches follow naming pattern: `feature/descriptive-name`
+- Bug fix branches follow pattern: `fix/descriptive-name`
+- Hotfix branches follow pattern: `hotfix/descriptive-name`
+
+### Development Process
 
 ```bash
-# start development server with turbopack
+# Start development server with hot reload
 npm run dev
 
-# run tests in watch mode during development
+# Run tests in watch mode during development
 npm run test:watch
 
-# type checking during development
+# Type checking during development
 npm run tsc
 
-# format code automatically
+# Format code automatically
 npm run format:fix
 
-# lint and auto-fix issues
+# Lint and auto-fix issues
 npm run lint:fix
 ```
 
-## code quality standards
+---
 
-### automated quality checks
+## Code Quality Standards
 
-pre-commit hooks automatically run:
+### Automated Quality Checks
 
-- typescript compilation check
-- test execution
-- linting with automatic fixes
-- code formatting with prettier
+Pre-commit hooks automatically run:
 
-### manual quality verification
+- TypeScript compilation check
+- Test execution with coverage thresholds
+- Linting with automatic fixes where possible
+- Code formatting with [Prettier](https://prettier.io/)
+
+### Manual Quality Verification
 
 ```bash
-# run full test suite with coverage
+# Run full test suite with coverage
 npm run test:coverage
 
-# format check without modifications
+# Check code formatting
 npm run format
 
-# lint check without fixes
+# Lint check without fixes
 npm run lint
 
-# bundle analysis for performance optimization
+# Bundle analysis for performance optimization
 npm run analyze
 ```
 
-## pull request requirements
+---
 
-### before submitting
+## Pull Request Requirements
 
-- ensure all tests pass locally
-- verify typescript compilation succeeds
-- run linting and formatting tools
-- update documentation if necessary
-- include test coverage for new functionality
+### Before Submitting
 
-### pull request format
+- Ensure all tests pass locally
+- Verify TypeScript compilation succeeds
+- Run linting and formatting tools
+- Update documentation if necessary
+- Include test coverage for new functionality
 
-- descriptive title following conventional commit format
-- clear description of changes and motivation
-- reference related issues when applicable
-- include screenshots for ui changes
+### Pull Request Format
 
-### review process
+- Descriptive title following conventional commit format
+- Clear description of changes and motivation
+- Reference related issues when applicable
+- Include screenshots for UI changes
 
-- automated ci checks must pass
-- at least one code review approval required
-- documentation updates reviewed for accuracy
-- performance impact assessed for significant changes
+### Review Process
 
-## commit standards
+- Automated CI checks must pass
+- At least one code review approval required
+- Documentation updates reviewed for accuracy
+- Performance impact assessed for significant changes
 
-### conventional commits
+---
 
-follow conventional commit specification for all commit messages:
+## Commit Standards
+
+### Conventional Commits
+
+Follow the [Conventional Commits specification](https://www.conventionalcommits.org/) for all commit messages:
 
 ```bash
-# feature additions
+# Feature additions
 feat: add user authentication system
 
-# bug fixes
+# Bug fixes
 fix: resolve navigation menu overflow issue
 
-# documentation updates
+# Documentation updates
 docs: update api integration guidelines
 
-# code style changes
+# Code style changes
 style: apply consistent formatting to components
 
-# refactoring without feature changes
+# Refactoring without feature changes
 refactor: simplify data fetching logic
 
-# test additions or modifications
+# Test additions or modifications
 test: add coverage for form validation
 
-# build process or dependency updates
-chore: update react to version 19.1.0
+# Build process or dependency updates
+chore: update dependencies to latest versions
 ```
 
-### commit message format
+### Commit Message Format
 
 ```
 type(scope): description
 
-detailed explanation of changes when necessary
+Detailed explanation of changes when necessary
 
-- key changes or considerations
-- impact on existing functionality
-- references to issues or documentation
+- Key changes or considerations
+- Impact on existing functionality
+- References to issues or documentation
 ```
 
-## testing guidelines
+For detailed guidance, see the [Conventional Commits documentation](https://www.conventionalcommits.org/en/v1.0.0/).
 
-### test file organization
+---
 
-- unit tests: component.test.tsx
-- hook tests: hook-name.hook.test.ts
-- integration tests: feature-name.integration.test.ts
-- test utilities: shared testing setup and mocks
+## Testing Guidelines
 
-### testing standards
+### Test File Organization
 
-- maintain minimum 80% code coverage
-- test public apis and user interactions
-- mock external dependencies appropriately
-- follow testing library best practices
+- Unit tests: `component.test.tsx`
+- Hook tests: `hook-name.hook.test.ts`
+- Integration tests: `feature-name.integration.test.ts`
+- Test utilities: Shared testing setup and mocks
 
-### test execution
+### Testing Standards
+
+Following [Testing Library principles](https://testing-library.com/docs/guiding-principles):
+
+- Maintain minimum 80% code coverage
+- Test public APIs and user interactions
+- Mock external dependencies appropriately
+- Focus on behavior rather than implementation details
+
+### Test Execution
 
 ```bash
-# run all tests
+# Run all tests
 npm run test
 
-# watch mode for active development
+# Watch mode for active development
 npm run test:watch
 
-# coverage report generation
+# Coverage report generation
 npm run test:coverage
 
-# interactive test ui
+# Interactive test UI
 npm run test:ui
 ```
 
-## code standards
+---
 
-### typescript configuration
+## Code Standards
 
-- strict type checking enabled
-- explicit return types for public functions
-- proper interface definitions for data structures
-- effective use of generic types when appropriate
+### TypeScript Configuration
 
-### naming conventions
+Following [TypeScript best practices](https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html):
 
-reference naming-conventions.md for detailed standards:
+- Strict type checking enabled
+- Explicit return types for public functions
+- Proper interface definitions for data structures
+- Effective use of generic types when appropriate
 
-- components: PascalCase with descriptive names
-- hooks: camelCase starting with 'use'
-- utilities: camelCase with clear purpose indication
-- constants: UPPER_SNAKE_CASE for module-level constants
+### Naming Conventions
 
-### component structure
+- **Components**: PascalCase with descriptive names
+- **Hooks**: camelCase starting with 'use'
+- **Utilities**: camelCase with clear purpose indication
+- **Constants**: UPPER_SNAKE_CASE for module-level constants
+
+### Component Structure
 
 ```typescript
 interface ComponentProps {
-  // prop definitions with proper types
+  // Prop definitions with proper types
 }
 
 const Component: React.FC<ComponentProps> = ({ prop1, prop2 }) => {
-  // component implementation
+  // Component implementation
   return <div>component content</div>
 }
 
 export default Component
 ```
 
-## documentation standards
+---
 
-### code documentation
+## Documentation Standards
 
-- jsDoc comments for public functions and complex logic
-- readme files for major features or modules
-- inline comments for business logic explanations
-- type definitions serve as primary api documentation
+### Code Documentation
 
-### documentation updates
+- [JSDoc comments](https://jsdoc.app/) for public functions and complex logic
+- README files for major features or modules
+- Inline comments for business logic explanations
+- Type definitions serve as primary API documentation
 
-- update relevant docs with feature changes
-- maintain accuracy of examples and code samples
-- review cross-references between documentation files
-- ensure consistency with established writing guidelines
+### Documentation Updates
 
-## issue reporting
+- Update relevant docs with feature changes
+- Maintain accuracy of examples and code samples
+- Review cross-references between documentation files
+- Ensure consistency with established writing guidelines
 
-### bug reports
+---
 
-include the following information:
+## Issue Reporting
 
-- steps to reproduce the issue
-- expected versus actual behavior
-- environment details (browser, node version, etc.)
-- relevant error messages or console output
-- screenshots or screen recordings when helpful
+### Bug Reports
 
-### feature requests
+Include the following information following [bug report best practices](https://developer.mozilla.org/en-US/docs/Mozilla/QA/Bug_writing_guidelines):
 
-provide context for new features:
+- Steps to reproduce the issue
+- Expected versus actual behavior
+- Environment details (browser, Node.js version, etc.)
+- Relevant error messages or console output
+- Screenshots or screen recordings when helpful
 
-- use case description and user value
-- proposed implementation approach
-- potential impact on existing functionality
-- alternative solutions considered
+### Feature Requests
 
-## support and communication
+Provide context for new features:
 
-### development questions
+- Use case description and user value
+- Proposed implementation approach
+- Potential impact on existing functionality
+- Alternative solutions considered
 
-- check existing documentation first
-- search closed issues for similar problems
-- provide context and specific examples when asking questions
-- reference relevant code sections or error messages
+---
 
-### code review feedback
+## Support and Communication
 
-- focus on code quality, maintainability, and standards
-- provide constructive suggestions with examples
-- acknowledge positive aspects of the contribution
-- explain reasoning behind requested changes
+### Development Questions
+
+- Check existing documentation first
+- Search closed issues for similar problems
+- Provide context and specific examples when asking questions
+- Reference relevant code sections or error messages
+
+### Code Review Feedback
+
+Following [code review best practices](https://google.github.io/eng-practices/review/):
+
+- Focus on code quality, maintainability, and standards
+- Provide constructive suggestions with examples
+- Acknowledge positive aspects of the contribution
+- Explain reasoning behind requested changes
+
+---
+
+## References
+
+| Resource                                                                                                         | Description                                                                    |
+| ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| [Conventional Commits](https://www.conventionalcommits.org/)                                                     | Specification for adding human and machine-readable meaning to commit messages |
+| [Node.js](https://nodejs.org/)                                                                                   | JavaScript runtime for development environment setup                           |
+| [NVM](https://github.com/nvm-sh/nvm)                                                                             | Node Version Manager for handling multiple Node.js versions                    |
+| [GitHub Flow](https://guides.github.com/introduction/flow/)                                                      | Lightweight, branch-based workflow for teams                                   |
+| [Prettier](https://prettier.io/)                                                                                 | Code formatter for consistent code style                                       |
+| [Testing Library](https://testing-library.com/docs/guiding-principles)                                           | Simple and complete testing utilities with focus on user interactions          |
+| [TypeScript Best Practices](https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html) | Official TypeScript guidelines for writing declaration files                   |
+| [JSDoc](https://jsdoc.app/)                                                                                      | API documentation generator for JavaScript                                     |
+| [Bug Report Guidelines](https://developer.mozilla.org/en-US/docs/Mozilla/QA/Bug_writing_guidelines)              | Mozilla's guidelines for writing effective bug reports                         |
+| [Code Review Best Practices](https://google.github.io/eng-practices/review/)                                     | Google's engineering practices for code reviews                                |
+| [Writing Good Commit Messages](https://chris.beams.io/posts/git-commit/)                                         | Guide to writing meaningful commit messages                                    |
+| [Open Source Contributing](https://opensource.guide/how-to-contribute/)                                          | GitHub's guide to contributing to open source projects                         |

@@ -1,7 +1,3 @@
-export interface IHeaderProps {
-  data: IHeader
-}
-
 export interface IHeader {
   logo: {
     alt: string

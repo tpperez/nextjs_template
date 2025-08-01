@@ -1,674 +1,675 @@
 # State Management
 
-Application state architecture covering state shape design, update mechanisms, persistence strategies, and performance optimization patterns.
+This document outlines the state management architecture that coordinates application data flow, user interactions, and cross-component communication. The template uses a hybrid approach combining server state management for API responses with client state management for user preferences and application state.
 
-## zustand store architecture
+## Related Documentation
 
-### store creation patterns
+- [Architecture](./architecture.md) - Coordinator pattern and architectural state integration
+- [Data Fetching](./data-fetching.md) - Server state management with TanStack Query
+- [Caching](./caching.md) - Cache coordination and state synchronization strategies
+- [Testing](./testing.md) - State management testing patterns and store validation
+- [Authentication](./authentication.md) - Authentication state patterns and security integration
+- [Examples](./examples.md) - Practical state management implementation examples
 
-zustand provides lightweight state management with typescript integration:
+---
 
-```typescript
-// basic store structure
-interface IAuthState {
-  user: IUser | null
-  isAuthenticated: boolean
-  isLoading: boolean
-  error: string | null
-}
+## State Management Overview
 
-interface IAuthActions {
-  login: (credentials: ICredentials) => Promise<void>
-  logout: () => void
-  clearError: () => void
-  setLoading: (loading: boolean) => void
-}
+### State Architecture Strategy
 
-type TAuthStore = IAuthState & IAuthActions
+The template separates state concerns into distinct management layers, each optimized for specific data patterns and user experience requirements:
 
-// store implementation
-const useAuthStore = create<TAuthStore>((set, get) => ({
-  // initial state
-  user: null,
-  isAuthenticated: false,
-  isLoading: false,
-  error: null,
+**State Architecture Flow:**
 
-  // actions
-  login: async (credentials) => {
-    set({ isLoading: true, error: null })
-    try {
-      const user = await authService.login(credentials)
-      set({ user, isAuthenticated: true, isLoading: false })
-    } catch (error) {
-      set({
-        error: error.message,
-        isLoading: false,
-        isAuthenticated: false,
-      })
-    }
-  },
-
-  logout: () => {
-    set({
-      user: null,
-      isAuthenticated: false,
-      error: null,
-    })
-    authService.clearToken()
-  },
-
-  clearError: () => set({ error: null }),
-  setLoading: (isLoading) => set({ isLoading }),
-}))
+```
+Server State (TanStack Query)
+    ↓
+API Responses & Caching
+    ↓
+Client State (Zustand)
+    ↓
+User Preferences & UI State
+    ↓
+Component Integration
+    ↓
+User Experience
 ```
 
-### store composition patterns
+### State Management Architecture
 
-multiple stores handle different application domains:
+## State Management Architecture
+
+### Server State (TanStack Query)
+
+- **Purpose:** API responses, caching, background sync
+- **Features:** Automatic caching, error handling, request deduplication
+- **Integration:** Query cache ↔ Component updates ↔ External APIs
+
+### Client State (Zustand)
+
+- **Purpose:** User preferences, UI state, cross-component data
+- **Features:** Local storage persistence, global state sharing
+- **Integration:** Component state ↔ Browser storage ↔ State synchronization
+
+### Integration Layer
+
+- **Custom Hooks:** Unified interface between server and client state
+- **User Interactions:** Trigger API mutations and state changes
+- **Persistence:** Cross-session data recovery and synchronization
+
+**Data Flow:** API ↔ TanStack Query ↔ Custom Hooks ↔ Components ↔ Zustand ↔ Local Storage
+
+**State Management Distinction:**
+
+- **Server State**: API responses, data fetching, and synchronization - managed by [TanStack Query](https://tanstack.com/query/latest)
+- **Client State**: User preferences, UI state, and cross-component communication - managed by [Zustand](https://zustand-demo.pmnd.rs/)
+- **Integration Layer**: Custom hooks provide unified interfaces combining both state types
+- **Persistence**: Client state persists across sessions with selective storage strategies
+
+### State Management Patterns Overview
+
+| State Type          | Management Tool | Primary Use Cases                        | Key Features                                                       |
+| ------------------- | --------------- | ---------------------------------------- | ------------------------------------------------------------------ |
+| **Server State**    | TanStack Query  | API responses, data fetching, caching    | • Automatic caching<br>• Background sync<br>• Error handling       |
+| **Client State**    | Zustand         | User preferences, UI state, app settings | • Persistence<br>• Cross-component sharing<br>• Simple mutations   |
+| **Form State**      | React Hook Form | Form inputs, validation, submissions     | • Validation<br>• Performance optimization<br>• Error handling     |
+| **Component State** | React useState  | Local component state, temporary data    | • Component-specific<br>• Ephemeral state<br>• Simple interactions |
+
+### Detailed State Management Breakdown
+
+**Server State Management** - API responses and data synchronization
+
+**Architectural Decision:**
+Server state requires specialized handling for caching, synchronization, and error recovery that differs fundamentally from application state management needs.
+
+**Core Capabilities:**
+
+- Automatic response caching with intelligent invalidation
+- Background refetching and stale-while-revalidate patterns
+- Request deduplication and concurrent query handling
+- Error boundaries with retry mechanisms and fallback strategies
+
+**Key Features:**
+
+- Infinite query patterns for paginated data loading
+- Configurable stale time and cache management
+- Integration with GraphQL and REST adapters
+- Optimistic updates with rollback capabilities
 
 ```typescript
-// theme store
-interface IThemeStore {
-  theme: 'light' | 'dark' | 'system'
-  setTheme: (theme: 'light' | 'dark' | 'system') => void
-  toggleTheme: () => void
+// Server state example - Infinite entity loading
+export const useMoreEntities = ({
+  initialOffset = 8,
+}: TUseMoreEntitiesOptions = {}) => {
+  return useInfiniteQuery({
+    queryKey: ENTITIES_QUERY_CONFIG.QUERY_KEY,
+    queryFn: async ({ pageParam = initialOffset }) => {
+      const response = await graphqlClient.query<IEntitiesResponse>(
+        GET_ENTITIES_QUERY,
+        {
+          limit: ENTITIES_PER_PAGE,
+          offset: pageParam,
+        },
+      )
+
+      return {
+        data: response.data?.entities?.results || [],
+        nextOffset: pageParam + ENTITIES_PER_PAGE,
+      }
+    },
+    staleTime: ENTITIES_QUERY_CONFIG.STALE_TIME,
+    enabled: false,
+  })
 }
-
-const useThemeStore = create<IThemeStore>((set, get) => ({
-  theme: 'system',
-  setTheme: (theme) => set({ theme }),
-  toggleTheme: () => {
-    const current = get().theme
-    const next = current === 'light' ? 'dark' : 'light'
-    set({ theme: next })
-  },
-}))
-
-// navigation store
-interface INavigationStore {
-  isMenuOpen: boolean
-  currentRoute: string
-  breadcrumbs: IBreadcrumb[]
-  toggleMenu: () => void
-  setRoute: (route: string) => void
-  setBreadcrumbs: (breadcrumbs: IBreadcrumb[]) => void
-}
-
-const useNavigationStore = create<INavigationStore>((set, get) => ({
-  isMenuOpen: false,
-  currentRoute: '/',
-  breadcrumbs: [],
-
-  toggleMenu: () => set((state) => ({ isMenuOpen: !state.isMenuOpen })),
-  setRoute: (currentRoute) => set({ currentRoute }),
-  setBreadcrumbs: (breadcrumbs) => set({ breadcrumbs }),
-}))
 ```
 
-## state persistence
+---
 
-### local storage integration
+**Client State Management** - User preferences and application state
 
-persistent state survives browser sessions:
+**Core Capabilities:**
 
-```typescript
-// persistence middleware
-const createPersistentStore = <T>(
-  name: string,
-  store: (set: any, get: any) => T,
-) => {
-  return create<T>()(
-    persist(store, {
-      name: `app-${name}`,
-      storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({
-        // only persist specific fields
-        theme: state.theme,
-        userPreferences: state.userPreferences,
-      }),
-    }),
-  )
-}
+- User preferences and application settings persistence
+- Cross-component state sharing and communication
+- UI state management for complex interactions
+- Cross-session data persistence with selective storage
 
-// persistent theme store
-const useThemeStore = createPersistentStore('theme', (set, get) => ({
-  theme: 'system',
-  userPreferences: {
-    language: 'en',
-    notifications: true,
-  },
-  setTheme: (theme) => set({ theme }),
-  updatePreferences: (preferences) =>
-    set((state) => ({
-      userPreferences: { ...state.userPreferences, ...preferences },
-    })),
-}))
-```
+**Key Features:**
 
-### session storage patterns
-
-temporary state for single browser sessions:
+- [Zustand store architecture](https://zustand-demo.pmnd.rs/) with TypeScript integration
+- Persistence middleware with selective state serialization
+- Immutable update patterns with performance optimization
+- Feature-based store organization for maintainability
 
 ```typescript
-// session-based store
-const useSessionStore = create<ISessionStore>()(
+// Client state example - Entity viewing history
+const useHistoryStore = create<IHistoryStore>()(
   persist(
-    (set, get) => ({
-      sessionData: null,
-      temporaryFlags: {},
+    (set) => ({
+      history: [],
+      addToHistory: (entity: IEntity) => {
+        return set((state) => {
+          const existingIndex = state.history.findIndex(
+            (item) => item.id === entity.id,
+          )
 
-      setSessionData: (data) => set({ sessionData: data }),
-      setFlag: (key, value) =>
-        set((state) => ({
-          temporaryFlags: { ...state.temporaryFlags, [key]: value },
-        })),
-      clearSession: () => set({ sessionData: null, temporaryFlags: {} }),
+          if (existingIndex !== -1) {
+            // Move existing item to front
+            const newHistory = [
+              entity,
+              ...state.history.filter((_, index) => index !== existingIndex),
+            ]
+            return {
+              history: newHistory.slice(0, HISTORY_CONFIG.MAX_HISTORY_SIZE),
+            }
+          }
+
+          // Add new item to front
+          const newHistory = [entity, ...state.history]
+          return {
+            history: newHistory.slice(0, HISTORY_CONFIG.MAX_HISTORY_SIZE),
+          }
+        })
+      },
+      clearHistory: () => set({ history: [] }),
     }),
     {
-      name: 'app-session',
-      storage: createJSONStorage(() => sessionStorage),
+      name: HISTORY_CONFIG.STORAGE_KEY,
+      partialize: (state) => ({ history: state.history }),
     },
   ),
 )
 ```
 
-## state selectors
+---
 
-### efficient component subscriptions
+**Hybrid State Integration** - Coordinated state management
 
-selectors prevent unnecessary re-renders:
+**Integration Strategy:**
+Custom hooks coordinate server and client state to provide unified interfaces for component consumption, abstracting state management complexity from UI components.
 
-```typescript
-// specific value selectors
-const useUser = () => useAuthStore((state) => state.user)
-const useIsAuthenticated = () => useAuthStore((state) => state.isAuthenticated)
-const useAuthError = () => useAuthStore((state) => state.error)
+**Implementation Pattern:**
+Server state via TanStack Query for entity data, client state via Zustand for viewing history, seamless integration through custom hooks that handle both state types.
 
-// computed selectors
-const useUserName = () =>
-  useAuthStore((state) =>
-    state.user ? `${state.user.firstName} ${state.user.lastName}` : 'guest',
-  )
+**Key Benefits:**
 
-// multiple value selectors with shallow comparison
-const useAuthStatus = () =>
-  useAuthStore(
-    (state) => ({
-      isLoading: state.isLoading,
-      isAuthenticated: state.isAuthenticated,
-      error: state.error,
-    }),
-    shallow,
-  )
+- Unified component interfaces abstracting state complexity
+- Optimal performance characteristics for each state type
+- Clear separation of concerns with coordinated updates
+- Developer experience optimization through hook composition
 
-// conditional selectors
-const useAuthActions = () =>
-  useAuthStore((state) => ({
-    login: state.login,
-    logout: state.logout,
-    clearError: state.clearError,
-  }))
+---
+
+## Store Architecture Patterns
+
+### Zustand Store Organization
+
+**Store Design Philosophy:**
+Feature-based store organization with clear interfaces, immutable updates, and selective persistence strategies for performance and maintainability.
+
+**Store Structure Pattern:**
+
+```mermaid
+graph TD
+    subgraph "Store Architecture"
+        A[Store Interface] -->|"State Shape"| B[State Properties]
+        A -->|"Actions"| C[State Mutations]
+        B -->|"Immutable Data"| D[Store State]
+        C -->|"Update Logic"| E[State Updates]
+    end
+
+    subgraph "Persistence Layer"
+        F[Persistence Middleware] -->|"Selective Storage"| G[Local Storage]
+        F -->|"State Hydration"| H[Store Initialization]
+        G -->|"Cross-Session"| I[State Recovery]
+    end
+
+    subgraph "Integration Patterns"
+        J[Custom Hooks] -->|"Store Access"| A
+        J -->|"Computed Values"| K[Derived State]
+        J -->|"Component Interface"| L[UI Components]
+    end
+
+    D --> F
+    E --> D
+    H --> D
+    I --> H
+    K --> L
+
+    style A fill:#e1f5fe
+    style B fill:#f1f8e9
+    style C fill:#f1f8e9
+    style D fill:#e8f5e8
+    style E fill:#e8f5e8
+    style F fill:#fce4ec
+    style G fill:#f3e5f5
+    style H fill:#f3e5f5
+    style I fill:#f3e5f5
+    style J fill:#fff3e0
+    style K fill:#fff3e0
+    style L fill:#e8f5e8
 ```
 
-### memoized selectors
+**Store Design Characteristics:**
 
-complex computations with memoization:
+- **Feature-Based**: Stores organized by application domains and feature boundaries
+- **Type-Safe**: Full TypeScript integration with interface definitions
+- **Persistent**: Selective persistence with partialize strategies
+- **Immutable**: State updates follow immutable patterns for predictable behavior
 
-```typescript
-// memoized selector utilities
-const createMemoizedSelector = <TState, TResult>(
-  selector: (state: TState) => TResult,
-  equalityFn?: (a: TResult, b: TResult) => boolean,
-) => {
-  let lastResult: TResult
-  let lastState: TState
+### Store Implementation Patterns
 
-  return (state: TState): TResult => {
-    if (state !== lastState) {
-      const newResult = selector(state)
-      if (!equalityFn || !equalityFn(lastResult, newResult)) {
-        lastResult = newResult
-      }
-      lastState = state
-    }
-    return lastResult
-  }
-}
+**Basic Store Structure**
 
-// memoized user permissions
-const useUserPermissions = () =>
-  useAuthStore(
-    createMemoizedSelector(
-      (state) => state.user?.roles?.flatMap((role) => role.permissions) || [],
-      (a, b) => JSON.stringify(a) === JSON.stringify(b),
-    ),
-  )
-```
-
-## state updates
-
-### immutable update patterns
-
-state updates maintain immutability:
+The template uses a consistent pattern for store creation with clear separation between state properties and action methods:
 
 ```typescript
-// nested object updates
-const useUserProfileStore = create<IUserProfileStore>((set, get) => ({
-  profile: {
-    personal: {
-      name: '',
-      email: '',
-      phone: '',
-    },
-    preferences: {
-      theme: 'system',
-      language: 'en',
-      notifications: {
-        email: true,
-        push: false,
-        sms: false,
-      },
-    },
-  },
+// Store interface definition
+interface IHistoryStore {
+  // State properties
+  history: IEntity[]
 
-  updatePersonalInfo: (info) =>
-    set((state) => ({
-      profile: {
-        ...state.profile,
-        personal: { ...state.profile.personal, ...info },
-      },
-    })),
-
-  updateNotificationSettings: (notifications) =>
-    set((state) => ({
-      profile: {
-        ...state.profile,
-        preferences: {
-          ...state.profile.preferences,
-          notifications: {
-            ...state.profile.preferences.notifications,
-            ...notifications,
-          },
-        },
-      },
-    })),
-}))
-```
-
-### array state management
-
-efficient array operations:
-
-```typescript
-interface IListStore<T> {
-  items: T[]
-  loading: boolean
-  error: string | null
-  addItem: (item: T) => void
-  removeItem: (id: string) => void
-  updateItem: (id: string, updates: Partial<T>) => void
-  setItems: (items: T[]) => void
-  clearItems: () => void
+  // Action methods
+  addToHistory: (entity: IEntity) => void
+  clearHistory: () => void
 }
 
-const createListStore = <T extends { id: string }>(name: string) =>
-  create<IListStore<T>>((set, get) => ({
-    items: [],
-    loading: false,
-    error: null,
+// Store implementation with persistence
+const useHistoryStore = create<IHistoryStore>()(
+  persist(
+    (set) => ({
+      // Initial state
+      history: [],
 
-    addItem: (item) => set((state) => ({ items: [...state.items, item] })),
-
-    removeItem: (id) =>
-      set((state) => ({
-        items: state.items.filter((item) => item.id !== id),
-      })),
-
-    updateItem: (id, updates) =>
-      set((state) => ({
-        items: state.items.map((item) =>
-          item.id === id ? { ...item, ...updates } : item,
-        ),
-      })),
-
-    setItems: (items) => set({ items }),
-    clearItems: () => set({ items: [] }),
-  }))
-
-// usage
-const usePokemonListStore = createListStore<IPokemon>('pokemon')
-```
-
-## state synchronization
-
-### cross-component communication
-
-stores enable communication between distant components:
-
-```typescript
-// notification store for cross-component messaging
-interface INotificationStore {
-  notifications: INotification[]
-  addNotification: (notification: Omit<INotification, 'id' | 'timestamp'>) => void
-  removeNotification: (id: string) => void
-  clearNotifications: () => void
-}
-
-const useNotificationStore = create<INotificationStore>((set, get) => ({
-  notifications: [],
-
-  addNotification: (notification) => {
-    const id = crypto.randomUUID()
-    const timestamp = Date.now()
-
-    set(state => ({
-      notifications: [
-        ...state.notifications,
-        { ...notification, id, timestamp }
-      ]
-    }))
-
-    // auto-remove after delay
-    setTimeout(() => {
-      set(state => ({
-        notifications: state.notifications.filter(n => n.id !== id)
-      }))
-    }, notification.duration || 5000)
-  },
-
-  removeNotification: (id) =>
-    set(state => ({
-      notifications: state.notifications.filter(n => n.id !== id)
-    })),
-
-  clearNotifications: () => set({ notifications: [] })
-}))
-
-// usage in any component
-const SomeComponent = () => {
-  const addNotification = useNotificationStore(state => state.addNotification)
-
-  const handleSuccess = () => {
-    addNotification({
-      type: 'success',
-      message: 'operation completed successfully',
-      duration: 3000
-    })
-  }
-
-  return <button onClick={handleSuccess}>complete action</button>
-}
-```
-
-### server state synchronization
-
-coordinate client state with server updates:
-
-```typescript
-// sync store with react query
-const usePokemonStore = create<IPokemonStore>((set, get) => ({
-  selectedPokemon: null,
-  favorites: [],
-
-  setSelectedPokemon: (pokemon) => set({ selectedPokemon: pokemon }),
-
-  addToFavorites: async (pokemon) => {
-    // optimistic update
-    set(state => ({
-      favorites: [...state.favorites, pokemon]
-    }))
-
-    try {
-      await saveFavorite(pokemon.id)
-    } catch (error) {
-      // revert on error
-      set(state => ({
-        favorites: state.favorites.filter(p => p.id !== pokemon.id)
-      }))
-      throw error
-    }
-  },
-
-  syncWithServer: (serverFavorites) => {
-    set({ favorites: serverFavorites })
-  }
-}))
-
-// component integration
-const PokemonManager = () => {
-  const { data: serverFavorites } = useFavoritePokemon()
-  const syncWithServer = usePokemonStore(state => state.syncWithServer)
-
-  useEffect(() => {
-    if (serverFavorites) {
-      syncWithServer(serverFavorites)
-    }
-  }, [serverFavorites, syncWithServer])
-
-  return <PokemonList />
-}
-```
-
-## performance optimization
-
-### subscription optimization
-
-minimize re-renders through selective subscriptions:
-
-```typescript
-// component-specific hooks
-const useAuthUI = () => {
-  // only subscribe to ui-relevant auth state
-  return useAuthStore(state => ({
-    isLoading: state.isLoading,
-    error: state.error,
-    userName: state.user?.name
-  }), shallow)
-}
-
-const useAuthActions = () => {
-  // only subscribe to actions (stable references)
-  return useAuthStore(state => ({
-    login: state.login,
-    logout: state.logout,
-    clearError: state.clearError
-  }))
-}
-
-// optimized component
-const AuthStatus = () => {
-  const { isLoading, error, userName } = useAuthUI()
-  const { logout, clearError } = useAuthActions()
-
-  if (isLoading) return <Spinner />
-  if (error) return <ErrorMessage error={error} onClear={clearError} />
-
-  return (
-    <div>
-      <span>welcome, {userName}</span>
-      <button onClick={logout}>logout</button>
-    </div>
-  )
-}
-```
-
-### state normalization
-
-normalized state structure for efficient updates:
-
-```typescript
-// normalized state structure
-interface INormalizedStore<T> {
-  byId: Record<string, T>
-  allIds: string[]
-  loading: boolean
-  error: string | null
-}
-
-const createNormalizedStore = <T extends { id: string }>(name: string) =>
-  create<
-    INormalizedStore<T> & {
-      addItem: (item: T) => void
-      addItems: (items: T[]) => void
-      updateItem: (id: string, updates: Partial<T>) => void
-      removeItem: (id: string) => void
-      getItem: (id: string) => T | undefined
-      getAllItems: () => T[]
-    }
-  >((set, get) => ({
-    byId: {},
-    allIds: [],
-    loading: false,
-    error: null,
-
-    addItem: (item) =>
-      set((state) => ({
-        byId: { ...state.byId, [item.id]: item },
-        allIds: state.allIds.includes(item.id)
-          ? state.allIds
-          : [...state.allIds, item.id],
-      })),
-
-    addItems: (items) =>
-      set((state) => {
-        const byId = { ...state.byId }
-        const newIds = []
-
-        items.forEach((item) => {
-          byId[item.id] = item
-          if (!state.allIds.includes(item.id)) {
-            newIds.push(item.id)
-          }
+      // State mutations
+      addToHistory: (entity: IEntity) => {
+        return set((state) => {
+          // Immutable update logic with deduplication
         })
+      },
 
-        return {
-          byId,
-          allIds: [...state.allIds, ...newIds],
-        }
-      }),
-
-    updateItem: (id, updates) =>
-      set((state) => ({
-        byId: {
-          ...state.byId,
-          [id]: { ...state.byId[id], ...updates },
-        },
-      })),
-
-    removeItem: (id) =>
-      set((state) => {
-        const { [id]: removed, ...byId } = state.byId
-        return {
-          byId,
-          allIds: state.allIds.filter((itemId) => itemId !== id),
-        }
-      }),
-
-    getItem: (id) => get().byId[id],
-    getAllItems: () => {
-      const { byId, allIds } = get()
-      return allIds.map((id) => byId[id])
+      clearHistory: () => set({ history: [] }),
+    }),
+    {
+      // Persistence configuration
+      name: HISTORY_CONFIG.STORAGE_KEY,
+      partialize: (state) => ({ history: state.history }),
     },
-  }))
+  ),
+)
 ```
 
-## testing state management
+**Store Composition Strategy**
 
-### store testing utilities
+Multiple stores handle different application domains with clear boundaries and responsibilities:
 
-isolated store testing patterns:
+**Implementation Pattern:**
+
+- **Domain Separation**: Each store handles a specific feature domain
+- **Interface Clarity**: Clear interfaces define state shape and available actions
+- **Persistence Strategy**: Selective persistence based on data longevity requirements
+- **Performance Optimization**: Minimal state updates with targeted subscriptions
+
+**Store Organization:**
+
+| Store Domain          | Responsibilities                         | Persistence Strategy          | Example Implementation                |
+| --------------------- | ---------------------------------------- | ----------------------------- | ------------------------------------- |
+| **Entity History**    | User viewing history tracking            | Local storage (cross-session) | `@/stores/entity-history`             |
+| **User Preferences**  | Theme, language, notification settings   | Local storage (persistent)    | Feature-based preference stores       |
+| **UI State**          | Modal states, navigation, temporary data | Session storage (temporary)   | Component-specific UI state stores    |
+| **Application State** | Global app settings, feature flags       | Local storage (configurable)  | Application-wide configuration stores |
+
+### State Update Patterns
+
+**Immutable Update Implementation**
+
+The template enforces immutable update patterns to ensure predictable state changes and optimal React rendering performance:
 
 ```typescript
-// test store creation
-const createTestStore = <T>(initialState?: Partial<T>) => {
-  const store = create<T>((set, get) => ({
-    ...defaultState,
-    ...initialState,
-    // actions
-  }))
+// Complex state update with deduplication
+addToHistory: (entity: IEntity) => {
+  return set((state) => {
+    const existingIndex = state.history.findIndex(
+      (item) => item.id === entity.id,
+    )
 
-  return store
+    if (existingIndex !== -1) {
+      // Remove existing item and add to front
+      const newHistory = [
+        entity,
+        ...state.history.filter((_, index) => index !== existingIndex),
+      ]
+      return {
+        history: newHistory.slice(0, HISTORY_CONFIG.MAX_HISTORY_SIZE),
+      }
+    }
+
+    // Add new item to front with size limit
+    const newHistory = [entity, ...state.history]
+    return {
+      history: newHistory.slice(0, HISTORY_CONFIG.MAX_HISTORY_SIZE),
+    }
+  })
+}
+```
+
+**Update Pattern Characteristics:**
+
+- **Immutability**: All updates create new state objects rather than mutating existing state
+- **Deduplication**: Smart handling of duplicate entries with position updates
+- **Size Management**: Automatic trimming to maintain performance with large datasets
+- **Atomic Updates**: Complete state transitions in single operations
+
+---
+
+## Server State Integration
+
+### TanStack Query Architecture
+
+**Query Management Philosophy:**
+Server state requires specialized handling for caching, synchronization, error recovery, and performance optimization that differs from application state management.
+
+**Query Strategy Implementation:**
+
+```mermaid
+graph TD
+    subgraph "Query Lifecycle"
+        A[Query Request] -->|"Cache Check"| B[Cache Layer]
+        B -->|"Cache Miss"| C[Network Request]
+        B -->|"Cache Hit"| D[Cached Response]
+        C -->|"Response"| E[Data Processing]
+        E -->|"Cache Update"| B
+        E -->|"Component Update"| F[UI Render]
+        D -->|"Stale Check"| G[Background Refetch]
+        G -->|"Fresh Data"| E
+    end
+
+    subgraph "Query Configuration"
+        H[Query Keys] -->|"Cache Identity"| B
+        I[Stale Time] -->|"Cache Duration"| G
+        J[Error Handling] -->|"Retry Logic"| C
+        K[Query Options] -->|"Behavior Control"| A
+    end
+
+    subgraph "Integration Layer"
+        L[Custom Hooks] -->|"Query Logic"| A
+        L -->|"Component Interface"| M[UI Components]
+        L -->|"State Coordination"| N[Client State]
+    end
+
+    style A fill:#e1f5fe
+    style B fill:#f1f8e9
+    style C fill:#fff3e0
+    style D fill:#e8f5e8
+    style E fill:#e8f5e8
+    style F fill:#e8f5e8
+    style G fill:#fce4ec
+    style H fill:#f3e5f5
+    style I fill:#f3e5f5
+    style J fill:#f3e5f5
+    style K fill:#f3e5f5
+    style L fill:#fff3e0
+    style M fill:#e8f5e8
+    style N fill:#e1f5fe
+```
+
+### Query Implementation Patterns
+
+**Basic Query Hook Structure**
+
+The template uses consistent patterns for query hook creation with error handling, caching configuration, and component integration:
+
+```typescript
+// Search query with error handling
+export const useEntityNameSearch = (searchTerm: string) => {
+  const {
+    data: result,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: [ENTITY_SEARCH_QUERY_KEY, searchTerm],
+    queryFn: () => searchEntityByName(searchTerm),
+    enabled: !!searchTerm.trim(),
+    staleTime: ENTITY_SEARCH_STALE_TIME,
+    retry: 1,
+  })
+
+  return {
+    result,
+    isLoading,
+    error: error as Error | null,
+    refetch,
+  }
+}
+```
+
+**Infinite Query Implementation**
+
+Complex pagination scenarios use infinite queries with background loading and cache management:
+
+**Key Features:**
+
+- Infinite scrolling with automatic page management
+- Background data fetching with user-initiated triggers
+- Cache coordination with page-based invalidation
+- Error handling with partial data recovery
+
+```typescript
+// Infinite query for paginated entity data
+export const useMoreEntities = ({
+  initialOffset = 8,
+}: TUseMoreEntitiesOptions = {}) => {
+  return useInfiniteQuery({
+    queryKey: ENTITIES_QUERY_CONFIG.QUERY_KEY,
+    queryFn: async ({ pageParam = initialOffset }) => {
+      const response = await graphqlClient.query<IEntitiesResponse>(
+        GET_ENTITIES_QUERY,
+        {
+          limit: ENTITIES_PER_PAGE,
+          offset: pageParam,
+        },
+      )
+
+      return {
+        data: response.data?.entities?.results || [],
+        count: response.data?.entities?.count || 0,
+        nextOffset: pageParam + ENTITIES_PER_PAGE,
+      }
+    },
+    initialPageParam: initialOffset,
+    getNextPageParam: (lastPage) => {
+      const totalLoaded = lastPage.nextOffset
+      return totalLoaded < lastPage.count ? lastPage.nextOffset : undefined
+    },
+    staleTime: ENTITIES_QUERY_CONFIG.STALE_TIME,
+    enabled: false, // Manual trigger for performance
+  })
+}
+```
+
+### Cache Management Strategy
+
+**Cache Configuration Patterns**
+
+The template uses strategic cache configuration to balance performance with data freshness:
+
+| Query Type         | Stale Time | Cache Strategy     | Use Case                                 |
+| ------------------ | ---------- | ------------------ | ---------------------------------------- |
+| **Static Data**    | 30 minutes | Long-term caching  | Entity metadata, unchanging data         |
+| **Dynamic Data**   | 5 minutes  | Background refresh | Entity lists, frequently updated content |
+| **Search Results** | 10 minutes | Moderate caching   | Search queries, user-driven requests     |
+| **Real-time Data** | 30 seconds | Frequent refresh   | Live data, time-sensitive information    |
+
+**Implementation Configuration:**
+
+```typescript
+// Cache configuration constants
+export const ENTITIES_QUERY_CONFIG = {
+  STALE_TIME: 5 * 60 * 1000, // 5 minutes
+  QUERY_KEY: ['entities', 'infinite'],
 }
 
-// store testing
-describe('useAuthStore', () => {
-  let store: ReturnType<typeof createTestStore<TAuthStore>>
-
-  beforeEach(() => {
-    store = createTestStore({
-      user: null,
-      isAuthenticated: false,
-    })
-  })
-
-  it('should login successfully', async () => {
-    const mockUser = { id: '1', name: 'john doe' }
-    vi.mocked(authService.login).mockResolvedValue(mockUser)
-
-    await act(async () => {
-      await store
-        .getState()
-        .login({ email: 'test@example.com', password: 'password' })
-    })
-
-    expect(store.getState().user).toEqual(mockUser)
-    expect(store.getState().isAuthenticated).toBe(true)
-  })
-
-  it('should handle login error', async () => {
-    const error = new Error('invalid credentials')
-    vi.mocked(authService.login).mockRejectedValue(error)
-
-    await act(async () => {
-      await store
-        .getState()
-        .login({ email: 'test@example.com', password: 'wrong' })
-    })
-
-    expect(store.getState().error).toBe('invalid credentials')
-    expect(store.getState().isAuthenticated).toBe(false)
-  })
-})
+export const ENTITY_SEARCH_STALE_TIME = 10 * 60 * 1000 // 10 minutes
 ```
 
-### integration testing
+---
 
-testing store integration with components:
+## State Coordination Patterns
+
+### Cross-Component Communication
+
+**State Sharing Strategy:**
+The template coordinates state across components through centralized stores and custom hooks, eliminating prop drilling while maintaining clear data flow patterns.
+
+**Communication Architecture:**
+
+```mermaid
+graph TD
+    subgraph "Component A"
+        A1[Component Logic] -->|"State Update"| A2[Store Action]
+    end
+
+    subgraph "Zustand Store"
+        B1[Store State] -->|"State Change"| B2[Store Subscribers]
+        A2 -->|"Mutation"| B1
+    end
+
+    subgraph "Component B"
+        C1[Component Logic] -->|"State Access"| C2[Store Selector]
+        C2 -->|"Current State"| C1
+    end
+
+    subgraph "Component C"
+        D1[Component Logic] -->|"Derived State"| D2[Computed Values]
+        D2 -->|"Reactive Updates"| D1
+    end
+
+    B2 -->|"Notification"| C2
+    B2 -->|"Notification"| D2
+    B1 -->|"State Read"| C2
+    B1 -->|"State Read"| D2
+
+    style A1 fill:#e8f5e8
+    style A2 fill:#fff3e0
+    style B1 fill:#e1f5fe
+    style B2 fill:#e1f5fe
+    style C1 fill:#e8f5e8
+    style C2 fill:#fff3e0
+    style D1 fill:#e8f5e8
+    style D2 fill:#fff3e0
+```
+
+### Hook Composition Strategy
+
+**Custom Hook Integration**
+
+The template uses custom hooks to coordinate multiple state sources and provide unified component interfaces:
 
 ```typescript
-// component integration test
-const TestWrapper = ({ children }) => {
-  return (
-    <QueryClientProvider client={testQueryClient}>
-      {children}
-    </QueryClientProvider>
+// Coordinated state hook example
+export const useEntityInteraction = (entity: IEntity) => {
+  // Server state for entity details
+  const { data: entityDetails, isLoading, error } = useEntityDetails(entity.id)
+
+  // Client state for viewing history
+  const addToHistory = useHistoryStore((state) => state.addToHistory)
+  const history = useHistoryStore((state) => state.history)
+
+  // Coordinated actions
+  const handleEntityView = useCallback(() => {
+    addToHistory(entity)
+    // Additional side effects
+  }, [entity, addToHistory])
+
+  // Derived state
+  const isInHistory = useMemo(() => {
+    return history.some((item) => item.id === entity.id)
+  }, [history, entity.id])
+
+  return {
+    entityDetails,
+    isLoading,
+    error,
+    isInHistory,
+    handleEntityView,
+  }
+}
+```
+
+**Hook Composition Benefits:**
+
+- **Unified Interface**: Components receive coordinated state through single hook
+- **State Abstraction**: Complex state logic abstracted from component implementation
+- **Performance Optimization**: Selective subscriptions and memoized computations
+- **Testing Isolation**: Hook logic testable independently from UI components
+
+---
+
+## Performance Optimization
+
+### Subscription Optimization
+
+**Selective State Subscriptions**
+
+The template minimizes component re-renders through targeted state subscriptions and memoized selectors:
+
+```typescript
+// Optimized selectors for specific data
+const useEntityHistory = () => useHistoryStore((state) => state.history)
+const useHistoryCount = () => useHistoryStore((state) => state.history.length)
+const useHistoryActions = () =>
+  useHistoryStore((state) => ({
+    addToHistory: state.addToHistory,
+    clearHistory: state.clearHistory,
+  }))
+
+// Component-specific optimized hooks
+const useEntityInHistory = (entityId: string) => {
+  return useHistoryStore((state) =>
+    state.history.some((item) => item.id === entityId),
   )
 }
-
-describe('AuthStatus Integration', () => {
-  it('should display user name after login', async () => {
-    render(<AuthStatus />, { wrapper: TestWrapper })
-
-    const loginButton = screen.getByText('login')
-    fireEvent.click(loginButton)
-
-    await waitFor(() => {
-      expect(screen.getByText('welcome, john doe')).toBeInTheDocument()
-    })
-  })
-
-  it('should show error message on login failure', async () => {
-    vi.mocked(authService.login).mockRejectedValue(new Error('network error'))
-
-    render(<AuthStatus />, { wrapper: TestWrapper })
-
-    const loginButton = screen.getByText('login')
-    fireEvent.click(loginButton)
-
-    await waitFor(() => {
-      expect(screen.getByText('network error')).toBeInTheDocument()
-    })
-  })
-})
 ```
+
+## State Management Guidelines
+
+### Implementation Best Practices
+
+**Store Organization Guidelines:**
+
+- **Feature Boundaries**: Organize stores by feature domains rather than data types
+- **Interface Clarity**: Define clear interfaces separating state properties from actions
+- **Persistence Strategy**: Use selective persistence based on data longevity requirements
+- **Performance Optimization**: Implement targeted subscriptions and memoized computations
+
+**Query Management Guidelines:**
+
+- **Cache Configuration**: Configure appropriate stale times based on data freshness requirements
+- **Error Handling**: Implement error boundaries with retry mechanisms
+- **Loading States**: Coordinate loading states across multiple query sources
+- **Query Keys**: Use consistent query key patterns for cache management
+
+### Development Workflow
+
+**State Development Process:**
+
+1. **State Analysis**: Identify state type and appropriate management strategy
+2. **Interface Design**: Define clear interfaces and action patterns
+3. **Implementation**: Implement stores or queries with appropriate middleware
+4. **Integration**: Create custom hooks for component coordination
+5. **Testing**: Develop test coverage for state logic
+6. **Optimization**: Profile and optimize subscription patterns and cache usage
+
+---
+
+## References
+
+| Resource                                                                                      | Description                                             |
+| --------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| [Zustand](https://zustand-demo.pmnd.rs/)                                                      | Small, fast, and scalable state management library      |
+| [Zustand Persist Middleware](https://github.com/pmndrs/zustand#persist-middleware)            | Local storage integration for cross-session persistence |
+| [TanStack Query](https://tanstack.com/query/latest)                                           | Data synchronization for React applications             |
+| [TanStack Query React Guide](https://tanstack.com/query/latest/docs/framework/react/overview) | Complete React integration documentation                |
+| [React useState Hook](https://react.dev/reference/react/useState)                             | Official React documentation for local state management |
+| [React useContext Hook](https://react.dev/reference/react/useContext)                         | React Context API for component tree state sharing      |

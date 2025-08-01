@@ -1,7 +1,3 @@
-export interface IFooterProps {
-  data: IFooter
-}
-
 export interface IFooter {
   copyrighttext: string
   footerlinks: IFooterLink[]
