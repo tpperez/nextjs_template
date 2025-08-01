@@ -11,13 +11,18 @@ Codebase organization, architectural patterns, and standardized naming conventio
 - [Import Strategy](#import-strategy)
 - [Implementation Guidelines](#implementation-guidelines)
 
+## Related Documentation
+
+- **[Architecture](./architecture.md)** - Architectural patterns and component organization principles
+- **[Testing](./testing.md)** - Test organization and file structure patterns
+- **[Contributing](./contributing.md)** - Development workflow and project structure guidelines
+- **[Examples](./examples.md)** - Practical examples of code organization patterns
+
 ---
 
 ## Overview
 
 The template uses a **systematic organizational structure** that provides predictable patterns for teams while supporting natural growth from simple to complex modules. The organization prioritizes discoverability, maintainability, and consistent developer experience across all project layers.
-
-**Live Implementation:** Explore any module in the codebase to see these patterns in action - from simple utilities like [`app/utils/cn/`](../app/utils/cn/) to complex features like [`app/views/pokemon/`](../app/views/pokemon/).
 
 **Core Organizational Principles:**
 
@@ -30,33 +35,33 @@ The template uses a **systematic organizational structure** that provides predic
 
 ## Naming Conventions
 
-### Comprehensive Casing Strategy
+### Casing Strategy
 
 The codebase follows a multi-layered casing strategy that serves both technical requirements and developer experience, ensuring consistency across different contexts while maintaining filesystem compatibility and IDE integration.
 
 ## Naming Convention Reference
 
-| Context                   | Pattern            | Purpose                      | Examples                            |
-| ------------------------- | ------------------ | ---------------------------- | ----------------------------------- |
-| **Files & Directories**   | `kebab-case`       | Cross-platform compatibility | `pokemon-moves/`, `button.tsx`      |
-| **React Components**      | `PascalCase`       | JSX recognition              | `ViewPokemon`, `PokemonCard`        |
-| **TypeScript Interfaces** | `IPascalCase`      | Type distinction             | `IViewPokemonProps`, `IPokemonData` |
-| **Variables & Functions** | `camelCase`        | JavaScript standard          | `pokemonData`, `formatName()`       |
-| **Constants**             | `UPPER_SNAKE_CASE` | Immutable identification     | `POKEMON_DETAIL_CONFIG`             |
+| Context                   | Pattern            | Purpose                      | Examples                           |
+| ------------------------- | ------------------ | ---------------------------- | ---------------------------------- |
+| **Files & Directories**   | `kebab-case`       | Cross-platform compatibility | `user-profile/`, `button.tsx`      |
+| **React Components**      | `PascalCase`       | JSX recognition              | `ViewDashboard`, `UserCard`        |
+| **TypeScript Interfaces** | `IPascalCase`      | Type distinction             | `IViewDashboardProps`, `IUserData` |
+| **Variables & Functions** | `camelCase`        | JavaScript standard          | `userData`, `formatName()`         |
+| **Constants**             | `UPPER_SNAKE_CASE` | Immutable identification     | `USER_PROFILE_CONFIG`              |
 
 **Benefits:** Consistent cross-platform compatibility, immediate IDE context, reduced cognitive load
 
 ### Detailed Casing Implementation
 
-| Element Type              | Casing Pattern     | Implementation Purpose                    | Template Example                        |
-| ------------------------- | ------------------ | ----------------------------------------- | --------------------------------------- |
-| **Files & Directories**   | `kebab-case`       | Filesystem compatibility across platforms | `pokemon-moves/`, `button.tsx`          |
-| **React Components**      | `PascalCase`       | JSX component recognition and convention  | `ViewPokemon`, `PokemonCard`            |
-| **Interfaces**            | `IPascalCase`      | Immediate type distinction in IDE         | `IViewPokemonProps`, `IPokemonData`     |
-| **Type Aliases**          | `TPascalCase`      | Type alias identification and clarity     | `TButtonVariant`, `THttpMethod`         |
-| **Variables & Functions** | `camelCase`        | Standard JavaScript convention adherence  | `pokemonData`, `formatName()`           |
-| **Custom Hooks**          | `useCamelCase`     | React hook convention and recognition     | `usePokemonMoves`, `usePokemonHistory`  |
-| **Constants**             | `UPPER_SNAKE_CASE` | Immutable value identification            | `POKEMON_DETAIL_CONFIG`, `API_BASE_URL` |
+| Element Type              | Casing Pattern     | Implementation Purpose                    | Template Example                      |
+| ------------------------- | ------------------ | ----------------------------------------- | ------------------------------------- |
+| **Files & Directories**   | `kebab-case`       | Filesystem compatibility across platforms | `user-profile/`, `button.tsx`         |
+| **React Components**      | `PascalCase`       | JSX component recognition and convention  | `ViewDashboard`, `UserCard`           |
+| **Interfaces**            | `IPascalCase`      | Immediate type distinction in IDE         | `IViewDashboardProps`, `IUserData`    |
+| **Type Aliases**          | `TPascalCase`      | Type alias identification and clarity     | `TButtonVariant`, `THttpMethod`       |
+| **Variables & Functions** | `camelCase`        | Standard JavaScript convention adherence  | `userData`, `formatName()`            |
+| **Custom Hooks**          | `useCamelCase`     | React hook convention and recognition     | `useUserProfile`, `useDataHistory`    |
+| **Constants**             | `UPPER_SNAKE_CASE` | Immutable value identification            | `USER_PROFILE_CONFIG`, `API_BASE_URL` |
 
 **Implementation Benefits:**
 
@@ -65,7 +70,7 @@ The codebase follows a multi-layered casing strategy that serves both technical 
 - **Team Consistency**: Standardized patterns reduce cognitive load during development
 - **Tool Integration**: Patterns align with linting rules and formatting automation
 
-**Reference Implementation:** [`app/views/pokemon/components/pokemon-moves/`](../app/views/pokemon/components/pokemon-moves/) demonstrates all casing patterns in a single module.
+**Reference:** These patterns follow [React naming conventions](https://react.dev/learn/thinking-in-react#step-1-break-the-ui-into-a-component-hierarchy) and [TypeScript style guidelines](https://typescript-eslint.io/rules/naming-convention/).
 
 ---
 
@@ -149,7 +154,7 @@ app/                                    # Next.js application source
 - **Scalable Growth**: Structure supports adding new features without reorganization
 - **Import Clarity**: Directory structure aligns with import path organization
 
-**Reference Implementation:** Navigate from [`app/(routes)/(public)/(examples)/pokemons/[pokemon]/page.tsx`](<../app/(routes)/(public)/(examples)/pokemons/[pokemon]/page.tsx>) to [`app/views/pokemon/`](../app/views/pokemon/) to see route-to-implementation organization.
+**Reference:** This structure follows [Next.js App Router conventions](https://nextjs.org/docs/app/building-your-application/routing) with additional organizational layers for scalability.
 
 ---
 
@@ -216,16 +221,16 @@ graph TD
 
 ### Module Pattern Implementation Examples
 
-**Simple Module Example** - [`app/utils/cn/`](../app/utils/cn/):
+**Simple Module Example** - Utility functions:
 
 ```
 cn/
 ├── cn.ts               # Core utility implementation
-├── cn.test.ts          # Comprehensive testing
+├── cn.test.ts          # Testing
 └── index.ts            # Clean export barrel
 ```
 
-**Standard Module Example** - [`app/components/ui/button/`](../app/components/ui/button/):
+**Standard Module Example** - UI components:
 
 ```
 button/
@@ -235,17 +240,17 @@ button/
 └── index.ts            # Export barrel with types
 ```
 
-**Complex Module Example** - [`app/views/pokemon/components/pokemon-moves/`](../app/views/pokemon/components/pokemon-moves/):
+**Complex Module Example** - Feature components:
 
 ```
-pokemon-moves/
-├── pokemon-moves.tsx          # Main component implementation
-├── pokemon-moves.type.ts      # Interface definitions
-├── pokemon-moves.const.ts     # Configuration constants
-├── pokemon-moves.test.tsx     # Component testing
-├── pokemon-moves.hook.ts      # Custom hook logic
-├── pokemon-moves.hook.test.ts # Hook-specific testing
-└── index.ts                   # Unified export barrel
+user-profile/
+├── user-profile.tsx          # Main component implementation
+├── user-profile.type.ts      # Interface definitions
+├── user-profile.const.ts     # Configuration constants
+├── user-profile.test.tsx     # Component testing
+├── user-profile.hook.ts      # Custom hook logic
+├── user-profile.hook.test.ts # Hook-specific testing
+└── index.ts                  # Unified export barrel
 ```
 
 ### Module Growth Strategy
@@ -306,14 +311,14 @@ Understanding when to create global versus feature-specific modules prevents unn
 
 **Global Module Examples:**
 
-- [`app/components/ui/button/`](../app/components/ui/button/) - Used across multiple views and features
-- [`app/stores/pokemon-history/`](../app/stores/pokemon-history/) - Application-wide state management
-- [`app/services/http/`](../app/services/http/) - Core infrastructure used throughout app
+- `@/components/ui/button` - Used across multiple views and features
+- `@/stores/user-preferences` - Application-wide state management
+- `@/services/http` - Core infrastructure used throughout app
 
 **Feature-Specific Module Examples:**
 
-- [`app/views/pokemon/components/pokemon-moves/`](../app/views/pokemon/components/pokemon-moves/) - Pokemon-specific functionality
-- [`app/views/datocms/components/header/`](../app/views/datocms/components/header/) - DatoCMS-specific implementation
+- `@/views/dashboard/components/metrics-chart` - Dashboard-specific functionality
+- `@/views/profile/components/settings-panel` - Profile-specific implementation
 
 **Benefits of Proper Scope Classification:**
 
@@ -377,7 +382,7 @@ graph TD
 }
 ```
 
-This configuration enables clean imports from the project root, eliminating relative path complexity and supporting reliable refactoring.
+This configuration enables clean imports from the project root, eliminating relative path complexity and supporting reliable refactoring. Learn more about [TypeScript path mapping](https://www.typescriptlang.org/docs/handbook/module-resolution.html#path-mapping).
 
 ### Import Pattern Implementation
 
@@ -392,7 +397,7 @@ import Spinner from '@/app/components/ui/spinner'
 import { restClient, graphqlClient } from '@/app/services/http'
 
 // Importing global state
-import usePokemonHistoryStore from '@/app/stores/pokemon-history'
+import useUserPreferencesStore from '@/app/stores/user-preferences'
 
 // Importing global utilities
 import cn from '@/app/utils/cn'
@@ -402,15 +407,13 @@ import cn from '@/app/utils/cn'
 
 ```typescript
 // Within a view module, importing local components
-import PokemonMoves from './components/pokemon-moves'
-import PokemonSpeciesInfo from './components/pokemon-species-info'
+import MetricsChart from './components/metrics-chart'
+import SettingsPanel from './components/settings-panel'
 
 // Importing feature-specific utilities
-import { formatName, formatStatName } from './pokemon.util'
-import { POKEMON_DETAIL_CONFIG } from './pokemon.const'
+import { formatName, formatStatName } from './dashboard.util'
+import { DASHBOARD_CONFIG } from './dashboard.const'
 ```
-
-**Reference Implementation:** Examine [`app/views/pokemon/pokemon.tsx`](../app/views/pokemon/pokemon.tsx) to see both global and feature-specific import patterns in action.
 
 ### Barrel Export Pattern
 
@@ -425,13 +428,13 @@ Every module implements barrel exports through `index.ts` files, providing clean
 export { default } from './button'
 export type { ButtonSize, ButtonVariant, IButtonProps } from './button.type'
 
-// app/stores/pokemon-history/index.ts
-export { default } from './pokemon-history'
-export { POKEMON_HISTORY_CONFIG } from './pokemon-history.const'
+// app/stores/user-preferences/index.ts
+export { default } from './user-preferences'
+export { USER_PREFERENCES_CONFIG } from './user-preferences.const'
 export type {
-  IPokemonHistoryStore,
-  TPokemonHistoryItem,
-} from './pokemon-history.type'
+  IUserPreferencesStore,
+  TUserPreferenceItem,
+} from './user-preferences.type'
 ```
 
 **Benefits of Barrel Exports:**
@@ -440,6 +443,8 @@ export type {
 - **Implementation Hiding**: Internal file structure changes don't affect imports
 - **Type Safety**: Types and implementations exported together
 - **Consistency**: Same import pattern across all modules
+
+**Reference:** This pattern follows [TypeScript module best practices](https://www.typescriptlang.org/docs/handbook/modules.html#export--and-import--require) for maintainable exports.
 
 ---
 
@@ -494,3 +499,14 @@ The template's organizational patterns support long-term maintainability through
 - **Pattern Adherence**: Follow established patterns for new modules to maintain consistency
 - **Refactoring Guidelines**: Use organizational structure to guide refactoring decisions
 - **Documentation Updates**: Keep organizational documentation current with structural changes
+
+---
+
+## References
+
+| Resource                                                                                    | Description                                                    |
+| ------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| [Next.js App Router](https://nextjs.org/docs/app)                                           | Official Next.js App Router documentation and file conventions |
+| [TypeScript Handbook](https://www.typescriptlang.org/docs/)                                 | Complete TypeScript language documentation                     |
+| [React Documentation](https://react.dev/)                                                   | Official React library documentation and patterns              |
+| [JavaScript Modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) | MDN guide to ES6 modules and import/export patterns            |

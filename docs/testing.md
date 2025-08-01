@@ -1,8 +1,6 @@
 # Testing Framework
 
-Testing patterns and configurations implemented in this Next.js template. The template provides working examples of component, hook, service, and store testing that teams can reference and extend for their applications.
-
-**Reference Implementation:** The Pokemon examples demonstrate real testing patterns across [`app/views/pokemon/`](../app/views/pokemon/), [`app/components/ui/`](../app/components/ui/), [`app/services/http/`](../app/services/http/), and [`app/stores/pokemon-history/`](../app/stores/pokemon-history/).
+Testing patterns and configurations for this Next.js template. The template provides working examples of component, hook, service, and store testing that teams can reference and extend for their applications.
 
 ---
 
@@ -18,27 +16,38 @@ Testing patterns and configurations implemented in this Next.js template. The te
 8. [Quality Standards Implementation](#quality-standards-implementation)
 9. [Team Workflow Integration](#team-workflow-integration)
 
+## Related Documentation
+
+- **[Code Quality](./code-quality.md)** - Quality standards integration and automated testing gates
+- **[Contributing](./contributing.md)** - Testing workflow requirements and development standards
+- **[Scripts](./scripts.md)** - Test execution commands and development scripts
+- **[Data Fetching](./data-fetching.md)** - Service testing patterns and HTTP client validation
+- **[State Management](./state-management.md)** - State testing patterns and store validation
+- **[Authentication](./authentication.md)** - Authentication testing and security validation
+- **[Stack](./stack.md)** - Testing framework technology and configuration
+- **[Examples](./examples.md)** - Practical testing implementation examples
+
 ---
 
 ## Testing Strategy Guidance
 
 ### Implemented Testing Patterns
 
-The template demonstrates comprehensive testing patterns through real implementations across different layers of the application. Teams can follow these established patterns when building their applications.
+The template demonstrates testing patterns through real implementations across different layers of the application. Teams can follow these established patterns when building their applications.
 
-| Testing Pattern       | Implementation Examples                          | Test Files                                                         |
-| --------------------- | ------------------------------------------------ | ------------------------------------------------------------------ |
-| **Component Testing** | Button, Spinner, PokemonCard, PokemonSpeciesInfo | `button.test.tsx`, `spinner.test.tsx`, `pokemon-card.test.tsx`     |
-| **Hook Testing**      | Data fetching, search, species info              | `pokemon-species-info.hook.test.ts`, `pokemon-search.hook.test.ts` |
-| **Service Testing**   | REST client, GraphQL client, HTTP adapters       | `rest.test.ts`, `graphql.test.ts`, `fetch-rest.test.ts`            |
-| **Store Testing**     | Zustand state management, persistence            | `pokemon-history.test.ts`                                          |
-| **Utility Testing**   | Formatters, helpers, pure functions              | `pokemon.util.test.ts`, `cn.test.ts`                               |
-| **View Testing**      | Page components, integration                     | `pokemon.test.tsx`, `pokemons.test.tsx`, `home.test.tsx`           |
+| Testing Pattern       | Implementation Examples                     | Test Files                                                  |
+| --------------------- | ------------------------------------------- | ----------------------------------------------------------- |
+| **Component Testing** | Button, Spinner, domain-specific components | `button.test.tsx`, `spinner.test.tsx`, `component.test.tsx` |
+| **Hook Testing**      | Data fetching, search, business logic       | `data-fetching.hook.test.ts`, `search.hook.test.ts`         |
+| **Service Testing**   | REST client, GraphQL client, HTTP adapters  | `rest.test.ts`, `graphql.test.ts`, `fetch-rest.test.ts`     |
+| **Store Testing**     | Zustand state management, persistence       | `store.test.ts`                                             |
+| **Utility Testing**   | Formatters, helpers, pure functions         | `utils.test.ts`, `cn.test.ts`                               |
+| **View Testing**      | Page components, integration                | `view.test.tsx`, `page.test.tsx`, `home.test.tsx`           |
 
 **Testing Infrastructure:**
 
-- **Test Runner**: Vitest with jsdom environment
-- **Component Testing**: React Testing Library with semantic queries
+- **Test Runner**: [Vitest](https://vitest.dev/) with jsdom environment
+- **Component Testing**: [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) with semantic queries
 - **Type Safety**: TypeScript integration throughout test suite
 - **Coverage**: 80% threshold across branches, functions, lines, statements
 
@@ -46,19 +55,19 @@ The template demonstrates comprehensive testing patterns through real implementa
 
 **Component Testing Patterns:**
 
-The template demonstrates component testing through UI components like `Button` and `Spinner`, Pokemon-specific components like `PokemonCard`, and complex components like `PokemonSpeciesInfo`. Tests focus on rendering, user interactions, and integration with stores.
+The template demonstrates component testing through UI components like `Button` and `Spinner`, as well as domain-specific components and complex feature components. Tests focus on rendering, user interactions, and integration with stores.
 
 **Hook Testing Implementation:**
 
-Custom hooks receive comprehensive testing as shown in `pokemon-species-info.hook.test.ts` and `pokemon-search.hook.test.ts`. These tests validate data fetching, loading states, error handling, and cache behavior with TanStack Query integration.
+Custom hooks receive testing as shown in entity-specific hook tests. These tests validate data fetching, loading states, error handling, and cache behavior with [TanStack Query](https://tanstack.com/query/latest) integration.
 
 **Service Layer Testing:**
 
-Both REST and GraphQL clients have complete test coverage demonstrating request handling, response processing, error scenarios, and TypeScript integration. The template shows how to test HTTP adapters and service methods.
+Both REST and GraphQL clients have test coverage demonstrating request handling, response processing, error scenarios, and TypeScript integration. The template shows how to test HTTP adapters and service methods.
 
 **Store Integration Testing:**
 
-The `pokemon-history` store demonstrates testing of Zustand state management, including state mutations, persistence behavior, and edge cases like duplicate handling and size limits.
+Entity history stores demonstrate testing of [Zustand](https://zustand-demo.pmnd.rs/) state management, including state mutations, persistence behavior, and edge cases like duplicate handling and size limits.
 
 **Quality Standards Implementation:**
 
@@ -76,13 +85,13 @@ The template enforces 80% coverage thresholds across all test types, focusing on
 
 **Co-location Strategy:**
 
-Tests are co-located with their implementations, as demonstrated in the Pokemon examples where components, hooks, and tests are grouped together for maintainability.
+Tests are co-located with their implementations, where components, hooks, and tests are grouped together for maintainability.
 
 ### Testing Philosophy from Template Implementation
 
 **User-Centric Testing Approach:**
 
-The template uses React Testing Library with semantic queries like `getByRole` and `getByLabelText`, as demonstrated in the Button and PokemonCard tests. This approach ensures components work correctly for actual users and remain stable during refactoring.
+The template uses [React Testing Library](https://testing-library.com/) with semantic queries like `getByRole` and `getByLabelText`. This approach ensures components work correctly for actual users and remain stable during refactoring.
 
 **Quality Standards Applied:**
 
@@ -90,7 +99,7 @@ The template implements 80% coverage thresholds across branches, functions, line
 
 **Test Organization Strategy:**
 
-Tests are co-located with their implementations and follow consistent naming patterns. The Pokemon examples demonstrate how to structure tests for maintainability and clarity, with clear separation between component behavior, hook logic, and service integration.
+Tests are co-located with their implementations and follow consistent naming patterns. The examples demonstrate how to structure tests for maintainability and clarity, with clear separation between component behavior, hook logic, and service integration.
 
 ---
 
@@ -98,7 +107,7 @@ Tests are co-located with their implementations and follow consistent naming pat
 
 ### Vitest Configuration Guide
 
-The template provides a production-ready Vitest configuration optimized for React applications. Teams can customize this foundation while maintaining essential testing capabilities.
+The template provides a production-ready [Vitest](https://vitest.dev/) configuration for React applications. Teams can customize this foundation while maintaining essential testing capabilities.
 
 **Key Configuration Elements:**
 
@@ -160,7 +169,7 @@ vi.mock('next/image', () => ({
 
 **Setup Guidelines for Teams:**
 
-- **Framework Mocks**: Maintain Next.js mocks for consistent testing environment
+- **Framework Mocks**: Maintain [Next.js mocks](https://nextjs.org/docs/app/building-your-application/testing/vitest) for consistent testing environment
 - **Browser API Simulation**: Add mocks for browser APIs not available in jsdom as needed
 - **Global Test Utilities**: Include shared testing utilities that apply across your entire application
 - **Environment Configuration**: Set up test-specific environment variables and configurations
@@ -182,7 +191,7 @@ When testing components built with this template, prioritize user interactions a
 - **Test Organization**: Group tests by feature with clear describe blocks
 - **Accessibility**: Ensure components work with screen readers
 
-**Component Testing Example:** [`app/components/ui/button/button.test.tsx`](../app/components/ui/button/button.test.tsx)
+**Component Testing Example:**
 
 ```typescript
 describe('Button Component', () => {
@@ -218,7 +227,7 @@ Validate user interactions like clicks, form submissions, and keyboard navigatio
 
 **Accessibility Integration:**
 
-Use semantic queries (`getByRole`, `getByLabelText`) that validate accessibility patterns. This ensures components work correctly with assistive technologies.
+Use semantic queries (`getByRole`, `getByLabelText`) that validate [accessibility patterns](https://testing-library.com/docs/queries/about#priority). This ensures components work correctly with assistive technologies.
 
 **Design System Validation:**
 
@@ -241,7 +250,7 @@ When building custom hooks for applications using this template, adopt testing p
 - **TanStack Query**: Test cache management and query state behavior
 - **Test Lifecycle**: Clean setup, execution, validation, and cleanup
 
-**Hook Testing Example:** [`app/views/pokemon/components/pokemon-species-info/pokemon-species-info.hook.test.ts`](../app/views/pokemon/components/pokemon-species-info/pokemon-species-info.hook.test.ts)
+**Hook Testing Example:**
 
 ```typescript
 describe('Custom Data Fetching Hook', () => {
@@ -283,7 +292,7 @@ Create reusable wrapper components for hooks that require React context. This en
 
 **Async State Management:**
 
-For hooks using TanStack Query, test the complete async lifecycle including loading states, success scenarios, error handling, and cache behavior.
+For hooks using [TanStack Query](https://tanstack.com/query/latest), test the complete async lifecycle including loading states, success scenarios, error handling, and cache behavior.
 
 **Mock Strategy Integration:**
 
@@ -310,7 +319,7 @@ When building services for applications using this template, implement testing s
 - **Error Scenarios**: Test failure handling and resilience patterns
 - **Integration Points**: Test caching, retry logic, auth, and rate limiting
 
-**Service Testing Example:** [`app/services/http/rest/rest.test.ts`](../app/services/http/rest/rest.test.ts)
+**Service Testing Example:**
 
 ```typescript
 describe('HTTP Service Integration', () => {
@@ -360,7 +369,7 @@ Verify TypeScript interfaces and data transformation to ensure services maintain
 
 **Error Handling Patterns:**
 
-Implement comprehensive error testing covering network failures, API errors, timeout scenarios, and retry logic to validate service resilience.
+Implement error testing covering network failures, API errors, timeout scenarios, and retry logic to validate service resilience.
 
 **Configuration Management:**
 
@@ -370,7 +379,7 @@ Test service configuration including base URLs, headers, timeouts, and retry set
 
 ## Mocking Strategy Reference
 
-### Comprehensive Mocking Patterns
+### Mocking Patterns
 
 The template provides mocking strategies that teams can extend to create predictable test scenarios while maintaining realistic behavior patterns.
 
@@ -392,21 +401,16 @@ Create factory functions that provide consistent test objects with reasonable de
 
 ```typescript
 // Recommended factory pattern
-export const createMockPokemonSpecies = (
-  overrides: Partial<IPokemonSpecies> = {},
-): IPokemonSpecies => ({
-  id: 25,
-  name: 'pikachu',
-  base_happiness: 50,
-  capture_rate: 190,
-  color: { name: 'yellow', url: 'https://example.com/yellow' },
-  evolution_chain: { url: 'https://example.com/evolution' },
-  flavor_text_entries: [
-    {
-      flavor_text: 'A cute electric mouse Pokemon',
-      language: { name: 'en', url: 'https://example.com/en' },
-    },
-  ],
+export const createMockUser = (overrides: Partial<IUser> = {}): IUser => ({
+  id: 'user-123',
+  name: 'Test User',
+  email: 'test@example.com',
+  status: 'active',
+  createdAt: '2024-01-01T00:00:00Z',
+  preferences: {
+    theme: 'light',
+    notifications: true,
+  },
   ...overrides,
 })
 ```
@@ -446,7 +450,7 @@ vi.mock('@/app/services/http', () => ({
 
 ### Custom Testing Infrastructure
 
-The template provides foundational testing utilities that teams can extend to create efficient and maintainable test suites.
+The template provides testing utilities that teams can extend to create efficient and maintainable test suites.
 
 **Testing Utilities Available:**
 
@@ -506,20 +510,18 @@ Develop custom matchers that reflect your application's business domain, improvi
 ```typescript
 // Custom matcher example
 expect.extend({
-  toHaveBeenCalledWithPokemonId(received, expectedId) {
+  toHaveBeenCalledWithApiPath(received, expectedPath) {
     const calls = received.mock.calls
-    const found = calls.some((call) =>
-      call[0].includes(`/pokemon-species/${expectedId}`),
-    )
+    const found = calls.some((call) => call[0].includes(expectedPath))
 
     return {
       pass: found,
       message: () =>
-        `expected function to have been called with pokemon id ${expectedId}`,
+        `expected function to have been called with API path ${expectedPath}`,
     }
   },
 
-  toMatchPokemonSpecies(received, expected) {
+  toMatchDataStructure(received, expected) {
     const matches = Object.keys(expected).every(
       (key) => received[key] === expected[key],
     )
@@ -527,7 +529,7 @@ expect.extend({
     return {
       pass: matches,
       message: () =>
-        `expected pokemon species to match ${JSON.stringify(expected)}`,
+        `expected data to match structure ${JSON.stringify(expected)}`,
     }
   },
 })
@@ -599,7 +601,7 @@ coverage: {
 
 - **80% Baseline**: Provides quality assurance without excessive testing overhead
 - **Business Logic Focus**: Include patterns target functional code while excluding configuration
-- **Multiple Metrics**: Comprehensive measurement across branches, functions, lines, and statements
+- **Multiple Metrics**: Measurement across branches, functions, lines, and statements
 - **Quality Gates**: Threshold enforcement prevents quality regression during development
 
 ---
@@ -622,7 +624,7 @@ The template provides testing scripts that teams can extend to support various d
 - **Development**: Use watch mode for rapid feedback during feature development
 - **Quality Gates**: Run coverage reports before commits
 - **Code Reviews**: Include testing considerations in review processes
-- **Release Process**: Comprehensive testing before production deployment
+- **Release Process**: Testing before production deployment
 
 **Script Configuration Reference:** [`package.json`](../package.json)
 
@@ -686,3 +688,19 @@ As applications grow in complexity, teams should evolve their testing practices 
 - **Performance Optimization**: Monitor and optimize test execution time
 - **Maintenance Strategies**: Regular review and refactoring of test suites
 - **Documentation Updates**: Keep testing documentation current with application changes
+
+---
+
+## References
+
+| Resource                                                                                            | Description                                           |
+| --------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| [Vitest](https://vitest.dev/)                                                                       | Fast testing framework with native TypeScript support |
+| [Vitest Guide](https://vitest.dev/guide/)                                                           | Guide to Vitest configuration and usage               |
+| [React Testing Library](https://testing-library.com/)                                               | User-centric testing utilities for React applications |
+| [React Testing Library Introduction](https://testing-library.com/docs/react-testing-library/intro/) | Getting started with React Testing Library            |
+| [Testing Library Guiding Principles](https://testing-library.com/docs/guiding-principles)           | Core principles for effective testing practices       |
+| [Testing Library Query Priority](https://testing-library.com/docs/queries/about#priority)           | Best practices for selecting DOM elements in tests    |
+| [TanStack Query](https://tanstack.com/query/latest)                                                 | Data fetching and caching library for React           |
+| [Zustand](https://zustand-demo.pmnd.rs/)                                                            | Lightweight state management library                  |
+| [Next.js Testing with Vitest](https://nextjs.org/docs/app/building-your-application/testing/vitest) | Official Next.js testing setup guide                  |

@@ -1,6 +1,6 @@
 # Data Fetching
 
-Strategic patterns for API integration and server state management that balance developer experience with application performance.
+Patterns for API integration and server state management that balance developer experience with application performance.
 
 ## Table of Contents
 
@@ -13,6 +13,15 @@ Strategic patterns for API integration and server state management that balance 
 - [Real-World Examples](#real-world-examples)
 - [Testing Data Fetching](#testing-data-fetching)
 - [Extending the System](#extending-the-system)
+
+## Related Documentation
+
+- **[Architecture](./architecture.md)** - Service layer architecture and coordinator patterns
+- **[Caching](./caching.md)** - Cache integration and performance optimization strategies
+- **[State Management](./state-management.md)** - Server state management with TanStack Query
+- **[Authentication](./authentication.md)** - Secure API requests and authentication integration
+- **[Testing](./testing.md)** - Service testing patterns and HTTP client validation
+- **[Examples](./examples.md)** - Practical data fetching implementation examples
 
 ## HTTP Service Architecture
 
@@ -52,7 +61,7 @@ The HTTP service follows several design principles that teams should understand 
 
 **Error Consistency**: All adapters handle errors through the same error processing pipeline, ensuring uniform error handling regardless of the underlying HTTP library or protocol.
 
-**Caching Integration**: The adapter interfaces include Next.js-specific caching options (`revalidate`, `tags`) that integrate seamlessly with the framework's caching layer while remaining abstracted from business logic.
+**Caching Integration**: The adapter interfaces include [Next.js-specific caching options](https://nextjs.org/docs/app/building-your-application/caching) (`revalidate`, `tags`) that integrate seamlessly with the framework's caching layer while remaining abstracted from business logic.
 
 ## Adapter Pattern Implementation
 
@@ -105,7 +114,7 @@ classDiagram
 
 ### Interface Definition
 
-The adapter interfaces define the contract that any HTTP implementation must follow. Located in `app/services/http/core/core.type.ts`, these interfaces ensure consistency across different implementations:
+The adapter interfaces define the contract that any HTTP implementation must follow. Located in `@/services/http/core/core.type.ts`, these interfaces ensure consistency across different implementations:
 
 ```typescript
 export interface IRestHttpAdapter {
@@ -128,7 +137,7 @@ export interface IGraphQLHttpAdapter {
 
 ### Default Fetch Implementation
 
-The template includes fetch-based adapters that handle the most common use cases. The `FetchRestAdapter` in `app/services/http/rest/adapters/fetch-rest.ts` demonstrates the standard implementation pattern:
+The template includes fetch-based adapters that handle the most common use cases. The `FetchRestAdapter` in `@/services/http/rest/adapters/fetch-rest.ts` demonstrates the standard implementation pattern:
 
 ```typescript
 export class FetchRestAdapter implements IRestHttpAdapter {
@@ -175,11 +184,11 @@ export class FetchRestAdapter implements IRestHttpAdapter {
 }
 ```
 
-This implementation handles signal combination for timeout and cancellation, integrates with Next.js caching, and processes responses through the standard error handling pipeline.
+This implementation handles signal combination for timeout and cancellation, integrates with [Next.js caching](https://nextjs.org/docs/app/building-your-application/caching), and processes responses through the standard error handling pipeline.
 
 ### Configuration and Factory Pattern
 
-The `HTTP_ADAPTER_CONFIG` in `app/services/http/core/core.ts` uses factory functions to configure adapters:
+The `HTTP_ADAPTER_CONFIG` in `@/services/http/core/core.ts` uses factory functions to configure adapters:
 
 ```typescript
 export const HTTP_ADAPTER_CONFIG: {
@@ -206,7 +215,7 @@ The template provides two singleton clients that handle protocol-specific concer
 
 ### REST Client
 
-The `RestClient` class in `app/services/http/rest/rest.ts` provides methods for common HTTP operations:
+The `RestClient` class in `@/services/http/rest/rest.ts` provides methods for common HTTP operations:
 
 ```typescript
 class RestClient {
@@ -242,18 +251,15 @@ class RestClient {
 export const restClient = new RestClient()
 ```
 
-Teams access the REST client as a singleton instance, ensuring consistent configuration across the application. The real-world Pokemon detail query from `app/(routes)/(public)/(examples)/pokemons/[pokemon]/queries/get-pokemon-detail.query.ts` demonstrates typical usage:
+Teams access the REST client as a singleton instance, ensuring consistent configuration across the application. A typical query demonstrates standard usage:
 
 ```typescript
-const getPokemonDetailData = async (name: string) => {
+const getEntityData = async (id: string) => {
   try {
-    const response = await restClient.get<IPokemonDetail>(
-      `/pokemon/${name.toLowerCase()}`,
-      {
-        baseUrl: 'https://pokeapi.co/api/v2',
-        revalidate: 3600, // 1 hour cache
-      },
-    )
+    const response = await restClient.get<IEntityDetail>(`/entities/${id}`, {
+      baseUrl: process.env.API_BASE_URL,
+      revalidate: 3600, // 1 hour cache
+    })
 
     return {
       success: true,
@@ -261,7 +267,7 @@ const getPokemonDetailData = async (name: string) => {
       error: null,
     }
   } catch (error) {
-    console.error(`Error fetching Pokémon ${name}:`, error)
+    console.error(`Error fetching entity ${id}:`, error)
     return {
       success: false,
       data: null,
@@ -302,32 +308,32 @@ class GraphQLClient {
 export const graphqlClient = new GraphQLClient()
 ```
 
-The Pokemon list query from `app/(routes)/(public)/(examples)/pokemons/queries/get-pokemons.query.ts` shows typical GraphQL usage:
+A typical GraphQL query shows standard usage patterns:
 
 ```typescript
-const getPokemonsData = async (limit: number = 8, offset: number = 0) => {
+const getEntitiesData = async (limit: number = 8, offset: number = 0) => {
   try {
-    const response = await graphqlClient.query<IPokemonsResponse>(
-      GET_POKEMONS,
+    const response = await graphqlClient.query<IEntitiesResponse>(
+      GET_ENTITIES_QUERY,
       {
         limit,
         offset,
       },
       {
-        baseUrl: 'https://graphql-pokeapi.graphcdn.app/graphql',
+        baseUrl: process.env.GRAPHQL_ENDPOINT,
         revalidate: 300, // 5 minutes cache
       },
     )
 
     return {
       success: true,
-      data: response.data?.pokemons?.results || [],
-      count: response.data?.pokemons?.count || 0,
-      next: response.data?.pokemons?.next || null,
-      previous: response.data?.pokemons?.previous || null,
+      data: response.data?.entities?.results || [],
+      count: response.data?.entities?.count || 0,
+      next: response.data?.entities?.next || null,
+      previous: response.data?.entities?.previous || null,
     }
   } catch (error) {
-    console.error('Error fetching Pokémon:', error)
+    console.error('Error fetching entities:', error)
     return {
       success: false,
       data: [],
@@ -342,7 +348,7 @@ const getPokemonsData = async (limit: number = 8, offset: number = 0) => {
 
 ## React Query Integration
 
-The template integrates TanStack Query for server state management, providing caching, background updates, and optimistic updates. The `HttpProvider` in `app/services/http/providers/react-query.tsx` configures the QueryClient with opinionated defaults that prioritize development experience:
+The template integrates [TanStack Query](https://tanstack.com/query/latest) for server state management, providing caching, background updates, and optimistic updates. The `HttpProvider` in `@/services/http/providers/react-query.tsx` configures the QueryClient with opinionated defaults that prioritize development experience:
 
 ```typescript
 export const HttpProvider = ({ children }: HttpProviderProps) => {
@@ -370,28 +376,26 @@ export const HttpProvider = ({ children }: HttpProviderProps) => {
 
 ### Hook Implementation Patterns
 
-The template establishes consistent patterns for implementing data fetching hooks. The Pokemon moves hook from `app/views/pokemon/components/pokemon-moves/pokemon-moves.hook.ts` demonstrates the standard structure:
+The template establishes consistent patterns for implementing data fetching hooks. A standard hook structure follows this pattern:
 
 ```typescript
-const usePokemonMovesGraphQL = (
-  pokemonName: string,
-  options?: TUsePokemonMovesGraphQLOptions,
-): TUsePokemonMovesGraphQLReturn => {
+const useEntityDataGraphQL = (
+  entityId: string,
+  options?: TUseEntityDataGraphQLOptions,
+): TUseEntityDataGraphQLReturn => {
   const { data, isLoading, isError, error, refetch, isFetching } = useQuery({
-    queryKey: [POKEMON_MOVES_GRAPHQL_QUERY_KEY, pokemonName],
-    queryFn: () => fetchPokemonMovesGraphQL(pokemonName),
+    queryKey: [ENTITY_DATA_GRAPHQL_QUERY_KEY, entityId],
+    queryFn: () => fetchEntityDataGraphQL(entityId),
     staleTime:
-      POKEMON_MOVES_GRAPHQL_CONFIG.POKEMON_MOVES_GRAPHQL_CACHE_MINUTES *
-      60 *
-      1000,
+      ENTITY_DATA_GRAPHQL_CONFIG.ENTITY_DATA_GRAPHQL_CACHE_MINUTES * 60 * 1000,
     gcTime:
-      POKEMON_MOVES_GRAPHQL_CONFIG.POKEMON_MOVES_GRAPHQL_GC_MINUTES * 60 * 1000,
-    retry: POKEMON_MOVES_GRAPHQL_CONFIG.RETRY_COUNT,
+      ENTITY_DATA_GRAPHQL_CONFIG.ENTITY_DATA_GRAPHQL_GC_MINUTES * 60 * 1000,
+    retry: ENTITY_DATA_GRAPHQL_CONFIG.RETRY_COUNT,
     enabled: options?.enabled,
   })
 
   return {
-    pokemonMoves: data,
+    entityData: data,
     isLoading,
     isError,
     error,
@@ -403,32 +407,32 @@ const usePokemonMovesGraphQL = (
 
 ### Infinite Queries
 
-For paginated data, the template uses infinite queries. The Pokemon list implementation in `app/views/pokemons/pokemons.hook.ts` shows the pattern:
+For paginated data, the template uses [infinite queries](https://tanstack.com/query/latest/docs/framework/react/guides/infinite-queries). A typical implementation follows this pattern:
 
 ```typescript
-export const useMorePokemons = ({
+export const useMoreEntities = ({
   initialOffset = 8,
-}: TUseMorePokemonsOptions = {}) => {
+}: TUseMoreEntitiesOptions = {}) => {
   return useInfiniteQuery({
-    queryKey: POKEMONS_QUERY_CONFIG.QUERY_KEY,
+    queryKey: ENTITIES_QUERY_CONFIG.QUERY_KEY,
     queryFn: async ({ pageParam = initialOffset }) => {
-      const response = await graphqlClient.query<IPokemonsResponse>(
-        GET_POKEMONS,
+      const response = await graphqlClient.query<IEntitiesResponse>(
+        GET_ENTITIES_QUERY,
         {
-          limit: POKEMONS_PER_PAGE,
+          limit: ENTITIES_PER_PAGE,
           offset: pageParam,
         },
         {
-          baseUrl: 'https://graphql-pokeapi.graphcdn.app/',
+          baseUrl: process.env.GRAPHQL_ENDPOINT,
         },
       )
 
       return {
-        data: response.data?.pokemons?.results || [],
-        count: response.data?.pokemons?.count || 0,
-        next: response.data?.pokemons?.next || null,
-        previous: response.data?.pokemons?.previous || null,
-        nextOffset: pageParam + POKEMONS_PER_PAGE,
+        data: response.data?.entities?.results || [],
+        count: response.data?.entities?.count || 0,
+        next: response.data?.entities?.next || null,
+        previous: response.data?.entities?.previous || null,
+        nextOffset: pageParam + ENTITIES_PER_PAGE,
       }
     },
     initialPageParam: initialOffset,
@@ -438,7 +442,7 @@ export const useMorePokemons = ({
 
       return totalLoaded < totalCount ? lastPage.nextOffset : undefined
     },
-    staleTime: POKEMONS_QUERY_CONFIG.STALE_TIME,
+    staleTime: ENTITIES_QUERY_CONFIG.STALE_TIME,
     enabled: false,
   })
 }
@@ -446,7 +450,7 @@ export const useMorePokemons = ({
 
 ## Error Handling Strategies
 
-The template implements a multi-layered error handling approach that provides consistent error experiences across different failure scenarios.
+The template uses a multi-layered error handling approach that provides consistent error experiences across different failure scenarios.
 
 ```mermaid
 graph TB
@@ -475,7 +479,7 @@ graph TB
 
 ### Adapter Level Error Handling
 
-The `processResponse` utility in `app/services/http/core/core.utils.ts` handles HTTP errors consistently across all adapters:
+The `processResponse` utility in `@/services/http/core/core.utils.ts` handles HTTP errors consistently across all adapters:
 
 ```typescript
 export const processResponse = async <T>(response: Response): Promise<T> => {
@@ -509,12 +513,12 @@ export const processResponse = async <T>(response: Response): Promise<T> => {
 
 ### Component Error Handling
 
-Components handle errors through standardized patterns that provide user feedback while maintaining functionality. The Pokemon moves component from `app/views/pokemon/components/pokemon-moves/pokemon-moves.tsx` demonstrates the approach:
+Components handle errors through standardized patterns that provide user feedback while maintaining functionality:
 
 ```typescript
-const PokemonMoves = ({ pokemonName }: IPokemonMovesGraphQLProps) => {
-  const { pokemonMoves, isError, error, isFetching } = usePokemonMovesGraphQL(
-    pokemonName,
+const EntityDataComponent = ({ entityId }: IEntityDataComponentProps) => {
+  const { entityData, isError, error, isFetching } = useEntityDataGraphQL(
+    entityId,
     { enabled: true },
   )
 
@@ -522,28 +526,28 @@ const PokemonMoves = ({ pokemonName }: IPokemonMovesGraphQLProps) => {
     return (
       <div className='rounded-xl border border-gray-300 bg-white p-6 shadow-lg'>
         <div className='mb-4 flex items-center justify-between'>
-          <h2 className='text-xl font-bold text-black'>Moves</h2>
+          <h2 className='text-xl font-bold text-black'>Entity Data</h2>
           <div className='rounded-full border border-gray-300 bg-gray-100 px-3 py-1 text-xs text-gray-700'>
             ✨ GraphQL Client-side
           </div>
         </div>
-        <Spinner text='Loading moves via GraphQL...' />
+        <Spinner text='Loading data via GraphQL...' />
       </div>
     )
   }
 
-  if (isError || !pokemonMoves) {
+  if (isError || !entityData) {
     return (
       <div className='rounded-xl border border-gray-300 bg-white p-6 shadow-lg'>
         <div className='mb-4 flex items-center justify-between'>
-          <h2 className='text-xl font-bold text-black'>Moves</h2>
+          <h2 className='text-xl font-bold text-black'>Entity Data</h2>
           <div className='rounded-full border border-gray-300 bg-gray-100 px-3 py-1 text-xs text-gray-700'>
             ❌ GraphQL Error
           </div>
         </div>
         <div className='rounded-lg border border-gray-300 bg-gray-50 p-6 text-center'>
           <p className='text-gray-600'>
-            {error?.message || ERROR_MESSAGES.POKEMON_MOVES_GRAPHQL_FAILED}
+            {error?.message || ERROR_MESSAGES.ENTITY_DATA_GRAPHQL_FAILED}
           </p>
         </div>
       </div>
@@ -558,7 +562,7 @@ This pattern ensures that errors are handled gracefully without breaking the ove
 
 ## Performance Considerations
 
-The template provides several strategies for optimizing data fetching performance beyond caching (detailed caching strategies are covered in the [Caching documentation](./caching.md)).
+The template provides strategies for optimizing data fetching performance beyond caching (detailed caching strategies are covered in the [Caching documentation](./caching.md)).
 
 ### Request Optimization
 
@@ -566,62 +570,62 @@ Minimize network overhead through intelligent request patterns:
 
 ```typescript
 // Request deduplication (automatic with React Query)
-const PokemonDisplay: React.FC = () => {
+const EntityDisplay: React.FC = () => {
   // Both requests for the same data are automatically deduped
-  const pokemon1 = usePokemonSpecies(25)
-  const pokemon2 = usePokemonSpecies(25) // No additional network request
+  const entity1 = useEntityDetails(25)
+  const entity2 = useEntityDetails(25) // No additional network request
 
-  return <PokemonCards pokemon1={pokemon1.data} pokemon2={pokemon2.data} />
+  return <EntityCards entity1={entity1.data} entity2={entity2.data} />
 }
 
 // Request batching for related data
-const usePokemonWithRelatedData = (pokemonName: string) => {
-  const pokemonDetail = usePokemonDetail(pokemonName)
-  const pokemonMoves = usePokemonMovesGraphQL(pokemonName, {
-    enabled: !!pokemonDetail.data?.name
+const useEntityWithRelatedData = (entityId: string) => {
+  const entityDetail = useEntityDetail(entityId)
+  const entityMetadata = useEntityMetadataGraphQL(entityId, {
+    enabled: !!entityDetail.data?.id
   })
 
   return {
-    pokemon: pokemonDetail.data,
-    moves: pokemonMoves.pokemonMoves,
-    isLoading: pokemonDetail.isLoading || pokemonMoves.isLoading,
+    entity: entityDetail.data,
+    metadata: entityMetadata.entityMetadata,
+    isLoading: entityDetail.isLoading || entityMetadata.isLoading,
   }
 }
 ```
 
 ## Real-World Examples
 
-The template includes working examples that demonstrate data fetching patterns in realistic scenarios.
+The template includes examples that demonstrate data fetching patterns in realistic scenarios.
 
-### Pokemon Detail with Species Information
+### Entity Detail with Related Information
 
-The Pokemon detail page combines REST and GraphQL queries to display comprehensive information. The species hook from `app/views/pokemon/components/pokemon-species-info/pokemon-species-info.hook.ts` shows how to implement dependent queries:
+Entity detail pages can combine REST and GraphQL queries to display detailed information. A dependent query pattern shows how to implement related data fetching:
 
 ```typescript
-const usePokemonSpecies = (
-  pokemonId: number | undefined,
-  options: TUsePokemonSpeciesOptions = {},
-): TUsePokemonSpeciesReturn => {
+const useEntityDetails = (
+  entityId: number | undefined,
+  options: TUseEntityDetailsOptions = {},
+): TUseEntityDetailsReturn => {
   const { enabled = true } = options
 
   const {
-    data: species,
+    data: details,
     isLoading,
     isError,
     error,
     refetch,
     isFetching,
   } = useQuery({
-    queryKey: [POKEMON_SPECIES_QUERY_KEY, pokemonId],
-    queryFn: () => fetchPokemonSpecies(pokemonId!),
-    enabled: enabled && !!pokemonId, // Only fetch when ID is available
-    staleTime: 1000 * 60 * POKEMON_SPECIES_CONFIG.SPECIES_CACHE_MINUTES,
-    gcTime: 1000 * 60 * POKEMON_SPECIES_CONFIG.SPECIES_GC_MINUTES,
-    retry: POKEMON_SPECIES_CONFIG.RETRY_COUNT,
+    queryKey: [ENTITY_DETAILS_QUERY_KEY, entityId],
+    queryFn: () => fetchEntityDetails(entityId!),
+    enabled: enabled && !!entityId, // Only fetch when ID is available
+    staleTime: 1000 * 60 * ENTITY_DETAILS_CONFIG.DETAILS_CACHE_MINUTES,
+    gcTime: 1000 * 60 * ENTITY_DETAILS_CONFIG.DETAILS_GC_MINUTES,
+    retry: ENTITY_DETAILS_CONFIG.RETRY_COUNT,
   })
 
   return {
-    species,
+    details,
     isLoading,
     isError,
     error,
@@ -631,21 +635,21 @@ const usePokemonSpecies = (
 }
 ```
 
-### DatoCMS Integration
+### CMS Integration
 
-The DatoCMS example in `app/(routes)/(public)/(examples)/datocms/queries/get-datocms.query.ts` demonstrates authenticated GraphQL queries:
+CMS integrations demonstrate authenticated GraphQL queries:
 
 ```typescript
-const getDatocmsData = async () => {
+const getCmsData = async () => {
   try {
-    const response = await graphqlClient.query<IDatocmsResponse>(
-      GET_DATOCMS_QUERY,
+    const response = await graphqlClient.query<ICmsResponse>(
+      GET_CMS_QUERY,
       {},
       {
-        baseUrl: 'https://graphql.datocms.com/',
+        baseUrl: process.env.CMS_GRAPHQL_ENDPOINT,
         revalidate: 300, // 5 minutes
         headers: {
-          Authorization: `Bearer ${process.env.DATOCMS_API_TOKEN}`,
+          Authorization: `Bearer ${process.env.CMS_API_TOKEN}`,
         },
       },
     )
@@ -655,7 +659,7 @@ const getDatocmsData = async () => {
       data: response.data,
     }
   } catch (error) {
-    console.error('Error fetching datocms:', error)
+    console.error('Error fetching CMS data:', error)
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -689,22 +693,23 @@ vi.mock('@/app/services/http', () => ({
 }))
 
 // Test hook behavior
-describe('usePokemonSpecies', () => {
+describe('useEntityDetails', () => {
   it('should handle successful data fetch', async () => {
     const mockData = {
       id: 25,
-      name: 'pikachu',
-      evolution_chain: { url: 'https://pokeapi.co/api/v2/evolution-chain/10/' },
+      name: 'test-entity',
+      description: 'A test entity for demonstration',
+      metadata: { created_at: '2024-01-01', updated_at: '2024-01-01' },
     }
 
     restClient.get.mockResolvedValue(mockData)
 
-    const { result } = renderHook(() => usePokemonSpecies(25), {
+    const { result } = renderHook(() => useEntityDetails(25), {
       wrapper: createQueryWrapper(),
     })
 
     await waitFor(() => {
-      expect(result.current.species).toEqual(mockData)
+      expect(result.current.details).toEqual(mockData)
       expect(result.current.isLoading).toBe(false)
       expect(result.current.isError).toBe(false)
     })
@@ -714,7 +719,7 @@ describe('usePokemonSpecies', () => {
     const errorMessage = 'Network error'
     restClient.get.mockRejectedValue(new Error(errorMessage))
 
-    const { result } = renderHook(() => usePokemonSpecies(25), {
+    const { result } = renderHook(() => useEntityDetails(25), {
       wrapper: createQueryWrapper(),
     })
 
@@ -746,26 +751,17 @@ export const createQueryWrapper = () => {
 }
 
 // Mock data factories
-export const createMockPokemon = (overrides: Partial<IPokemonDetail> = {}): IPokemonDetail => ({
+export const createMockEntity = (overrides: Partial<IEntityDetail> = {}): IEntityDetail => ({
   id: 25,
-  name: 'pikachu',
-  height: 4,
-  weight: 60,
-  base_experience: 112,
-  order: 35,
-  is_default: true,
-  abilities: [],
-  types: [],
-  stats: [],
-  sprites: {
-    front_default: 'https://example.com/pikachu.png',
-    back_default: null,
+  name: 'test-entity',
+  description: 'A test entity for demonstration',
+  metadata: {
+    created_at: '2024-01-01',
+    updated_at: '2024-01-01',
   },
-  moves: [],
-  species: {
-    name: 'pikachu',
-    url: 'https://pokeapi.co/api/v2/pokemon-species/25/',
-  },
+  status: 'active',
+  tags: [],
+  properties: {},
   ...overrides,
 })
 ```
@@ -893,3 +889,18 @@ export class MonitoredAdapter implements IRestHttpAdapter {
 ```
 
 The adapter pattern makes these extensions straightforward to implement and test without affecting existing functionality. Teams can compose multiple adapters or switch implementations based on environment or feature flags.
+
+---
+
+## References
+
+| Resource                                                                                                       | Description                                   |
+| -------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| [TanStack Query](https://tanstack.com/query/latest)                                                            | Data synchronization library for React        |
+| [TanStack Query React Guide](https://tanstack.com/query/latest/docs/framework/react/overview)                  | Complete React integration and setup guide    |
+| [TanStack Query Caching](https://tanstack.com/query/latest/docs/framework/react/guides/caching)                | Caching strategies and configuration          |
+| [TanStack Query Mutations](https://tanstack.com/query/latest/docs/framework/react/guides/mutations)            | Data mutation patterns and optimistic updates |
+| [Next.js Data Fetching](https://nextjs.org/docs/app/building-your-application/data-fetching)                   | Server-side data fetching with App Router     |
+| [Next.js Server Components](https://nextjs.org/docs/app/building-your-application/rendering/server-components) | Server component patterns and best practices  |
+| [GraphQL Request](https://github.com/jasonkuhrt/graphql-request)                                               | Minimal GraphQL client for JavaScript         |
+| [Fetch API Documentation](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)                          | Native browser API for HTTP requests          |

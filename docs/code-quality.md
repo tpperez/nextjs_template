@@ -11,20 +11,25 @@ Code standards enforcement and quality assurance patterns for maintainable devel
 - [Testing Strategy](#testing-strategy)
 - [Implementation Guidelines](#implementation-guidelines)
 
+## Related Documentation
+
+- **[Testing](./testing.md)** - Testing framework and quality assurance patterns
+- **[Contributing](./contributing.md)** - Development workflow standards and quality requirements
+- **[Scripts](./scripts.md)** - Quality assurance scripts and development commands
+- **[Examples](./examples.md)** - Quality implementation examples and testing patterns
+
 ---
 
 ## Overview
 
 The template uses automated quality enforcement at multiple stages of the development workflow. Quality issues are detected and resolved early while maintaining developer productivity through automation.
 
-**Live Implementation:** Every file in the codebase demonstrates these quality patterns - from simple utilities with 100% test coverage to complex components with comprehensive accessibility validation.
-
-**Core Quality Principles:**
+#### Core Quality Principles
 
 - **Early Detection**: Quality issues detected and resolved at the point of creation
 - **Automated Enforcement**: Tools handle mechanical quality checks, allowing developers to focus on business logic
 - **Progressive Enhancement**: Quality systems enhance rather than impede development velocity
-- **Comprehensive Coverage**: Multi-layered validation ensures consistent quality across all code types
+- **Coverage**: Multi-layered validation ensures consistent quality across all code types
 
 ---
 
@@ -68,9 +73,9 @@ graph TD
     style P fill:#fff3e0
 ```
 
-**Architecture Benefits:**
+#### Architecture Benefits
 
-- **Layered Defense**: Multiple validation points ensure comprehensive quality coverage
+- **Layered Defense**: Multiple validation points ensure quality coverage
 - **Fast Feedback Loops**: Issues caught early in the development process
 - **Developer Experience**: Quality enforcement enhances rather than impedes productivity
 - **Consistent Standards**: Automated application of quality rules regardless of developer preferences
@@ -79,27 +84,27 @@ graph TD
 
 ## Quality Tools Integration Matrix
 
-| Tool            | Primary Function          | Integration Points       | Configuration File  |
-| --------------- | ------------------------- | ------------------------ | ------------------- |
-| **TypeScript**  | Static type checking      | IDE + Pre-commit         | `tsconfig.json`     |
-| **ESLint**      | Code pattern enforcement  | IDE + Pre-commit         | `eslint.config.mjs` |
-| **Prettier**    | Code formatting           | IDE + Pre-commit         | `.prettierrc`       |
-| **Vitest**      | Test execution & coverage | Development + Pre-commit | `vitest.config.ts`  |
-| **Husky**       | Git hook automation       | Pre-commit workflow      | `.husky/pre-commit` |
-| **lint-staged** | Targeted file processing  | Pre-commit efficiency    | `.lintstagedrc.mjs` |
+| Tool            | Primary Function          | Integration Points       | Official Documentation                                   |
+| --------------- | ------------------------- | ------------------------ | -------------------------------------------------------- |
+| **TypeScript**  | Static type checking      | IDE + Pre-commit         | [TypeScript Docs](https://www.typescriptlang.org/docs/)  |
+| **ESLint**      | Code pattern enforcement  | IDE + Pre-commit         | [ESLint Documentation](https://eslint.org/docs/latest/)  |
+| **Prettier**    | Code formatting           | IDE + Pre-commit         | [Prettier Docs](https://prettier.io/docs/en/)            |
+| **Vitest**      | Test execution & coverage | Development + Pre-commit | [Vitest Guide](https://vitest.dev/guide/)                |
+| **Husky**       | Git hook automation       | Pre-commit workflow      | [Husky Documentation](https://typicode.github.io/husky/) |
+| **lint-staged** | Targeted file processing  | Pre-commit efficiency    | [lint-staged](https://github.com/okonet/lint-staged)     |
 
 **Integration Flow:** Developer saves → IDE formats/lints → Git commit triggers → Husky runs → TypeScript + Tests + lint-staged
 
 ### Tool Responsibility Matrix
 
-| Quality Tool    | Primary Function                                      | Integration Point        | Template Configuration                      |
-| --------------- | ----------------------------------------------------- | ------------------------ | ------------------------------------------- |
-| **TypeScript**  | Static type checking and compile-time validation      | IDE + Pre-commit         | [`tsconfig.json`](../tsconfig.json)         |
-| **ESLint**      | Code pattern enforcement and accessibility validation | IDE + Pre-commit         | [`eslint.config.mjs`](../eslint.config.mjs) |
-| **Prettier**    | Code formatting and style consistency                 | IDE + Pre-commit         | [`.prettierrc`](../.prettierrc)             |
-| **Vitest**      | Test execution and coverage measurement               | Development + Pre-commit | [`vitest.config.ts`](../vitest.config.ts)   |
-| **Husky**       | Git hook automation for quality gates                 | Pre-commit workflow      | [`.husky/pre-commit`](../.husky/pre-commit) |
-| **lint-staged** | Targeted processing of modified files                 | Pre-commit efficiency    | [`.lintstagedrc.mjs`](../.lintstagedrc.mjs) |
+| Quality Tool    | Primary Function                                      | Integration Point        | Best Practices                                                                                                   |
+| --------------- | ----------------------------------------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| **TypeScript**  | Static type checking and compile-time validation      | IDE + Pre-commit         | [TypeScript Best Practices](https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html) |
+| **ESLint**      | Code pattern enforcement and accessibility validation | IDE + Pre-commit         | [ESLint Configuration](https://eslint.org/docs/latest/use/configure/)                                            |
+| **Prettier**    | Code formatting and style consistency                 | IDE + Pre-commit         | [Prettier Configuration](https://prettier.io/docs/en/configuration.html)                                         |
+| **Vitest**      | Test execution and coverage measurement               | Development + Pre-commit | [Vitest Configuration](https://vitest.dev/config/)                                                               |
+| **Husky**       | Git hook automation for quality gates                 | Pre-commit workflow      | [Husky Setup Guide](https://typicode.github.io/husky/getting-started.html)                                       |
+| **lint-staged** | Targeted processing of modified files                 | Pre-commit efficiency    | [lint-staged Usage](https://github.com/okonet/lint-staged#usage)                                                 |
 
 ---
 
@@ -107,11 +112,11 @@ graph TD
 
 ### IDE-First Quality Strategy
 
-The template prioritizes **development-time quality feedback** through comprehensive IDE integration, ensuring quality issues are detected and resolved as developers write code.
+The template prioritizes **development-time quality feedback** through IDE integration, ensuring quality issues are detected and resolved as developers write code.
 
 **VSCode Quality Integration:**
 
-**Implementation Reference:** [`.vscode/settings.json`](../.vscode/settings.json)
+For detailed VSCode setup, refer to the [VSCode TypeScript Documentation](https://code.visualstudio.com/docs/languages/typescript) and [ESLint Extension Guide](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint).
 
 ```json
 {
@@ -130,7 +135,7 @@ The template prioritizes **development-time quality feedback** through comprehen
 - **Format on Save**: Automatic Prettier formatting ensures consistent style without developer intervention
 - **ESLint Auto-fix**: Automatic resolution of fixable quality issues during save operations
 - **TypeScript Integration**: Real-time type checking with automatic import management
-- **Tailwind CSS Support**: Enhanced autocompletion and validation for utility-first styling
+- **Framework Support**: Enhanced autocompletion and validation for your chosen tech stack
 
 ### Real-Time Quality Feedback
 
@@ -139,7 +144,7 @@ The template prioritizes **development-time quality feedback** through comprehen
 ```mermaid
 sequenceDiagram
     participant Dev as Developer
-    participant IDE as VSCode
+    participant IDE as IDE
     participant TS as TypeScript
     participant ESLint as ESLint
     participant Prettier as Prettier
@@ -166,7 +171,7 @@ sequenceDiagram
 - **Consistent Environment**: Standardized quality experience across team members
 - **Reduced Cognitive Load**: Developers focus on business logic while tools handle mechanical quality
 
-**Reference Implementation:** Observe the quality integration by opening any file in the codebase with VSCode - formatting, linting, and type checking happen automatically.
+**Implementation Guidelines:** Configure your IDE with appropriate extensions for TypeScript, ESLint, and Prettier to achieve automatic quality enforcement during development.
 
 ---
 
@@ -211,12 +216,12 @@ flowchart TD
 
 **Pre-commit Hook Structure:**
 
-**Implementation Reference:** [`.husky/pre-commit`](../.husky/pre-commit)
+For comprehensive Husky setup, see the [official Husky documentation](https://typicode.github.io/husky/getting-started.html).
 
 ```bash
-npm run tsc      # TypeScript compilation check
-npm run test     # Full test suite execution
-npx lint-staged  # Targeted file processing
+npm run type-check  # TypeScript compilation check
+npm run test        # Full test suite execution
+npx lint-staged     # Targeted file processing
 ```
 
 **Quality Gate Responsibilities:**
@@ -229,11 +234,11 @@ npx lint-staged  # Targeted file processing
 
 **Selective Quality Processing:**
 
-**Implementation Reference:** [`.lintstagedrc.mjs`](../.lintstagedrc.mjs)
+For detailed configuration options, refer to the [lint-staged documentation](https://github.com/okonet/lint-staged#configuration).
 
 ```javascript
 const lintStagedConfig = {
-  '*.{js,jsx,ts,tsx}': [buildFormatCommand, buildLintCommand],
+  '*.{js,jsx,ts,tsx}': ['prettier --write', 'eslint --fix', 'git add'],
 }
 ```
 
@@ -248,20 +253,20 @@ const lintStagedConfig = {
 
 **Conventional Commit Enforcement:**
 
-**Implementation Reference:** [`.commitlintrc.mjs`](../.commitlintrc.mjs)
-
-The template enforces conventional commit standards for:
+The template enforces conventional commit standards using [Conventional Commits](https://www.conventionalcommits.org/) specification for:
 
 - **Automated Changelog Generation**: Structured commit history enables automated release notes
 - **Semantic Versioning**: Commit types trigger appropriate version bumps
 - **Clear Communication**: Standardized commit format improves team communication
 - **Tool Integration**: Conventional commits support various automation tools
 
+Learn more about implementing conventional commits with [commitlint](https://commitlint.js.org/#/).
+
 ---
 
 ## Testing Strategy
 
-### Comprehensive Testing Architecture
+### Testing Architecture
 
 Testing uses coverage thresholds, behavior validation, and testing infrastructure that supports refactoring and feature development.
 
@@ -304,9 +309,9 @@ graph TD
 
 ### Coverage Configuration and Thresholds
 
-**Comprehensive Coverage Strategy:**
+**Coverage Strategy:**
 
-**Implementation Reference:** [`vitest.config.ts`](../vitest.config.ts)
+For detailed coverage configuration, see the [Vitest Coverage Guide](https://vitest.dev/guide/coverage.html).
 
 ```typescript
 coverage: {
@@ -317,11 +322,11 @@ coverage: {
     statements: 80,
   },
   include: [
-    'app/components/**/*.{ts,tsx}',
-    'app/services/**/*.{ts,tsx}',
-    'app/stores/**/*.{ts,tsx}',
-    'app/utils/**/*.{ts,tsx}',
-    'app/views/**/*.{ts,tsx}',
+    'src/components/**/*.{ts,tsx}',
+    'src/services/**/*.{ts,tsx}',
+    'src/stores/**/*.{ts,tsx}',
+    'src/utils/**/*.{ts,tsx}',
+    'src/views/**/*.{ts,tsx}',
   ],
 }
 ```
@@ -330,17 +335,17 @@ coverage: {
 
 - **Quality Assurance**: 80% minimum coverage ensures adequate testing without excessive overhead
 - **Targeted Inclusion**: Focus on business logic while excluding configuration and generated files
-- **Multiple Metrics**: Comprehensive coverage measurement across branches, functions, lines, and statements
+- **Multiple Metrics**: Coverage measurement across branches, functions, lines, and statements
 - **Quality Gates**: Coverage thresholds prevent quality regression in pre-commit validation
 
 ### Testing Pattern Implementation
 
 **Component Testing Example:**
 
-**Implementation Reference:** [`app/components/ui/button/button.test.tsx`](../app/components/ui/button/button.test.tsx)
+Following [Testing Library best practices](https://testing-library.com/docs/guiding-principles) for user-centric testing:
 
 ```typescript
-describe('Button', () => {
+describe('Button Component', () => {
   it('renders correctly with default props', () => {
     render(<Button>Click me</Button>)
 
@@ -353,7 +358,17 @@ describe('Button', () => {
     render(<Button>Primary</Button>)
 
     const button = screen.getByRole('button')
-    expect(button).toHaveClass('bg-blue-600')
+    expect(button).toHaveClass('primary-button-class')
+  })
+
+  it('handles click interactions', async () => {
+    const handleClick = vi.fn()
+    render(<Button onClick={handleClick}>Click me</Button>)
+
+    const button = screen.getByRole('button')
+    await user.click(button)
+
+    expect(handleClick).toHaveBeenCalledTimes(1)
   })
 })
 ```
@@ -363,17 +378,26 @@ describe('Button', () => {
 - **User-centric Testing**: Tests focus on behavior rather than implementation details
 - **Accessibility Integration**: Tests use semantic queries (getByRole) that ensure accessibility
 - **Behavior Validation**: Tests verify user-facing functionality and visual states
-- **Comprehensive Coverage**: Tests cover default behavior, variants, sizes, and interactions
+- **Coverage**: Tests cover default behavior, variants, sizes, and interactions
 
 ### Mock Strategy and Test Isolation
 
 **Test Infrastructure Setup:**
 
-**Implementation Reference:** [`vitest.setup.ts`](../vitest.setup.ts)
+For mocking strategies, see the [Vitest Mocking Guide](https://vitest.dev/guide/mocking.html).
 
 ```typescript
-// Mock Next.js router for consistent testing
-vi.mock('next/navigation', () => ({
+// Mock external dependencies for consistent testing
+vi.mock('external-library', () => ({
+  useExternalHook: vi.fn(() => ({
+    data: null,
+    loading: false,
+    error: null,
+  })),
+}))
+
+// Mock navigation for routing tests
+vi.mock('your-router-library', () => ({
   useRouter: vi.fn(() => ({
     push: vi.fn(),
     replace: vi.fn(),
@@ -387,7 +411,7 @@ vi.mock('next/navigation', () => ({
 
 - **Test Isolation**: External dependencies mocked for reliable, fast testing
 - **Consistent Environment**: Tests run in predictable environment regardless of external state
-- **Framework Integration**: Next.js specific mocks ensure framework features work in tests
+- **Framework Integration**: Framework-specific mocks ensure features work correctly in tests
 - **Performance Optimization**: Mocked dependencies reduce test execution time
 
 ---
@@ -396,16 +420,16 @@ vi.mock('next/navigation', () => ({
 
 ### Quality Enforcement Adaptation
 
-**Template Customization Guidelines:**
+**Quality Configuration Guidelines:**
 
 Teams can adapt quality standards while maintaining the core enforcement architecture:
 
 **Configuration Adaptation:**
 
-- **ESLint Rules**: Modify [`eslint.config.mjs`](../eslint.config.mjs) to adjust code pattern enforcement
-- **Prettier Settings**: Update [`.prettierrc`](../.prettierrc) to match team formatting preferences
-- **Coverage Thresholds**: Adjust [`vitest.config.ts`](../vitest.config.ts) thresholds based on project requirements
-- **IDE Integration**: Extend [`.vscode/settings.json`](../.vscode/settings.json) for team-specific tooling
+- **ESLint Rules**: Modify ESLint configuration to adjust code pattern enforcement based on [ESLint rules documentation](https://eslint.org/docs/latest/rules/)
+- **Prettier Settings**: Update Prettier configuration to match team formatting preferences using [Prettier options](https://prettier.io/docs/en/options.html)
+- **Coverage Thresholds**: Adjust Vitest coverage thresholds based on project requirements following [Vitest coverage configuration](https://vitest.dev/config/#coverage)
+- **IDE Integration**: Extend IDE settings for team-specific tooling and extensions
 
 **Quality Evolution Strategy:**
 
@@ -424,7 +448,7 @@ Quality architecture enhances rather than impedes development velocity through a
 
 - **Reduced Debugging Time**: Early detection prevents time-consuming bug hunts
 - **Consistent Code Style**: Automated formatting eliminates style discussions
-- **Confident Refactoring**: Comprehensive test coverage enables safe code changes
+- **Confident Refactoring**: Test coverage enables safe code changes
 - **Knowledge Sharing**: Quality standards document team conventions and best practices
 
 **Quality Measurement and Improvement:**
@@ -433,3 +457,39 @@ Quality architecture enhances rather than impedes development velocity through a
 - **Quality Metrics**: Track linting violations and TypeScript errors over time
 - **Performance Impact**: Ensure quality tools don't negatively impact development speed
 - **Team Satisfaction**: Regular retrospectives on quality tool effectiveness and developer experience
+
+### Tool Selection and Configuration
+
+#### Quality Tool Evaluation Criteria
+
+When selecting or updating quality tools, consider:
+
+- **Integration Capability**: How well the tool integrates with existing development workflow
+- **Performance Impact**: Tool overhead on development and build processes
+- **Team Adoption**: Learning curve and developer experience considerations
+- **Maintenance Requirements**: Ongoing configuration and update requirements
+
+#### Recommended Tool Combinations
+
+- **TypeScript + ESLint**: Type safety with code pattern enforcement
+- **Prettier + ESLint**: Formatting consistency with customizable code rules
+- **Vitest + Testing Library**: Fast testing with user-centric validation
+- **Husky + lint-staged**: Automated quality gates with performance optimization
+
+---
+
+## References
+
+| Resource                                                             | Description                                             |
+| -------------------------------------------------------------------- | ------------------------------------------------------- |
+| [TypeScript Documentation](https://www.typescriptlang.org/docs/)     | Official TypeScript language and compiler documentation |
+| [ESLint Documentation](https://eslint.org/docs/latest/)              | ESLint rules, configuration, and usage guide            |
+| [ESLint Rules](https://eslint.org/docs/latest/rules/)                | Complete reference for available ESLint rules           |
+| [Prettier Documentation](https://prettier.io/docs/en/)               | Code formatter configuration and options                |
+| [Prettier Options](https://prettier.io/docs/en/options.html)         | Detailed configuration options for Prettier             |
+| [Vitest Documentation](https://vitest.dev/)                          | Fast testing framework with TypeScript support          |
+| [Vitest Coverage Configuration](https://vitest.dev/config/#coverage) | Coverage reporting setup and thresholds                 |
+| [Testing Library](https://testing-library.com/)                      | User-centric testing utilities and best practices       |
+| [Husky Documentation](https://typicode.github.io/husky/)             | Git hooks for automation and quality gates              |
+| [lint-staged](https://github.com/okonet/lint-staged)                 | Run linters on pre-committed files                      |
+| [Conventional Commits](https://www.conventionalcommits.org/)         | Specification for structured commit messages            |

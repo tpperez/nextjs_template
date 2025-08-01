@@ -1,6 +1,6 @@
 # Caching
 
-Strategic caching implementation across client-side state management, server-side optimization, and browser-level performance to minimize redundant requests while maintaining data freshness.
+Caching implementation across client-side state management, server-side optimization, and browser-level performance to minimize redundant requests while maintaining data freshness.
 
 ## Table of Contents
 
@@ -11,13 +11,21 @@ Strategic caching implementation across client-side state management, server-sid
 - [Optimistic Updates](#optimistic-updates)
 - [Performance Optimization](#performance-optimization)
 - [Next.js Server Caching](#nextjs-server-caching)
-- [Real-World Examples](#real-world-examples)
+- [Caching Patterns](#caching-patterns)
 - [Testing Cache Behavior](#testing-cache-behavior)
 - [Cache Management](#cache-management)
 
+## Related Documentation
+
+- **[Data Fetching](./data-fetching.md)** - HTTP service integration and cache coordination strategies
+- **[Architecture](./architecture.md)** - Performance optimization within architectural layers
+- **[State Management](./state-management.md)** - Server state caching with TanStack Query
+- **[Testing](./testing.md)** - Cache behavior testing and validation patterns
+- **[Examples](./examples.md)** - Practical caching implementation examples
+
 ## Caching Architecture
 
-The template implements a multi-layered caching strategy that coordinates between browser cache, React Query's in-memory cache, and Next.js server-side caching. This approach minimizes network requests while ensuring users see fresh data when it matters.
+The template uses a multi-layered caching strategy that coordinates between browser cache, React Query's in-memory cache, and Next.js server-side caching. This approach minimizes network requests while ensuring users see fresh data when it matters.
 
 ## Caching Layers (Top to Bottom)
 
@@ -36,95 +44,71 @@ This architecture provides multiple cache layers that work together to optimize 
 
 Each caching layer serves specific purposes within the overall strategy:
 
-**Browser Cache**: Handles static assets like images, CSS, and JavaScript files. The template configures appropriate cache headers for different asset types through Next.js configuration.
+#### Browser Cache
 
-**React Query Cache**: Manages server state in memory with intelligent staleness detection and background updates. This layer prevents redundant API calls and provides instant UI updates through cached data.
+Handles static assets like images, CSS, and JavaScript files. The template configures appropriate cache headers for different asset types through Next.js configuration.
 
-**Next.js Cache**: Provides server-side caching for API responses and static generation. Integrates with React Query through the fetch adapter to coordinate cache strategies.
+#### React Query Cache
 
-**Network Cache**: Handles HTTP-level caching for external API responses at the network layer.
+Manages server state in memory with intelligent staleness detection and background updates. This layer prevents redundant API calls and provides instant UI updates through cached data.
+
+#### Next.js Cache
+
+Provides server-side caching for API responses and static generation. Integrates with React Query through the fetch adapter to coordinate cache strategies.
+
+#### Network Cache
+
+Handles HTTP-level caching for external API responses at the network layer.
 
 ## Client-Side Caching Strategy
 
-The template uses React Query to implement sophisticated client-side caching that adapts to different data patterns and user behaviors.
+The template uses [TanStack Query](https://tanstack.com/query/latest) for client-side caching that adapts to different data patterns and user behaviors.
 
 ### Cache Configuration by Data Type
 
-Different types of data require different caching strategies based on their update frequency and importance:
+Different types of data require different caching strategies based on their update frequency and importance. For detailed configuration options, refer to the [TanStack Query Caching documentation](https://tanstack.com/query/latest/docs/react/guides/caching).
 
 ```typescript
-// Long-lived reference data (from Pokemon species implementation)
-const usePokemonSpecies = (pokemonId: number | undefined) => {
+// Long-lived reference data - Static content that rarely changes
+const useReferenceData = (entityId: number | undefined) => {
   return useQuery({
-    queryKey: [POKEMON_SPECIES_QUERY_KEY, pokemonId],
-    queryFn: () => fetchPokemonSpecies(pokemonId!),
-    enabled: enabled && !!pokemonId,
-    staleTime: 1000 * 60 * POKEMON_SPECIES_CONFIG.SPECIES_CACHE_MINUTES, // 30 minutes
-    gcTime: 1000 * 60 * POKEMON_SPECIES_CONFIG.SPECIES_GC_MINUTES, // 60 minutes
-    retry: POKEMON_SPECIES_CONFIG.RETRY_COUNT,
+    queryKey: ['reference-data', entityId],
+    queryFn: () => fetchReferenceData(entityId!),
+    enabled: !!entityId,
+    staleTime: 1000 * 60 * 30, // 30 minutes
+    gcTime: 1000 * 60 * 60, // 60 minutes
+    retry: 2,
   })
 }
 
-// Moderate cache for dynamic content (from Pokemon moves implementation)
-const usePokemonMovesGraphQL = (pokemonName: string) => {
+// Moderate cache for semi-dynamic content
+const useDynamicContent = (identifier: string) => {
   return useQuery({
-    queryKey: [POKEMON_MOVES_GRAPHQL_QUERY_KEY, pokemonName],
-    queryFn: () => fetchPokemonMovesGraphQL(pokemonName),
-    staleTime:
-      POKEMON_MOVES_GRAPHQL_CONFIG.POKEMON_MOVES_GRAPHQL_CACHE_MINUTES *
-      60 *
-      1000, // 15 minutes
-    gcTime:
-      POKEMON_MOVES_GRAPHQL_CONFIG.POKEMON_MOVES_GRAPHQL_GC_MINUTES * 60 * 1000, // 30 minutes
-    retry: POKEMON_MOVES_GRAPHQL_CONFIG.RETRY_COUNT,
-    enabled: options?.enabled,
+    queryKey: ['dynamic-content', identifier],
+    queryFn: () => fetchDynamicContent(identifier),
+    staleTime: 1000 * 60 * 15, // 15 minutes
+    gcTime: 1000 * 60 * 30, // 30 minutes
+    retry: 2,
+    enabled: !!identifier,
   })
 }
 
-// Short cache for frequently changing data (from Pokemon list implementation)
-export const useMorePokemons = ({ initialOffset = 8 } = {}) => {
+// Short cache for frequently changing data
+export const useInfiniteEntities = ({ initialOffset = 8 } = {}) => {
   return useInfiniteQuery({
-    queryKey: POKEMONS_QUERY_CONFIG.QUERY_KEY,
+    queryKey: ['entities', 'infinite'],
     queryFn: async ({ pageParam = initialOffset }) => {
       // Implementation details...
     },
-    staleTime: POKEMONS_QUERY_CONFIG.STALE_TIME, // 5 minutes
+    staleTime: 1000 * 60 * 5, // 5 minutes
     enabled: false, // Manual triggering for performance
   })
 }
 ```
 
-### Cache Configuration Constants
-
-The template organizes cache settings through centralized configuration constants that teams can adjust based on their needs:
-
-```typescript
-// From app/views/pokemon/components/pokemon-species-info/pokemon-species.const.ts
-export const POKEMON_SPECIES_CONFIG = {
-  SPECIES_CACHE_MINUTES: 30, // Stale time: when data becomes stale
-  SPECIES_GC_MINUTES: 60, // Garbage collection: when data is removed
-  RETRY_COUNT: 2, // Number of retry attempts
-}
-
-// From app/views/pokemon/components/pokemon-moves/pokemon-moves.const.ts
-export const POKEMON_MOVES_GRAPHQL_CONFIG = {
-  POKEMON_MOVES_GRAPHQL_CACHE_MINUTES: 15, // Shorter cache for dynamic data
-  POKEMON_MOVES_GRAPHQL_GC_MINUTES: 30,
-  RETRY_COUNT: 2,
-}
-
-// From app/views/pokemons/pokemons.const.ts
-export const POKEMONS_QUERY_CONFIG = {
-  STALE_TIME: 5 * 60 * 1000, // 5 minutes for list data
-  QUERY_KEY: ['pokemons', 'infinite'],
-}
-```
-
-These configuration patterns allow teams to adjust caching behavior without modifying hook implementations.
-
 ## React Query Configuration
 
-The template configures React Query with opinionated defaults that balance performance with development experience.
+The template configures React Query with opinionated defaults that balance performance with development experience. For configuration options, see the [TanStack Query Configuration Guide](https://tanstack.com/query/latest/docs/react/reference/QueryClient).
 
 ### Provider Configuration
 
@@ -189,32 +173,32 @@ graph LR
 
 ## Cache Invalidation Patterns
 
-The template implements strategic cache invalidation to maintain data consistency without excessive network activity.
+The template implements strategic cache invalidation to maintain data consistency without excessive network activity. For detailed invalidation strategies, refer to the [TanStack Query Invalidation Guide](https://tanstack.com/query/latest/docs/react/guides/query-invalidation).
 
 ### Mutation-Based Invalidation
 
 Mutations automatically invalidate related cache entries to ensure UI consistency:
 
 ```typescript
-const useUpdatePokemonData = () => {
+const useUpdateEntityData = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: updatePokemonInDatabase,
+    mutationFn: updateEntityInDatabase,
     onSuccess: (data, variables) => {
-      // Invalidate specific Pokemon data
+      // Invalidate specific entity data
       queryClient.invalidateQueries({
-        queryKey: [POKEMON_SPECIES_QUERY_KEY, variables.id],
+        queryKey: ['reference-data', variables.id],
       })
 
-      // Invalidate Pokemon moves for the same Pokemon
+      // Invalidate related dynamic content
       queryClient.invalidateQueries({
-        queryKey: [POKEMON_MOVES_GRAPHQL_QUERY_KEY, variables.name],
+        queryKey: ['dynamic-content', variables.name],
       })
 
       // Invalidate list queries to reflect changes
       queryClient.invalidateQueries({
-        queryKey: POKEMONS_QUERY_CONFIG.QUERY_KEY,
+        queryKey: ['entities', 'infinite'],
       })
     },
   })
@@ -228,13 +212,13 @@ Different scenarios require different invalidation approaches:
 ```typescript
 // Exact match invalidation - only specific query
 queryClient.invalidateQueries({
-  queryKey: [POKEMON_SPECIES_QUERY_KEY, 25],
+  queryKey: ['reference-data', 25],
   exact: true,
 })
 
-// Prefix match invalidation - all Pokemon species queries
+// Prefix match invalidation - all reference data queries
 queryClient.invalidateQueries({
-  queryKey: [POKEMON_SPECIES_QUERY_KEY],
+  queryKey: ['reference-data'],
 })
 
 // Predicate-based invalidation - complex logic
@@ -242,8 +226,8 @@ queryClient.invalidateQueries({
   predicate: (query) => {
     const [queryType, identifier] = query.queryKey
     return (
-      queryType === 'pokemon-moves-graphql' &&
-      identifier?.toString().startsWith('pika')
+      queryType === 'dynamic-content' &&
+      identifier?.toString().startsWith('prefix')
     )
   },
 })
@@ -261,7 +245,7 @@ const useAutoInvalidation = () => {
     const interval = setInterval(() => {
       // Invalidate real-time data every 30 seconds
       queryClient.invalidateQueries({
-        queryKey: ['real-time-pokemon-battles'],
+        queryKey: ['real-time-data'],
         exact: true,
       })
     }, 30000)
@@ -273,7 +257,7 @@ const useAutoInvalidation = () => {
 
 ## Optimistic Updates
 
-The template supports optimistic updates that provide immediate feedback while maintaining data consistency.
+The template supports optimistic updates that provide immediate feedback while maintaining data consistency. For optimistic update patterns, see the [TanStack Query Optimistic Updates Guide](https://tanstack.com/query/latest/docs/react/guides/optimistic-updates).
 
 ### Optimistic Update Pattern
 
@@ -282,22 +266,22 @@ const useOptimisticFavorite = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: updatePokemonFavorite,
+    mutationFn: updateEntityFavorite,
     onMutate: async (variables) => {
       // Cancel any outgoing refetches for favorites
       await queryClient.cancelQueries({
-        queryKey: ['pokemon-favorites'],
+        queryKey: ['entity-favorites'],
       })
 
       // Snapshot the previous value
-      const previousFavorites = queryClient.getQueryData(['pokemon-favorites'])
+      const previousFavorites = queryClient.getQueryData(['entity-favorites'])
 
       // Optimistically update the cache
-      queryClient.setQueryData(['pokemon-favorites'], (old: IPokemon[]) => {
+      queryClient.setQueryData(['entity-favorites'], (old: IEntity[]) => {
         if (variables.action === 'add') {
-          return [...(old || []), variables.pokemon]
+          return [...(old || []), variables.entity]
         } else {
-          return old?.filter((p) => p.id !== variables.pokemon.id) || []
+          return old?.filter((e) => e.id !== variables.entity.id) || []
         }
       })
 
@@ -308,7 +292,7 @@ const useOptimisticFavorite = () => {
       // Rollback optimistic update on error
       if (context?.previousFavorites) {
         queryClient.setQueryData(
-          ['pokemon-favorites'],
+          ['entity-favorites'],
           context.previousFavorites,
         )
       }
@@ -316,7 +300,7 @@ const useOptimisticFavorite = () => {
     onSettled: () => {
       // Always refetch to sync with server state
       queryClient.invalidateQueries({
-        queryKey: ['pokemon-favorites'],
+        queryKey: ['entity-favorites'],
       })
     },
   })
@@ -328,15 +312,15 @@ const useOptimisticFavorite = () => {
 Components can provide immediate feedback using optimistic updates:
 
 ```typescript
-const FavoriteButton: React.FC<{ pokemon: IPokemon }> = ({ pokemon }) => {
+const FavoriteButton: React.FC<{ entity: IEntity }> = ({ entity }) => {
   const optimisticUpdate = useOptimisticFavorite()
   const { data: favorites } = useFavorites()
 
-  const isFavorite = favorites?.some(f => f.id === pokemon.id) ?? false
+  const isFavorite = favorites?.some(f => f.id === entity.id) ?? false
 
   const handleToggle = () => {
     optimisticUpdate.mutate({
-      pokemon,
+      entity,
       action: isFavorite ? 'remove' : 'add'
     })
   }
@@ -386,40 +370,37 @@ const useCacheMonitoring = () => {
 
 ### Prefetching Strategies
 
-Proactive data loading improves user experience:
+Proactive data loading improves user experience. Learn more about prefetching in the [TanStack Query Prefetching Guide](https://tanstack.com/query/latest/docs/react/guides/prefetching):
 
 ```typescript
 const usePrefetchStrategy = () => {
   const queryClient = useQueryClient()
 
-  // Prefetch on hover for Pokemon cards
-  const prefetchPokemonOnHover = useCallback(
-    (pokemonId: number) => {
+  // Prefetch on hover for entity cards
+  const prefetchEntityOnHover = useCallback(
+    (entityId: number) => {
       queryClient.prefetchQuery({
-        queryKey: [POKEMON_SPECIES_QUERY_KEY, pokemonId],
-        queryFn: () => fetchPokemonSpecies(pokemonId),
+        queryKey: ['reference-data', entityId],
+        queryFn: () => fetchReferenceData(entityId),
         staleTime: 10 * 60 * 1000, // 10 minutes
       })
     },
     [queryClient],
   )
 
-  // Prefetch related data when viewing Pokemon details
+  // Prefetch related data when viewing entity details
   const prefetchRelatedData = useCallback(
-    (pokemonName: string) => {
+    (entityName: string) => {
       queryClient.prefetchQuery({
-        queryKey: [POKEMON_MOVES_GRAPHQL_QUERY_KEY, pokemonName],
-        queryFn: () => fetchPokemonMovesGraphQL(pokemonName),
-        staleTime:
-          POKEMON_MOVES_GRAPHQL_CONFIG.POKEMON_MOVES_GRAPHQL_CACHE_MINUTES *
-          60 *
-          1000,
+        queryKey: ['dynamic-content', entityName],
+        queryFn: () => fetchDynamicContent(entityName),
+        staleTime: 15 * 60 * 1000,
       })
     },
     [queryClient],
   )
 
-  return { prefetchPokemonOnHover, prefetchRelatedData }
+  return { prefetchEntityOnHover, prefetchRelatedData }
 }
 ```
 
@@ -460,28 +441,25 @@ const useBackgroundSync = () => {
 
 ## Next.js Server Caching
 
-The template integrates React Query caching with Next.js server-side caching for comprehensive performance optimization.
+The template integrates React Query caching with Next.js server-side caching for performance optimization. For more details on Next.js caching strategies, see the [Next.js Caching Documentation](https://nextjs.org/docs/app/building-your-application/caching).
 
 ### Fetch Cache Integration
 
 The HTTP adapters integrate with Next.js caching through fetch options:
 
 ```typescript
-// From Pokemon detail query implementation
-const response = await restClient.get<IPokemonDetail>(
-  `/pokemon/${name.toLowerCase()}`,
-  {
-    baseUrl: 'https://pokeapi.co/api/v2',
-    revalidate: 3600, // Cache for 1 hour
-  },
-)
+// Reference data with longer cache time
+const response = await restClient.get<IReferenceData>(`/reference/${id}`, {
+  baseUrl: 'https://api.example.com/v1',
+  revalidate: 3600, // Cache for 1 hour
+})
 
-// From Pokemon list query implementation
-const response = await graphqlClient.query<IPokemonsResponse>(
-  GET_POKEMONS,
+// Dynamic content with shorter cache time
+const response = await graphqlClient.query<IEntitiesResponse>(
+  GET_ENTITIES_QUERY,
   variables,
   {
-    baseUrl: 'https://graphql-pokeapi.graphcdn.app/graphql',
+    baseUrl: 'https://graphql.example.com/graphql',
     revalidate: 300, // Cache for 5 minutes
   },
 )
@@ -522,7 +500,7 @@ graph TB
     style API fill:#ffebee
 ```
 
-This coordination ensures that server-side and client-side caches work together rather than competing.
+This coordination ensures server-side and client-side caches work together rather than competing.
 
 ### Tag-Based Cache Management
 
@@ -531,10 +509,10 @@ Use cache tags for precise invalidation:
 ```typescript
 // Tag-based caching in queries
 const response = await graphqlClient.query(
-  GET_POKEMON_MOVES,
-  { name: pokemonName },
+  GET_ENTITY_DETAILS,
+  { id: entityId },
   {
-    tags: [`pokemon-${pokemonName}`, 'pokemon-moves'],
+    tags: [`entity-${entityId}`, 'entity-details'],
     revalidate: 300,
   },
 )
@@ -542,58 +520,54 @@ const response = await graphqlClient.query(
 // Programmatic cache invalidation
 import { revalidateTag } from 'next/cache'
 
-const updatePokemonMoves = async (pokemonName: string) => {
+const updateEntityDetails = async (entityId: string) => {
   // Update data in database
-  await updateMovesInDatabase(pokemonName)
+  await updateDetailsInDatabase(entityId)
 
-  // Invalidate specific Pokemon cache
-  revalidateTag(`pokemon-${pokemonName}`)
+  // Invalidate specific entity cache
+  revalidateTag(`entity-${entityId}`)
 
-  // Invalidate all Pokemon moves cache
-  revalidateTag('pokemon-moves')
+  // Invalidate all entity details cache
+  revalidateTag('entity-details')
 }
 ```
 
-## Real-World Examples
+## Caching Patterns
 
-The template demonstrates caching patterns through working Pokemon API examples.
+The template demonstrates common caching patterns that can be applied to various types of data and APIs.
 
-### Pokemon Species Caching
+### Reference Data Caching
 
-Long-lived reference data with extended cache times:
+Long-lived static data with extended cache times:
 
 ```typescript
 // Configuration: 30-minute stale time, 60-minute garbage collection
-const usePokemonSpecies = (pokemonId: number | undefined) => {
+const useReferenceData = (dataId: number | undefined) => {
   return useQuery({
-    queryKey: [POKEMON_SPECIES_QUERY_KEY, pokemonId],
-    queryFn: () => fetchPokemonSpecies(pokemonId!),
-    enabled: enabled && !!pokemonId,
-    staleTime: 1000 * 60 * POKEMON_SPECIES_CONFIG.SPECIES_CACHE_MINUTES, // 30 minutes
-    gcTime: 1000 * 60 * POKEMON_SPECIES_CONFIG.SPECIES_GC_MINUTES, // 60 minutes
-    retry: POKEMON_SPECIES_CONFIG.RETRY_COUNT,
+    queryKey: ['reference-data', dataId],
+    queryFn: () => fetchReferenceData(dataId!),
+    enabled: !!dataId,
+    staleTime: 1000 * 60 * 30, // 30 minutes
+    gcTime: 1000 * 60 * 60, // 60 minutes
+    retry: 2,
   })
 }
 ```
 
-### Pokemon Moves Caching
+### Dynamic Content Caching
 
 Moderate caching for semi-dynamic content:
 
 ```typescript
 // Configuration: 15-minute stale time, 30-minute garbage collection
-const usePokemonMovesGraphQL = (pokemonName: string) => {
+const useDynamicContent = (identifier: string) => {
   return useQuery({
-    queryKey: [POKEMON_MOVES_GRAPHQL_QUERY_KEY, pokemonName],
-    queryFn: () => fetchPokemonMovesGraphQL(pokemonName),
-    staleTime:
-      POKEMON_MOVES_GRAPHQL_CONFIG.POKEMON_MOVES_GRAPHQL_CACHE_MINUTES *
-      60 *
-      1000,
-    gcTime:
-      POKEMON_MOVES_GRAPHQL_CONFIG.POKEMON_MOVES_GRAPHQL_GC_MINUTES * 60 * 1000,
-    retry: POKEMON_MOVES_GRAPHQL_CONFIG.RETRY_COUNT,
-    enabled: options?.enabled,
+    queryKey: ['dynamic-content', identifier],
+    queryFn: () => fetchDynamicContent(identifier),
+    staleTime: 15 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    retry: 2,
+    enabled: !!identifier,
   })
 }
 ```
@@ -604,31 +578,31 @@ Pagination with intelligent cache management:
 
 ```typescript
 // Configuration: Manual triggering with 5-minute stale time
-export const useMorePokemons = ({ initialOffset = 8 } = {}) => {
+export const useInfiniteEntities = ({ initialOffset = 8 } = {}) => {
   return useInfiniteQuery({
-    queryKey: POKEMONS_QUERY_CONFIG.QUERY_KEY,
+    queryKey: ['entities', 'infinite'],
     queryFn: async ({ pageParam = initialOffset }) => {
-      const response = await graphqlClient.query<IPokemonsResponse>(
-        GET_POKEMONS,
+      const response = await graphqlClient.query<IEntitiesResponse>(
+        GET_ENTITIES_QUERY,
         {
-          limit: POKEMONS_PER_PAGE,
+          limit: ENTITIES_PER_PAGE,
           offset: pageParam,
         },
         {
-          baseUrl: 'https://graphql-pokeapi.graphcdn.app/',
+          baseUrl: 'https://api.example.com/graphql',
         },
       )
 
       return {
-        data: response.data?.pokemons?.results || [],
-        nextOffset: pageParam + POKEMONS_PER_PAGE,
+        data: response.data?.entities?.results || [],
+        nextOffset: pageParam + ENTITIES_PER_PAGE,
       }
     },
     initialPageParam: initialOffset,
     getNextPageParam: (lastPage) => {
       return totalLoaded < totalCount ? lastPage.nextOffset : undefined
     },
-    staleTime: POKEMONS_QUERY_CONFIG.STALE_TIME,
+    staleTime: 5 * 60 * 1000,
     enabled: false, // Manual trigger for performance
   })
 }
@@ -636,14 +610,14 @@ export const useMorePokemons = ({ initialOffset = 8 } = {}) => {
 
 ## Testing Cache Behavior
 
-The template includes comprehensive testing patterns for cache functionality.
+The template includes testing patterns for cache functionality. For detailed testing guidance, see the [TanStack Query Testing Guide](https://tanstack.com/query/latest/docs/react/guides/testing).
 
 ### Cache State Testing
 
 Test cache behavior without external dependencies:
 
 ```typescript
-describe('Pokemon Species Cache', () => {
+describe('Reference Data Cache', () => {
   let queryClient: QueryClient
 
   beforeEach(() => {
@@ -659,47 +633,41 @@ describe('Pokemon Species Cache', () => {
     queryClient.clear()
   })
 
-  it('should cache pokemon species data correctly', async () => {
-    const mockData = createMockPokemonSpecies({ id: 25, name: 'pikachu' })
+  it('should cache reference data correctly', async () => {
+    const mockData = createMockReferenceData({ id: 25, name: 'test-entity' })
     mockRestClient.get.mockResolvedValue(mockData)
 
-    const { result } = renderHook(() => usePokemonSpecies(25), {
+    const { result } = renderHook(() => useReferenceData(25), {
       wrapper: createQueryWrapper(queryClient),
     })
 
     await waitFor(() => {
-      expect(result.current.species).toEqual(mockData)
+      expect(result.current.data).toEqual(mockData)
     })
 
     // Verify data is cached
-    const cachedData = queryClient.getQueryData([POKEMON_SPECIES_QUERY_KEY, 25])
+    const cachedData = queryClient.getQueryData(['reference-data', 25])
     expect(cachedData).toEqual(mockData)
 
     // Verify cache configuration
-    const query = queryClient.getQueryState([POKEMON_SPECIES_QUERY_KEY, 25])
+    const query = queryClient.getQueryState(['reference-data', 25])
     expect(query?.dataUpdatedAt).toBeTruthy()
   })
 
   it('should handle cache invalidation correctly', async () => {
     // Setup initial cache state
-    queryClient.setQueryData(
-      [POKEMON_SPECIES_QUERY_KEY, 25],
-      createMockPokemonSpecies(),
-    )
+    queryClient.setQueryData(['reference-data', 25], createMockReferenceData())
 
-    const { result } = renderHook(() => useUpdatePokemonSpecies(), {
+    const { result } = renderHook(() => useUpdateReferenceData(), {
       wrapper: createQueryWrapper(queryClient),
     })
 
     await act(async () => {
-      result.current.mutate({ id: 25, updates: { name: 'updated-pikachu' } })
+      result.current.mutate({ id: 25, updates: { name: 'updated-entity' } })
     })
 
     // Verify cache was invalidated
-    const queryState = queryClient.getQueryState([
-      POKEMON_SPECIES_QUERY_KEY,
-      25,
-    ])
+    const queryState = queryClient.getQueryState(['reference-data', 25])
     expect(queryState?.isInvalidated).toBe(true)
   })
 })
@@ -711,22 +679,17 @@ Verify cache timing configurations:
 
 ```typescript
 describe('Cache Configuration', () => {
-  it('should use correct cache timings for Pokemon species', () => {
-    const expectedStaleTime =
-      POKEMON_SPECIES_CONFIG.SPECIES_CACHE_MINUTES * 60 * 1000
-    const expectedGcTime = POKEMON_SPECIES_CONFIG.SPECIES_GC_MINUTES * 60 * 1000
+  it('should use correct cache timings for reference data', () => {
+    const expectedStaleTime = REFERENCE_DATA_CONFIG.CACHE_MINUTES * 60 * 1000
+    const expectedGcTime = REFERENCE_DATA_CONFIG.GC_MINUTES * 60 * 1000
 
     expect(expectedStaleTime).toBe(30 * 60 * 1000) // 30 minutes
     expect(expectedGcTime).toBe(60 * 60 * 1000) // 60 minutes
   })
 
-  it('should use correct cache timings for Pokemon moves', () => {
-    const expectedStaleTime =
-      POKEMON_MOVES_GRAPHQL_CONFIG.POKEMON_MOVES_GRAPHQL_CACHE_MINUTES *
-      60 *
-      1000
-    const expectedGcTime =
-      POKEMON_MOVES_GRAPHQL_CONFIG.POKEMON_MOVES_GRAPHQL_GC_MINUTES * 60 * 1000
+  it('should use correct cache timings for dynamic content', () => {
+    const expectedStaleTime = DYNAMIC_CONTENT_CONFIG.CACHE_MINUTES * 60 * 1000
+    const expectedGcTime = DYNAMIC_CONTENT_CONFIG.GC_MINUTES * 60 * 1000
 
     expect(expectedStaleTime).toBe(15 * 60 * 1000) // 15 minutes
     expect(expectedGcTime).toBe(30 * 60 * 1000) // 30 minutes
@@ -807,4 +770,19 @@ const getCacheConfig = () => {
 }
 ```
 
-The caching system provides a solid foundation that teams can customize while maintaining the benefits of intelligent cache management and performance optimization.
+The caching system provides a foundation that teams can customize while maintaining the benefits of cache management and performance optimization.
+
+---
+
+## References
+
+| Resource                                                                                                    | Description                                              |
+| ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| [TanStack Query](https://tanstack.com/query/latest)                                                         | Data synchronization library for React applications      |
+| [TanStack Query Caching Guide](https://tanstack.com/query/latest/docs/react/guides/caching)                 | Guide to caching strategies and configuration            |
+| [TanStack Query Configuration](https://tanstack.com/query/latest/docs/react/reference/QueryClient)          | QueryClient configuration options and setup              |
+| [TanStack Query Invalidation Guide](https://tanstack.com/query/latest/docs/react/guides/query-invalidation) | Cache invalidation patterns and best practices           |
+| [TanStack Query Optimistic Updates](https://tanstack.com/query/latest/docs/react/guides/optimistic-updates) | Implementing optimistic UI updates with cache management |
+| [TanStack Query Prefetching Guide](https://tanstack.com/query/latest/docs/react/guides/prefetching)         | Data prefetching strategies for better user experience   |
+| [TanStack Query Testing Guide](https://tanstack.com/query/latest/docs/react/guides/testing)                 | Testing patterns for cached data and query behavior      |
+| [Next.js Caching Documentation](https://nextjs.org/docs/app/building-your-application/caching)              | Server-side caching strategies and configuration         |

@@ -2,7 +2,14 @@
 
 This document outlines the state management architecture that coordinates application data flow, user interactions, and cross-component communication. The template uses a hybrid approach combining server state management for API responses with client state management for user preferences and application state.
 
-**Live Implementation:** Pokemon features at `/pokemons` demonstrate every state management pattern described below.
+## Related Documentation
+
+- **[Architecture](./architecture.md)** - Coordinator pattern and architectural state integration
+- **[Data Fetching](./data-fetching.md)** - Server state management with TanStack Query
+- **[Caching](./caching.md)** - Cache coordination and state synchronization strategies
+- **[Testing](./testing.md)** - State management testing patterns and store validation
+- **[Authentication](./authentication.md)** - Authentication state patterns and security integration
+- **[Examples](./examples.md)** - Practical state management implementation examples
 
 ---
 
@@ -54,8 +61,8 @@ User Experience
 
 **State Management Distinction:**
 
-- **Server State**: API responses, data fetching, and synchronization - managed by TanStack Query
-- **Client State**: User preferences, UI state, and cross-component communication - managed by Zustand
+- **Server State**: API responses, data fetching, and synchronization - managed by [TanStack Query](https://tanstack.com/query/latest)
+- **Client State**: User preferences, UI state, and cross-component communication - managed by [Zustand](https://zustand-demo.pmnd.rs/)
 - **Integration Layer**: Custom hooks provide unified interfaces combining both state types
 - **Persistence**: Client state persists across sessions with selective storage strategies
 
@@ -82,8 +89,6 @@ Server state requires specialized handling for caching, synchronization, and err
 - Request deduplication and concurrent query handling
 - Error boundaries with retry mechanisms and fallback strategies
 
-**Implementation Reference:** [`app/views/pokemons/pokemons.hook.ts`](../app/views/pokemons/pokemons.hook.ts)
-
 **Key Features:**
 
 - Infinite query patterns for paginated data loading
@@ -92,27 +97,27 @@ Server state requires specialized handling for caching, synchronization, and err
 - Optimistic updates with rollback capabilities
 
 ```typescript
-// Server state example - Infinite Pokemon loading
-export const useMorePokemons = ({
+// Server state example - Infinite entity loading
+export const useMoreEntities = ({
   initialOffset = 8,
-}: TUseMorePokemonsOptions = {}) => {
+}: TUseMoreEntitiesOptions = {}) => {
   return useInfiniteQuery({
-    queryKey: POKEMONS_QUERY_CONFIG.QUERY_KEY,
+    queryKey: ENTITIES_QUERY_CONFIG.QUERY_KEY,
     queryFn: async ({ pageParam = initialOffset }) => {
-      const response = await graphqlClient.query<IPokemonsResponse>(
-        GET_POKEMONS,
+      const response = await graphqlClient.query<IEntitiesResponse>(
+        GET_ENTITIES_QUERY,
         {
-          limit: POKEMONS_PER_PAGE,
+          limit: ENTITIES_PER_PAGE,
           offset: pageParam,
         },
       )
 
       return {
-        data: response.data?.pokemons?.results || [],
-        nextOffset: pageParam + POKEMONS_PER_PAGE,
+        data: response.data?.entities?.results || [],
+        nextOffset: pageParam + ENTITIES_PER_PAGE,
       }
     },
-    staleTime: POKEMONS_QUERY_CONFIG.STALE_TIME,
+    staleTime: ENTITIES_QUERY_CONFIG.STALE_TIME,
     enabled: false,
   })
 }
@@ -129,55 +134,47 @@ export const useMorePokemons = ({
 - UI state management for complex interactions
 - Cross-session data persistence with selective storage
 
-**Implementation Reference:** [`app/stores/pokemon-history/pokemon-history.ts`](../app/stores/pokemon-history/pokemon-history.ts)
-
 **Key Features:**
 
-- Zustand store architecture with TypeScript integration
+- [Zustand store architecture](https://zustand-demo.pmnd.rs/) with TypeScript integration
 - Persistence middleware with selective state serialization
 - Immutable update patterns with performance optimization
 - Feature-based store organization for maintainability
 
 ```typescript
-// Client state example - Pokemon viewing history
-const usePokemonHistoryStore = create<IPokemonHistoryStore>()(
+// Client state example - Entity viewing history
+const useHistoryStore = create<IHistoryStore>()(
   persist(
     (set) => ({
       history: [],
-      addToHistory: (pokemon: IPokemon) => {
+      addToHistory: (entity: IEntity) => {
         return set((state) => {
           const existingIndex = state.history.findIndex(
-            (item) => item.name === pokemon.name,
+            (item) => item.id === entity.id,
           )
 
           if (existingIndex !== -1) {
             // Move existing item to front
             const newHistory = [
-              pokemon,
+              entity,
               ...state.history.filter((_, index) => index !== existingIndex),
             ]
             return {
-              history: newHistory.slice(
-                0,
-                POKEMON_HISTORY_CONFIG.MAX_HISTORY_SIZE,
-              ),
+              history: newHistory.slice(0, HISTORY_CONFIG.MAX_HISTORY_SIZE),
             }
           }
 
           // Add new item to front
-          const newHistory = [pokemon, ...state.history]
+          const newHistory = [entity, ...state.history]
           return {
-            history: newHistory.slice(
-              0,
-              POKEMON_HISTORY_CONFIG.MAX_HISTORY_SIZE,
-            ),
+            history: newHistory.slice(0, HISTORY_CONFIG.MAX_HISTORY_SIZE),
           }
         })
       },
       clearHistory: () => set({ history: [] }),
     }),
     {
-      name: POKEMON_HISTORY_CONFIG.STORAGE_KEY,
+      name: HISTORY_CONFIG.STORAGE_KEY,
       partialize: (state) => ({ history: state.history }),
     },
   ),
@@ -192,9 +189,7 @@ const usePokemonHistoryStore = create<IPokemonHistoryStore>()(
 Custom hooks coordinate server and client state to provide unified interfaces for component consumption, abstracting state management complexity from UI components.
 
 **Implementation Pattern:**
-Server state via TanStack Query for Pokemon data, client state via Zustand for viewing history, seamless integration through custom hooks that handle both state types.
-
-**Implementation Reference:** [`app/views/pokemons/components/pokemon-search/pokemon-search.hook.ts`](../app/views/pokemons/components/pokemon-search/pokemon-search.hook.ts)
+Server state via TanStack Query for entity data, client state via Zustand for viewing history, seamless integration through custom hooks that handle both state types.
 
 **Key Benefits:**
 
@@ -210,7 +205,7 @@ Server state via TanStack Query for Pokemon data, client state via Zustand for v
 ### Zustand Store Organization
 
 **Store Design Philosophy:**
-Feature-based store organization with clear interfaces, immutable updates, and selective persistence strategies for optimal performance and maintainability.
+Feature-based store organization with clear interfaces, immutable updates, and selective persistence strategies for performance and maintainability.
 
 **Store Structure Pattern:**
 
@@ -270,24 +265,24 @@ The template uses a consistent pattern for store creation with clear separation 
 
 ```typescript
 // Store interface definition
-interface IPokemonHistoryStore {
+interface IHistoryStore {
   // State properties
-  history: IPokemon[]
+  history: IEntity[]
 
   // Action methods
-  addToHistory: (pokemon: IPokemon) => void
+  addToHistory: (entity: IEntity) => void
   clearHistory: () => void
 }
 
 // Store implementation with persistence
-const usePokemonHistoryStore = create<IPokemonHistoryStore>()(
+const useHistoryStore = create<IHistoryStore>()(
   persist(
     (set) => ({
       // Initial state
       history: [],
 
       // State mutations
-      addToHistory: (pokemon: IPokemon) => {
+      addToHistory: (entity: IEntity) => {
         return set((state) => {
           // Immutable update logic with deduplication
         })
@@ -297,7 +292,7 @@ const usePokemonHistoryStore = create<IPokemonHistoryStore>()(
     }),
     {
       // Persistence configuration
-      name: POKEMON_HISTORY_CONFIG.STORAGE_KEY,
+      name: HISTORY_CONFIG.STORAGE_KEY,
       partialize: (state) => ({ history: state.history }),
     },
   ),
@@ -317,12 +312,12 @@ Multiple stores handle different application domains with clear boundaries and r
 
 **Store Organization:**
 
-| Store Domain          | Responsibilities                         | Persistence Strategy          | Example Implementation                                                   |
-| --------------------- | ---------------------------------------- | ----------------------------- | ------------------------------------------------------------------------ |
-| **Pokemon History**   | User viewing history tracking            | Local storage (cross-session) | [`pokemon-history.ts`](../app/stores/pokemon-history/pokemon-history.ts) |
-| **User Preferences**  | Theme, language, notification settings   | Local storage (persistent)    | Feature-based preference stores                                          |
-| **UI State**          | Modal states, navigation, temporary data | Session storage (temporary)   | Component-specific UI state stores                                       |
-| **Application State** | Global app settings, feature flags       | Local storage (configurable)  | Application-wide configuration stores                                    |
+| Store Domain          | Responsibilities                         | Persistence Strategy          | Example Implementation                |
+| --------------------- | ---------------------------------------- | ----------------------------- | ------------------------------------- |
+| **Entity History**    | User viewing history tracking            | Local storage (cross-session) | `@/stores/entity-history`             |
+| **User Preferences**  | Theme, language, notification settings   | Local storage (persistent)    | Feature-based preference stores       |
+| **UI State**          | Modal states, navigation, temporary data | Session storage (temporary)   | Component-specific UI state stores    |
+| **Application State** | Global app settings, feature flags       | Local storage (configurable)  | Application-wide configuration stores |
 
 ### State Update Patterns
 
@@ -332,27 +327,27 @@ The template enforces immutable update patterns to ensure predictable state chan
 
 ```typescript
 // Complex state update with deduplication
-addToHistory: (pokemon: IPokemon) => {
+addToHistory: (entity: IEntity) => {
   return set((state) => {
     const existingIndex = state.history.findIndex(
-      (item) => item.name === pokemon.name,
+      (item) => item.id === entity.id,
     )
 
     if (existingIndex !== -1) {
       // Remove existing item and add to front
       const newHistory = [
-        pokemon,
+        entity,
         ...state.history.filter((_, index) => index !== existingIndex),
       ]
       return {
-        history: newHistory.slice(0, POKEMON_HISTORY_CONFIG.MAX_HISTORY_SIZE),
+        history: newHistory.slice(0, HISTORY_CONFIG.MAX_HISTORY_SIZE),
       }
     }
 
     // Add new item to front with size limit
-    const newHistory = [pokemon, ...state.history]
+    const newHistory = [entity, ...state.history]
     return {
-      history: newHistory.slice(0, POKEMON_HISTORY_CONFIG.MAX_HISTORY_SIZE),
+      history: newHistory.slice(0, HISTORY_CONFIG.MAX_HISTORY_SIZE),
     }
   })
 }
@@ -426,17 +421,17 @@ The template uses consistent patterns for query hook creation with error handlin
 
 ```typescript
 // Search query with error handling
-export const usePokemonNameSearch = (searchTerm: string) => {
+export const useEntityNameSearch = (searchTerm: string) => {
   const {
     data: result,
     isLoading,
     error,
     refetch,
   } = useQuery({
-    queryKey: [POKEMON_SEARCH_QUERY_KEY, searchTerm],
-    queryFn: () => searchPokemonByName(searchTerm),
+    queryKey: [ENTITY_SEARCH_QUERY_KEY, searchTerm],
+    queryFn: () => searchEntityByName(searchTerm),
     enabled: !!searchTerm.trim(),
-    staleTime: POKEMON_SEARCH_STALE_TIME,
+    staleTime: ENTITY_SEARCH_STALE_TIME,
     retry: 1,
   })
 
@@ -453,8 +448,6 @@ export const usePokemonNameSearch = (searchTerm: string) => {
 
 Complex pagination scenarios use infinite queries with background loading and cache management:
 
-**Implementation Reference:** [`app/views/pokemons/pokemons.hook.ts`](../app/views/pokemons/pokemons.hook.ts)
-
 **Key Features:**
 
 - Infinite scrolling with automatic page management
@@ -463,25 +456,25 @@ Complex pagination scenarios use infinite queries with background loading and ca
 - Error handling with partial data recovery
 
 ```typescript
-// Infinite query for paginated Pokemon data
-export const useMorePokemons = ({
+// Infinite query for paginated entity data
+export const useMoreEntities = ({
   initialOffset = 8,
-}: TUseMorePokemonsOptions = {}) => {
+}: TUseMoreEntitiesOptions = {}) => {
   return useInfiniteQuery({
-    queryKey: POKEMONS_QUERY_CONFIG.QUERY_KEY,
+    queryKey: ENTITIES_QUERY_CONFIG.QUERY_KEY,
     queryFn: async ({ pageParam = initialOffset }) => {
-      const response = await graphqlClient.query<IPokemonsResponse>(
-        GET_POKEMONS,
+      const response = await graphqlClient.query<IEntitiesResponse>(
+        GET_ENTITIES_QUERY,
         {
-          limit: POKEMONS_PER_PAGE,
+          limit: ENTITIES_PER_PAGE,
           offset: pageParam,
         },
       )
 
       return {
-        data: response.data?.pokemons?.results || [],
-        count: response.data?.pokemons?.count || 0,
-        nextOffset: pageParam + POKEMONS_PER_PAGE,
+        data: response.data?.entities?.results || [],
+        count: response.data?.entities?.count || 0,
+        nextOffset: pageParam + ENTITIES_PER_PAGE,
       }
     },
     initialPageParam: initialOffset,
@@ -489,7 +482,7 @@ export const useMorePokemons = ({
       const totalLoaded = lastPage.nextOffset
       return totalLoaded < lastPage.count ? lastPage.nextOffset : undefined
     },
-    staleTime: POKEMONS_QUERY_CONFIG.STALE_TIME,
+    staleTime: ENTITIES_QUERY_CONFIG.STALE_TIME,
     enabled: false, // Manual trigger for performance
   })
 }
@@ -501,23 +494,23 @@ export const useMorePokemons = ({
 
 The template uses strategic cache configuration to balance performance with data freshness:
 
-| Query Type         | Stale Time | Cache Strategy     | Use Case                                  |
-| ------------------ | ---------- | ------------------ | ----------------------------------------- |
-| **Static Data**    | 30 minutes | Long-term caching  | Pokemon species info, unchanging data     |
-| **Dynamic Data**   | 5 minutes  | Background refresh | Pokemon lists, frequently updated content |
-| **Search Results** | 10 minutes | Moderate caching   | Search queries, user-driven requests      |
-| **Real-time Data** | 30 seconds | Frequent refresh   | Live data, time-sensitive information     |
+| Query Type         | Stale Time | Cache Strategy     | Use Case                                 |
+| ------------------ | ---------- | ------------------ | ---------------------------------------- |
+| **Static Data**    | 30 minutes | Long-term caching  | Entity metadata, unchanging data         |
+| **Dynamic Data**   | 5 minutes  | Background refresh | Entity lists, frequently updated content |
+| **Search Results** | 10 minutes | Moderate caching   | Search queries, user-driven requests     |
+| **Real-time Data** | 30 seconds | Frequent refresh   | Live data, time-sensitive information    |
 
 **Implementation Configuration:**
 
 ```typescript
 // Cache configuration constants
-export const POKEMONS_QUERY_CONFIG = {
+export const ENTITIES_QUERY_CONFIG = {
   STALE_TIME: 5 * 60 * 1000, // 5 minutes
-  QUERY_KEY: ['pokemons', 'infinite'],
+  QUERY_KEY: ['entities', 'infinite'],
 }
 
-export const POKEMON_SEARCH_STALE_TIME = 10 * 60 * 1000 // 10 minutes
+export const ENTITY_SEARCH_STALE_TIME = 10 * 60 * 1000 // 10 minutes
 ```
 
 ---
@@ -575,35 +568,31 @@ The template uses custom hooks to coordinate multiple state sources and provide 
 
 ```typescript
 // Coordinated state hook example
-export const usePokemonInteraction = (pokemon: IPokemon) => {
-  // Server state for Pokemon details
-  const {
-    data: pokemonDetails,
-    isLoading,
-    error,
-  } = usePokemonDetails(pokemon.name)
+export const useEntityInteraction = (entity: IEntity) => {
+  // Server state for entity details
+  const { data: entityDetails, isLoading, error } = useEntityDetails(entity.id)
 
   // Client state for viewing history
-  const addToHistory = usePokemonHistoryStore((state) => state.addToHistory)
-  const history = usePokemonHistoryStore((state) => state.history)
+  const addToHistory = useHistoryStore((state) => state.addToHistory)
+  const history = useHistoryStore((state) => state.history)
 
   // Coordinated actions
-  const handlePokemonView = useCallback(() => {
-    addToHistory(pokemon)
+  const handleEntityView = useCallback(() => {
+    addToHistory(entity)
     // Additional side effects
-  }, [pokemon, addToHistory])
+  }, [entity, addToHistory])
 
   // Derived state
   const isInHistory = useMemo(() => {
-    return history.some((item) => item.name === pokemon.name)
-  }, [history, pokemon.name])
+    return history.some((item) => item.id === entity.id)
+  }, [history, entity.id])
 
   return {
-    pokemonDetails,
+    entityDetails,
     isLoading,
     error,
     isInHistory,
-    handlePokemonView,
+    handleEntityView,
   }
 }
 ```
@@ -627,19 +616,18 @@ The template minimizes component re-renders through targeted state subscriptions
 
 ```typescript
 // Optimized selectors for specific data
-const usePokemonHistory = () => usePokemonHistoryStore((state) => state.history)
-const useHistoryCount = () =>
-  usePokemonHistoryStore((state) => state.history.length)
+const useEntityHistory = () => useHistoryStore((state) => state.history)
+const useHistoryCount = () => useHistoryStore((state) => state.history.length)
 const useHistoryActions = () =>
-  usePokemonHistoryStore((state) => ({
+  useHistoryStore((state) => ({
     addToHistory: state.addToHistory,
     clearHistory: state.clearHistory,
   }))
 
 // Component-specific optimized hooks
-const usePokemonInHistory = (pokemonName: string) => {
-  return usePokemonHistoryStore((state) =>
-    state.history.some((item) => item.name === pokemonName),
+const useEntityInHistory = (entityId: string) => {
+  return useHistoryStore((state) =>
+    state.history.some((item) => item.id === entityId),
   )
 }
 ```
@@ -658,7 +646,7 @@ const usePokemonInHistory = (pokemonName: string) => {
 **Query Management Guidelines:**
 
 - **Cache Configuration**: Configure appropriate stale times based on data freshness requirements
-- **Error Handling**: Implement comprehensive error boundaries with retry mechanisms
+- **Error Handling**: Implement error boundaries with retry mechanisms
 - **Loading States**: Coordinate loading states across multiple query sources
 - **Query Keys**: Use consistent query key patterns for cache management
 
@@ -670,5 +658,18 @@ const usePokemonInHistory = (pokemonName: string) => {
 2. **Interface Design**: Define clear interfaces and action patterns
 3. **Implementation**: Implement stores or queries with appropriate middleware
 4. **Integration**: Create custom hooks for component coordination
-5. **Testing**: Develop comprehensive test coverage for state logic
+5. **Testing**: Develop test coverage for state logic
 6. **Optimization**: Profile and optimize subscription patterns and cache usage
+
+---
+
+## References
+
+| Resource                                                                                      | Description                                             |
+| --------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| [Zustand](https://zustand-demo.pmnd.rs/)                                                      | Small, fast, and scalable state management library      |
+| [Zustand Persist Middleware](https://github.com/pmndrs/zustand#persist-middleware)            | Local storage integration for cross-session persistence |
+| [TanStack Query](https://tanstack.com/query/latest)                                           | Data synchronization for React applications             |
+| [TanStack Query React Guide](https://tanstack.com/query/latest/docs/framework/react/overview) | Complete React integration documentation                |
+| [React useState Hook](https://react.dev/reference/react/useState)                             | Official React documentation for local state management |
+| [React useContext Hook](https://react.dev/reference/react/useContext)                         | React Context API for component tree state sharing      |
