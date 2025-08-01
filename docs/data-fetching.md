@@ -209,6 +209,133 @@ export const HTTP_ADAPTER_CONFIG = {
 }
 ```
 
+## Server-Side Component Data Fetching
+
+### Pattern Overview
+
+Components can perform server-side data fetching for SEO optimization and improved performance. This pattern separates data fetching logic from presentation logic through **container components** that fetch data and pass it to reusable presentational components.
+
+### Architectural Strategy
+
+```mermaid
+graph TD
+    subgraph "Server-Side Component Pattern"
+        A[Route/Page] -->|"Renders"| B[Container Component]
+        B -->|"Fetches Data"| C[Data Service]
+        B -->|"Passes Data"| D[Presentational Component]
+        C -->|"Returns Response"| B
+    end
+
+    subgraph "Component Responsibilities"
+        B -->|"Data Fetching"| E[Server-Side Logic]
+        B -->|"Error Handling"| F[Response Validation]
+        D -->|"UI Rendering"| G[Presentation Logic]
+        D -->|"User Interaction"| H[Client-Side Behavior]
+    end
+
+    style B fill:#e1f5fe
+    style D fill:#e8f5e8
+    style E fill:#fff3e0
+    style G fill:#f3e5f5
+```
+
+### Implementation Pattern
+
+**Container Component (Server-Side)**
+
+```typescript
+// Server component with data fetching
+const EntityContainer = async ({ id }: { id: string }) => {
+  const { success, data, error } = await getEntityData(id)
+
+  if (!success || !data) {
+    console.error('Error loading entity data:', error)
+    return null
+  }
+
+  // Pass data to presentational component
+  return <EntityPresentation data={data.entity} />
+}
+```
+
+**Presentational Component (Reusable)**
+
+```typescript
+// Reusable component accepting data as props
+const EntityPresentation = ({ data }: { data: IEntity }) => {
+  return (
+    <div className="entity-container">
+      <h1>{data.title}</h1>
+      <p>{data.description}</p>
+      {/* Rendering logic without data fetching concerns */}
+    </div>
+  )
+}
+```
+
+### Data Service Integration
+
+Server-side components use the same HTTP service layer as client-side code, ensuring consistent patterns:
+
+```typescript
+// Query function using the unified service layer
+const getEntityData = async (id: string) => {
+  try {
+    const response = await restClient.get<IEntityResponse>(`/entities/${id}`, {
+      baseUrl: process.env.API_BASE_URL,
+      revalidate: 3600, // Next.js ISR caching
+      tags: ['entity', id], // Cache invalidation tags
+    })
+
+    return {
+      success: true,
+      data: response,
+      error: null,
+    }
+  } catch (error) {
+    return {
+      success: false,
+      data: null,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    }
+  }
+}
+```
+
+### Benefits
+
+- **SEO Optimization**: Server-side rendering ensures content is available for search engines
+- **Performance**: Initial data is rendered on the server, reducing client-side requests
+- **Separation of Concerns**: Data fetching logic is separated from presentation logic
+- **Reusability**: Presentational components can be reused with different data sources
+- **Error Boundaries**: Server-side error handling prevents client-side failures
+- **Type Safety**: Strong typing throughout the data flow from service to component
+- **Caching Integration**: Seamless integration with Next.js ISR and cache strategies
+
+### Usage Guidelines
+
+**When to Use This Pattern**
+
+- Components that need SEO-optimized content
+- Data that should be available on initial page load
+- Components that benefit from server-side caching
+- Content that doesn't require real-time updates
+
+**When to Use Alternative Patterns**
+
+- Highly interactive components requiring client-side state
+- Data that needs real-time updates or user-specific content
+- Components that require client-side user authentication
+
+### Integration with Service Layer
+
+Server-side components leverage the same unified HTTP service layer:
+
+- **Consistent APIs**: Same `restClient` and `graphqlClient` interfaces work in server context
+- **Error Handling**: Unified error processing across server and client contexts
+- **Caching**: Next.js-specific cache options (`revalidate`, `tags`) integrate seamlessly
+- **Type Safety**: Full TypeScript support throughout the data flow
+
 ## Client Configuration
 
 The template provides two singleton clients that handle protocol-specific concerns while maintaining consistent interfaces for application code.
