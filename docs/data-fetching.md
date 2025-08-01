@@ -6,6 +6,7 @@ Patterns for API integration and server state management that balance developer 
 
 - [HTTP Service Architecture](#http-service-architecture)
 - [Adapter Pattern Implementation](#adapter-pattern-implementation)
+- [Server-Side Component Data Fetching](#server-side-component-data-fetching)
 - [Client Configuration](#client-configuration)
 - [React Query Integration](#react-query-integration)
 - [Error Handling Strategies](#error-handling-strategies)
@@ -19,7 +20,7 @@ Patterns for API integration and server state management that balance developer 
 - [Architecture](./architecture.md) - Service layer architecture and coordinator patterns
 - [Caching](./caching.md) - Cache integration and performance optimization strategies
 - [State Management](./state-management.md) - Server state management with TanStack Query
-- **[Authentication](./authentication.md)** - Secure API requests and authentication integration
+- [Authentication](./authentication.md) - Secure API requests and authentication integration
 - [Testing](./testing.md) - Service testing patterns and HTTP client validation
 - [Examples](./examples.md) - Practical data fetching implementation examples
 
