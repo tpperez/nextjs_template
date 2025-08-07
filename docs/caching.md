@@ -1,228 +1,326 @@
 # Caching
 
-Performance optimization strategies including client-side caching, server-side caching, cache invalidation policies, and performance monitoring procedures.
+Caching implementation across client-side state management, server-side optimization, and browser-level performance to minimize redundant requests while maintaining data freshness.
 
-## client-side caching architecture
+## Table of Contents
 
-### tanstack query configuration
+- [Caching Architecture](#caching-architecture)
+- [Client-Side Caching Strategy](#client-side-caching-strategy)
+- [React Query Configuration](#react-query-configuration)
+- [Cache Invalidation Patterns](#cache-invalidation-patterns)
+- [Optimistic Updates](#optimistic-updates)
+- [Performance Optimization](#performance-optimization)
+- [Next.js Server Caching](#nextjs-server-caching)
+- [Caching Patterns](#caching-patterns)
+- [Testing Cache Behavior](#testing-cache-behavior)
+- [Cache Management](#cache-management)
 
-react query provides intelligent client-side caching with configurable policies:
+## Related Documentation
+
+- [Data Fetching](./data-fetching.md) - HTTP service integration and cache coordination strategies
+- [Architecture](./architecture.md) - Performance optimization within architectural layers
+- [State Management](./state-management.md) - Server state caching with TanStack Query
+- [Testing](./testing.md) - Cache behavior testing and validation patterns
+- [Examples](./examples.md) - Practical caching implementation examples
+
+## Caching Architecture
+
+The template uses a multi-layered caching strategy that coordinates between browser cache, React Query's in-memory cache, and Next.js server-side caching. This approach minimizes network requests while ensuring users see fresh data when it matters.
+
+## Caching Layers (Top to Bottom)
+
+| Layer                 | Purpose                     | Examples                 |
+| --------------------- | --------------------------- | ------------------------ |
+| **Browser Cache**     | Static assets, HTTP cache   | Images, CSS, JS files    |
+| **React Query Cache** | In-memory server state      | API responses, user data |
+| **Next.js Cache**     | Server-side data & requests | SSG, ISR, API responses  |
+| **Network Cache**     | HTTP-level caching          | CDN, proxy cache         |
+
+**Flow:** User Request → Browser Cache → React Query → Next.js Cache → Network/API
+
+This architecture provides multiple cache layers that work together to optimize performance. The browser cache handles static assets, React Query manages client-side state, Next.js handles server-side data, and the network layer communicates with external APIs.
+
+### Cache Layer Responsibilities
+
+Each caching layer serves specific purposes within the overall strategy:
+
+#### Browser Cache
+
+Handles static assets like images, CSS, and JavaScript files. The template configures appropriate cache headers for different asset types through Next.js configuration.
+
+#### React Query Cache
+
+Manages server state in memory with intelligent staleness detection and background updates. This layer prevents redundant API calls and provides instant UI updates through cached data.
+
+#### Next.js Cache
+
+Provides server-side caching for API responses and static generation. Integrates with React Query through the fetch adapter to coordinate cache strategies.
+
+#### Network Cache
+
+Handles HTTP-level caching for external API responses at the network layer.
+
+## Client-Side Caching Strategy
+
+The template uses [TanStack Query](https://tanstack.com/query/latest) for client-side caching that adapts to different data patterns and user behaviors.
+
+### Cache Configuration by Data Type
+
+Different types of data require different caching strategies based on their update frequency and importance. For detailed configuration options, refer to the [TanStack Query Caching documentation](https://tanstack.com/query/latest/docs/react/guides/caching).
 
 ```typescript
-// query client configuration
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes (previously cacheTime)
-      retry: (failureCount, error) => {
-        if (error?.status === 404) return false
-        return failureCount < 3
-      },
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: true,
+// Long-lived reference data - Static content that rarely changes
+const useReferenceData = (entityId: number | undefined) => {
+  return useQuery({
+    queryKey: ['reference-data', entityId],
+    queryFn: () => fetchReferenceData(entityId!),
+    enabled: !!entityId,
+    staleTime: 1000 * 60 * 30, // 30 minutes
+    gcTime: 1000 * 60 * 60, // 60 minutes
+    retry: 2,
+  })
+}
+
+// Moderate cache for semi-dynamic content
+const useDynamicContent = (identifier: string) => {
+  return useQuery({
+    queryKey: ['dynamic-content', identifier],
+    queryFn: () => fetchDynamicContent(identifier),
+    staleTime: 1000 * 60 * 15, // 15 minutes
+    gcTime: 1000 * 60 * 30, // 30 minutes
+    retry: 2,
+    enabled: !!identifier,
+  })
+}
+
+// Short cache for frequently changing data
+export const useInfiniteEntities = ({ initialOffset = 8 } = {}) => {
+  return useInfiniteQuery({
+    queryKey: ['entities', 'infinite'],
+    queryFn: async ({ pageParam = initialOffset }) => {
+      // Implementation details...
     },
-    mutations: {
-      retry: 1,
-      onError: (error, variables, context) => {
-        console.error('mutation failed:', error)
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    enabled: false, // Manual triggering for performance
+  })
+}
+```
+
+## React Query Configuration
+
+The template configures React Query with opinionated defaults that balance performance with development experience. For configuration options, see the [TanStack Query Configuration Guide](https://tanstack.com/query/latest/docs/react/reference/QueryClient).
+
+### Provider Configuration
+
+The `HttpProvider` in `app/services/http/providers/react-query.tsx` establishes global caching behavior:
+
+```typescript
+export const HttpProvider = ({ children }: HttpProviderProps) => {
+  const [queryClient] = useState(() => {
+    return new QueryClient({
+      defaultOptions: {
+        queries: {
+          staleTime: HTTP_CONFIG.DEFAULT_STALE_TIME, // 5 minutes
+          retry: HTTP_CONFIG.DEFAULT_RETRY_COUNT,    // 1 retry (vs React Query's default of 3)
+          refetchOnWindowFocus: false,               // Disabled (vs React Query's default of true)
+          refetchOnReconnect: 'always',             // React Query's default
+        },
+        mutations: {
+          retry: false,                             // Don't retry mutations automatically
+        },
       },
+    })
+  })
+
+  return (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  )
+}
+```
+
+These defaults prioritize developer experience by reducing aggressive refetching while maintaining data freshness when reconnecting.
+
+### Cache Lifecycle Management
+
+React Query manages cache lifecycle through two key timing configurations:
+
+```mermaid
+graph LR
+    subgraph "Cache Lifecycle"
+        Fresh[Fresh Data] --> Stale[Stale Data]
+        Stale --> BG[Background Refetch]
+        Stale --> GC[Garbage Collection]
+        BG --> Fresh
+        GC --> Removed[Removed from Cache]
+    end
+
+    subgraph "Configuration"
+        ST[staleTime: 15 min]
+        GT[gcTime: 30 min]
+    end
+
+    ST --> Stale
+    GT --> GC
+
+    style Fresh fill:#e8f5e8
+    style Stale fill:#fff3e0
+    style Removed fill:#ffebee
+```
+
+**staleTime**: Determines how long data remains fresh. During this period, React Query serves cached data without network requests.
+
+**gcTime** (formerly cacheTime): Controls how long stale data remains in memory. This allows instant loading when users return to previously viewed data.
+
+## Cache Invalidation Patterns
+
+The template implements strategic cache invalidation to maintain data consistency without excessive network activity. For detailed invalidation strategies, refer to the [TanStack Query Invalidation Guide](https://tanstack.com/query/latest/docs/react/guides/query-invalidation).
+
+### Mutation-Based Invalidation
+
+Mutations automatically invalidate related cache entries to ensure UI consistency:
+
+```typescript
+const useUpdateEntityData = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: updateEntityInDatabase,
+    onSuccess: (data, variables) => {
+      // Invalidate specific entity data
+      queryClient.invalidateQueries({
+        queryKey: ['reference-data', variables.id],
+      })
+
+      // Invalidate related dynamic content
+      queryClient.invalidateQueries({
+        queryKey: ['dynamic-content', variables.name],
+      })
+
+      // Invalidate list queries to reflect changes
+      queryClient.invalidateQueries({
+        queryKey: ['entities', 'infinite'],
+      })
     },
+  })
+}
+```
+
+### Selective Invalidation Strategies
+
+Different scenarios require different invalidation approaches:
+
+```typescript
+// Exact match invalidation - only specific query
+queryClient.invalidateQueries({
+  queryKey: ['reference-data', 25],
+  exact: true,
+})
+
+// Prefix match invalidation - all reference data queries
+queryClient.invalidateQueries({
+  queryKey: ['reference-data'],
+})
+
+// Predicate-based invalidation - complex logic
+queryClient.invalidateQueries({
+  predicate: (query) => {
+    const [queryType, identifier] = query.queryKey
+    return (
+      queryType === 'dynamic-content' &&
+      identifier?.toString().startsWith('prefix')
+    )
   },
 })
-
-// cache persistence configuration
-const persister = createSyncStoragePersister({
-  storage: window.localStorage,
-  key: 'react-query-cache',
-  serialize: JSON.stringify,
-  deserialize: JSON.parse,
-})
-
-// persist query client
-persistQueryClient({
-  queryClient,
-  persister,
-  maxAge: 24 * 60 * 60 * 1000, // 24 hours
-  buster: process.env.REACT_APP_VERSION, // bust cache on version change
-})
 ```
 
-### cache strategies by data type
+### Time-Based Invalidation
 
-different data types require specific caching strategies:
-
-```typescript
-// static reference data - long cache
-const useCountries = () => {
-  return useQuery({
-    queryKey: ['countries'],
-    queryFn: fetchCountries,
-    staleTime: Infinity, // never stale
-    gcTime: Infinity, // never garbage collected
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-  })
-}
-
-// user profile data - moderate cache
-const useUserProfile = (userId: string) => {
-  return useQuery({
-    queryKey: ['user-profile', userId],
-    queryFn: () => fetchUserProfile(userId),
-    staleTime: 30 * 60 * 1000, // 30 minutes
-    gcTime: 60 * 60 * 1000, // 1 hour
-    enabled: !!userId,
-  })
-}
-
-// real-time data - minimal cache
-const useNotifications = () => {
-  return useQuery({
-    queryKey: ['notifications'],
-    queryFn: fetchNotifications,
-    staleTime: 0, // always stale
-    gcTime: 5 * 60 * 1000, // 5 minutes
-    refetchInterval: 30 * 1000, // refetch every 30 seconds
-    refetchIntervalInBackground: true,
-  })
-}
-
-// pokemon species - example with custom cache config
-const usePokemonSpecies = (id: number) => {
-  return useQuery({
-    queryKey: [POKEMON_SPECIES_QUERY_KEY, id],
-    queryFn: () => fetchPokemonSpecies(id),
-    staleTime: 1000 * 60 * POKEMON_SPECIES_CONFIG.SPECIES_CACHE_MINUTES, // 30 minutes
-    gcTime: 1000 * 60 * POKEMON_SPECIES_CONFIG.SPECIES_GC_MINUTES, // 60 minutes
-    retry: POKEMON_SPECIES_CONFIG.RETRY_COUNT,
-    enabled: !!id,
-  })
-}
-```
-
-### cache invalidation patterns
-
-strategic cache invalidation maintains data consistency:
+Automatic cache invalidation for time-sensitive data:
 
 ```typescript
-// mutation with cache invalidation
-const useUpdateUserProfile = () => {
+const useAutoInvalidation = () => {
   const queryClient = useQueryClient()
 
-  return useMutation({
-    mutationFn: updateUserProfile,
-    onSuccess: (data, variables) => {
-      // invalidate and refetch
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Invalidate real-time data every 30 seconds
       queryClient.invalidateQueries({
-        queryKey: ['user-profile', variables.userId],
-      })
-
-      // update cache directly
-      queryClient.setQueryData(['user-profile', variables.userId], data)
-    },
-  })
-}
-
-// bulk invalidation patterns
-const invalidateUserData = (queryClient: QueryClient, userId: string) => {
-  // invalidate all user-related queries
-  queryClient.invalidateQueries({
-    predicate: (query) => {
-      const [queryType, id] = query.queryKey
-      return (
-        typeof queryType === 'string' &&
-        queryType.startsWith('user') &&
-        id === userId
-      )
-    },
-  })
-}
-
-// selective invalidation
-const useCreatePokemon = () => {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: createPokemon,
-    onSuccess: () => {
-      // invalidate list queries but keep individual pokemon cached
-      queryClient.invalidateQueries({
-        queryKey: [POKEMON_LIST_QUERY_KEY],
+        queryKey: ['real-time-data'],
         exact: true,
       })
+    }, 30000)
 
-      // refetch visible list data
-      queryClient.refetchQueries({
-        queryKey: [POKEMON_LIST_QUERY_KEY],
-        type: 'active',
-      })
-    },
-  })
+    return () => clearInterval(interval)
+  }, [queryClient])
 }
 ```
 
-## optimistic updates
+## Optimistic Updates
 
-### optimistic mutation patterns
+The template supports optimistic updates that provide immediate feedback while maintaining data consistency. For optimistic update patterns, see the [TanStack Query Optimistic Updates Guide](https://tanstack.com/query/latest/docs/react/guides/optimistic-updates).
 
-immediate ui updates with rollback on failure:
+### Optimistic Update Pattern
 
 ```typescript
-const useOptimisticUpdate = () => {
+const useOptimisticFavorite = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: updatePokemonFavorite,
+    mutationFn: updateEntityFavorite,
     onMutate: async (variables) => {
-      // cancel outgoing refetches
+      // Cancel any outgoing refetches for favorites
       await queryClient.cancelQueries({
-        queryKey: ['pokemon-favorites']
+        queryKey: ['entity-favorites'],
       })
 
-      // snapshot previous value
-      const previousFavorites = queryClient.getQueryData(['pokemon-favorites'])
+      // Snapshot the previous value
+      const previousFavorites = queryClient.getQueryData(['entity-favorites'])
 
-      // optimistically update cache
-      queryClient.setQueryData(['pokemon-favorites'], (old: IPokemon[]) => {
+      // Optimistically update the cache
+      queryClient.setQueryData(['entity-favorites'], (old: IEntity[]) => {
         if (variables.action === 'add') {
-          return [...(old || []), variables.pokemon]
+          return [...(old || []), variables.entity]
         } else {
-          return old?.filter(p => p.id !== variables.pokemon.id) || []
+          return old?.filter((e) => e.id !== variables.entity.id) || []
         }
       })
 
-      // return rollback context
+      // Return context with rollback data
       return { previousFavorites }
     },
     onError: (error, variables, context) => {
-      // rollback optimistic update
+      // Rollback optimistic update on error
       if (context?.previousFavorites) {
-        queryClient.setQueryData(['pokemon-favorites'], context.previousFavorites)
+        queryClient.setQueryData(
+          ['entity-favorites'],
+          context.previousFavorites,
+        )
       }
-
-      // show error notification
-      showErrorNotification('failed to update favorites')
     },
     onSettled: () => {
-      // refetch to sync with server
+      // Always refetch to sync with server state
       queryClient.invalidateQueries({
-        queryKey: ['pokemon-favorites']
+        queryKey: ['entity-favorites'],
       })
-    }
+    },
   })
 }
+```
 
-// optimistic ui component
-const FavoriteButton: React.FC<{ pokemon: IPokemon }> = ({ pokemon }) => {
-  const optimisticUpdate = useOptimisticUpdate()
+### Optimistic UI Implementation
+
+Components can provide immediate feedback using optimistic updates:
+
+```typescript
+const FavoriteButton: React.FC<{ entity: IEntity }> = ({ entity }) => {
+  const optimisticUpdate = useOptimisticFavorite()
   const { data: favorites } = useFavorites()
 
-  const isFavorite = favorites?.some(f => f.id === pokemon.id) ?? false
+  const isFavorite = favorites?.some(f => f.id === entity.id) ?? false
 
   const handleToggle = () => {
     optimisticUpdate.mutate({
-      pokemon,
+      entity,
       action: isFavorite ? 'remove' : 'add'
     })
   }
@@ -231,44 +329,105 @@ const FavoriteButton: React.FC<{ pokemon: IPokemon }> = ({ pokemon }) => {
     <button
       onClick={handleToggle}
       disabled={optimisticUpdate.isPending}
-      className={`favorite-button ${isFavorite ? 'active' : ''}`}
+      className={`favorite-btn ${isFavorite ? 'active' : ''}`}
     >
-      {isFavorite ? '❤️' : '🤍'}
+      {optimisticUpdate.isPending ? '⏳' : (isFavorite ? '❤️' : '🤍')}
     </button>
   )
 }
 ```
 
-### background sync patterns
+## Performance Optimization
 
-sync optimistic updates with server state:
+The template includes several performance optimization strategies for cache management.
+
+### Cache Size Monitoring
+
+Monitor cache memory usage to prevent performance degradation:
 
 ```typescript
-// background sync hook
+const useCacheMonitoring = () => {
+  const queryClient = useQueryClient()
+
+  const getCacheMetrics = () => {
+    const cache = queryClient.getQueryCache()
+    const queries = cache.getAll()
+
+    return {
+      totalQueries: queries.length,
+      activeQueries: queries.filter((q) => q.getObserversCount() > 0).length,
+      staleQueries: queries.filter((q) => q.isStale()).length,
+      errorQueries: queries.filter((q) => q.state.error).length,
+      estimatedSize: queries.reduce((size, query) => {
+        return size + JSON.stringify(query.state.data || '').length
+      }, 0),
+    }
+  }
+
+  return { getCacheMetrics }
+}
+```
+
+### Prefetching Strategies
+
+Proactive data loading improves user experience. Learn more about prefetching in the [TanStack Query Prefetching Guide](https://tanstack.com/query/latest/docs/react/guides/prefetching):
+
+```typescript
+const usePrefetchStrategy = () => {
+  const queryClient = useQueryClient()
+
+  // Prefetch on hover for entity cards
+  const prefetchEntityOnHover = useCallback(
+    (entityId: number) => {
+      queryClient.prefetchQuery({
+        queryKey: ['reference-data', entityId],
+        queryFn: () => fetchReferenceData(entityId),
+        staleTime: 10 * 60 * 1000, // 10 minutes
+      })
+    },
+    [queryClient],
+  )
+
+  // Prefetch related data when viewing entity details
+  const prefetchRelatedData = useCallback(
+    (entityName: string) => {
+      queryClient.prefetchQuery({
+        queryKey: ['dynamic-content', entityName],
+        queryFn: () => fetchDynamicContent(entityName),
+        staleTime: 15 * 60 * 1000,
+      })
+    },
+    [queryClient],
+  )
+
+  return { prefetchEntityOnHover, prefetchRelatedData }
+}
+```
+
+### Background Synchronization
+
+Keep data fresh without disrupting user experience:
+
+```typescript
 const useBackgroundSync = () => {
   const queryClient = useQueryClient()
 
   useEffect(() => {
+    // Sync active queries in background
     const syncInterval = setInterval(
       () => {
-        // sync critical data in background
         queryClient.refetchQueries({
-          predicate: (query) => {
-            const [queryType] = query.queryKey
-            return ['user-profile', 'notifications', 'real-time-data'].includes(
-              queryType as string,
-            )
-          },
           type: 'active',
+          stale: true,
         })
       },
       2 * 60 * 1000,
-    ) // every 2 minutes
+    ) // Every 2 minutes
 
     return () => clearInterval(syncInterval)
   }, [queryClient])
 
-  // sync on network reconnection
+  // Sync on network reconnection
   useEffect(() => {
     const handleOnline = () => {
       queryClient.refetchQueries({ type: 'active' })
@@ -280,373 +439,185 @@ const useBackgroundSync = () => {
 }
 ```
 
-## cache persistence
+## Next.js Server Caching
 
-### local storage integration
+The template integrates React Query caching with Next.js server-side caching for performance optimization. For more details on Next.js caching strategies, see the [Next.js Caching Documentation](https://nextjs.org/docs/app/building-your-application/caching).
 
-persistent cache survives browser sessions:
+### Fetch Cache Integration
+
+The HTTP adapters integrate with Next.js caching through fetch options:
 
 ```typescript
-// custom persistence configuration
-const createPersistentCache = () => {
-  const storage = {
-    getItem: (key: string) => {
-      const item = localStorage.getItem(key)
-      if (!item) return null
-
-      try {
-        const parsed = JSON.parse(item)
-        // check expiration
-        if (parsed.expiry && Date.now() > parsed.expiry) {
-          localStorage.removeItem(key)
-          return null
-        }
-        return parsed.data
-      } catch {
-        return null
-      }
-    },
-
-    setItem: (key: string, value: any) => {
-      const item = {
-        data: value,
-        expiry: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
-      }
-      localStorage.setItem(key, JSON.stringify(item))
-    },
-
-    removeItem: (key: string) => {
-      localStorage.removeItem(key)
-    },
-  }
-
-  return createSyncStoragePersister({
-    storage,
-    key: 'pokemon-app-cache',
-    throttleTime: 1000,
-  })
-}
-
-// selective persistence
-const persister = createAsyncStoragePersister({
-  storage: AsyncStorage,
-  key: 'pokemon-cache',
-  serialize: (data) => {
-    // only persist specific query types
-    const filteredData = {
-      ...data,
-      clientState: {
-        ...data.clientState,
-        queries: data.clientState.queries.filter((query: any) => {
-          const [queryType] = query.queryKey
-          return ['pokemon-species', 'countries', 'user-preferences'].includes(
-            queryType,
-          )
-        }),
-      },
-    }
-    return JSON.stringify(filteredData)
-  },
+// Reference data with longer cache time
+const response = await restClient.get<IReferenceData>(`/reference/${id}`, {
+  baseUrl: 'https://api.example.com/v1',
+  revalidate: 3600, // Cache for 1 hour
 })
+
+// Dynamic content with shorter cache time
+const response = await graphqlClient.query<IEntitiesResponse>(
+  GET_ENTITIES_QUERY,
+  variables,
+  {
+    baseUrl: 'https://graphql.example.com/graphql',
+    revalidate: 300, // Cache for 5 minutes
+  },
+)
 ```
 
-### cache versioning
+### Cache Coordination Strategy
 
-cache busting for application updates:
+```mermaid
+graph TB
+    subgraph "Request Flow"
+        Request[Incoming Request]
+        RQC[React Query Check]
+        NSC[Next.js Server Cache]
+        API[External API]
+        Response[Response to Client]
+    end
+
+    subgraph "Cache Decisions"
+        Fresh{Data Fresh?}
+        Cached{Server Cached?}
+        Stale{Background Update?}
+    end
+
+    Request --> RQC
+    RQC --> Fresh
+    Fresh -->|Yes| Response
+    Fresh -->|No| NSC
+    NSC --> Cached
+    Cached -->|Yes| Response
+    Cached -->|No| API
+    API --> Response
+
+    Response --> Stale
+    Stale -->|Yes| API
+
+    style Fresh fill:#e8f5e8
+    style Cached fill:#fff3e0
+    style API fill:#ffebee
+```
+
+This coordination ensures server-side and client-side caches work together rather than competing.
+
+### Tag-Based Cache Management
+
+Use cache tags for precise invalidation:
 
 ```typescript
-// version-aware cache configuration
-const CACHE_VERSION = process.env.REACT_APP_VERSION || '1.0.0'
+// Tag-based caching in queries
+const response = await graphqlClient.query(
+  GET_ENTITY_DETAILS,
+  { id: entityId },
+  {
+    tags: [`entity-${entityId}`, 'entity-details'],
+    revalidate: 300,
+  },
+)
 
-const createVersionedCache = () => {
-  // clear cache on version change
-  const storedVersion = localStorage.getItem('app-version')
-  if (storedVersion !== CACHE_VERSION) {
-    localStorage.clear()
-    localStorage.setItem('app-version', CACHE_VERSION)
-  }
+// Programmatic cache invalidation
+import { revalidateTag } from 'next/cache'
 
-  return new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 5 * 60 * 1000,
-        meta: {
-          version: CACHE_VERSION,
-        },
-      },
-    },
-  })
-}
+const updateEntityDetails = async (entityId: string) => {
+  // Update data in database
+  await updateDetailsInDatabase(entityId)
 
-// migration support
-const migrateCache = (oldVersion: string, newVersion: string) => {
-  const migrations = {
-    '1.0.0->2.0.0': () => {
-      // rename query keys
-      const cache = queryClient.getQueryCache()
-      cache.getAll().forEach((query) => {
-        if (query.queryKey[0] === 'old-pokemon-species') {
-          const newKey = ['pokemon-species', ...query.queryKey.slice(1)]
-          queryClient.setQueryData(newKey, query.state.data)
-          queryClient.removeQueries({ queryKey: query.queryKey })
-        }
-      })
-    },
-  }
+  // Invalidate specific entity cache
+  revalidateTag(`entity-${entityId}`)
 
-  const migrationKey = `${oldVersion}->${newVersion}`
-  const migration = migrations[migrationKey]
-  if (migration) migration()
+  // Invalidate all entity details cache
+  revalidateTag('entity-details')
 }
 ```
 
-## performance optimization
+## Caching Patterns
 
-### cache size management
+The template demonstrates common caching patterns that can be applied to various types of data and APIs.
 
-monitor and control cache memory usage:
+### Reference Data Caching
+
+Long-lived static data with extended cache times:
 
 ```typescript
-// cache size monitoring
-const useCacheMonitoring = () => {
-  const queryClient = useQueryClient()
-
-  const getCacheStats = () => {
-    const cache = queryClient.getQueryCache()
-    const queries = cache.getAll()
-
-    return {
-      totalQueries: queries.length,
-      activeQueries: queries.filter((q) => q.getObserversCount() > 0).length,
-      staleQueries: queries.filter((q) => q.isStale()).length,
-      errorQueries: queries.filter((q) => q.state.error).length,
-      memoryUsage: queries.reduce((size, query) => {
-        return size + JSON.stringify(query.state.data || '').length
-      }, 0),
-    }
-  }
-
-  // periodic cache cleanup
-  useEffect(() => {
-    const cleanup = setInterval(() => {
-      const stats = getCacheStats()
-
-      // if memory usage is high, garbage collect aggressively
-      if (stats.memoryUsage > 10 * 1024 * 1024) {
-        // 10MB
-        queryClient.getQueryCache().clear()
-      }
-
-      // remove error queries older than 5 minutes
-      queryClient.removeQueries({
-        predicate: (query) => {
-          return (
-            query.state.error &&
-            Date.now() - query.state.errorUpdateCount > 5 * 60 * 1000
-          )
-        },
-      })
-    }, 60 * 1000) // every minute
-
-    return () => clearInterval(cleanup)
-  }, [queryClient])
-
-  return { getCacheStats }
-}
-
-// cache size limits
-const configureCacheLimits = () => {
-  return new QueryClient({
-    defaultOptions: {
-      queries: {
-        gcTime: 10 * 60 * 1000, // 10 minutes
-        staleTime: 5 * 60 * 1000, // 5 minutes
-      },
-    },
-    queryCache: new QueryCache({
-      onError: (error, query) => {
-        console.error('query error:', error, query.queryKey)
-      },
-      onSuccess: (data, query) => {
-        // limit individual query cache size
-        if (JSON.stringify(data).length > 1024 * 1024) {
-          // 1MB
-          console.warn('large query data detected:', query.queryKey)
-        }
-      },
-    }),
+// Configuration: 30-minute stale time, 60-minute garbage collection
+const useReferenceData = (dataId: number | undefined) => {
+  return useQuery({
+    queryKey: ['reference-data', dataId],
+    queryFn: () => fetchReferenceData(dataId!),
+    enabled: !!dataId,
+    staleTime: 1000 * 60 * 30, // 30 minutes
+    gcTime: 1000 * 60 * 60, // 60 minutes
+    retry: 2,
   })
 }
 ```
 
-### prefetching strategies
+### Dynamic Content Caching
 
-proactive loading for better user experience:
+Moderate caching for semi-dynamic content:
 
 ```typescript
-// prefetch on route change
-const usePrefetchOnNavigation = () => {
-  const queryClient = useQueryClient()
-  const navigate = useNavigate()
-
-  const prefetchRoute = (path: string) => {
-    // prefetch data based on route
-    switch (path) {
-      case '/pokemon':
-        queryClient.prefetchQuery({
-          queryKey: [POKEMON_LIST_QUERY_KEY],
-          queryFn: fetchPokemonList,
-        })
-        break
-
-      case '/favorites':
-        queryClient.prefetchQuery({
-          queryKey: ['pokemon-favorites'],
-          queryFn: fetchFavorites,
-        })
-        break
-
-      default:
-        break
-    }
-  }
-
-  const navigateWithPrefetch = (path: string) => {
-    prefetchRoute(path)
-    navigate(path)
-  }
-
-  return { navigateWithPrefetch, prefetchRoute }
+// Configuration: 15-minute stale time, 30-minute garbage collection
+const useDynamicContent = (identifier: string) => {
+  return useQuery({
+    queryKey: ['dynamic-content', identifier],
+    queryFn: () => fetchDynamicContent(identifier),
+    staleTime: 15 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    retry: 2,
+    enabled: !!identifier,
+  })
 }
+```
 
-// intersection observer prefetching
-const usePrefetchOnView = () => {
-  const queryClient = useQueryClient()
+### Infinite Query Caching
 
-  const prefetchPokemon = useCallback(
-    (pokemonId: number) => {
-      queryClient.prefetchQuery({
-        queryKey: [POKEMON_SPECIES_QUERY_KEY, pokemonId],
-        queryFn: () => fetchPokemonSpecies(pokemonId),
-        staleTime: 10 * 60 * 1000, // 10 minutes
-      })
-    },
-    [queryClient],
-  )
+Pagination with intelligent cache management:
 
-  const observePokemonCard = useCallback(
-    (element: Element, pokemonId: number) => {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              prefetchPokemon(pokemonId)
-              observer.unobserve(element)
-            }
-          })
+```typescript
+// Configuration: Manual triggering with 5-minute stale time
+export const useInfiniteEntities = ({ initialOffset = 8 } = {}) => {
+  return useInfiniteQuery({
+    queryKey: ['entities', 'infinite'],
+    queryFn: async ({ pageParam = initialOffset }) => {
+      const response = await graphqlClient.query<IEntitiesResponse>(
+        GET_ENTITIES_QUERY,
+        {
+          limit: ENTITIES_PER_PAGE,
+          offset: pageParam,
         },
-        { rootMargin: '100px' },
+        {
+          baseUrl: 'https://api.example.com/graphql',
+        },
       )
 
-      observer.observe(element)
-      return () => observer.disconnect()
+      return {
+        data: response.data?.entities?.results || [],
+        nextOffset: pageParam + ENTITIES_PER_PAGE,
+      }
     },
-    [prefetchPokemon],
-  )
-
-  return { observePokemonCard }
-}
-```
-
-## next.js caching
-
-### server-side caching configuration
-
-next.js fetch api with cache configuration:
-
-```typescript
-// next.js fetch with cache tags
-const fetchPokemonWithCache = async (id: number): Promise<IPokemonSpecies> => {
-  const response = await fetch(
-    `https://pokeapi.co/api/v2/pokemon-species/${id}`,
-    {
-      next: {
-        revalidate: 30 * 60, // 30 minutes
-        tags: [`pokemon-species-${id}`, 'pokemon-data'],
-      },
+    initialPageParam: initialOffset,
+    getNextPageParam: (lastPage) => {
+      return totalLoaded < totalCount ? lastPage.nextOffset : undefined
     },
-  )
-
-  if (!response.ok) {
-    throw new Error('failed to fetch pokemon species')
-  }
-
-  return response.json()
-}
-
-// revalidate cache programmatically
-import { revalidateTag, revalidatePath } from 'next/cache'
-
-const updatePokemonSpecies = async (
-  id: number,
-  data: Partial<IPokemonSpecies>,
-) => {
-  // update data
-  await updatePokemonSpeciesInDatabase(id, data)
-
-  // revalidate specific cached data
-  revalidateTag(`pokemon-species-${id}`)
-
-  // revalidate entire pokemon data category
-  revalidateTag('pokemon-data')
-
-  // revalidate specific paths
-  revalidatePath(`/pokemon/${id}`)
-  revalidatePath('/pokemon')
+    staleTime: 5 * 60 * 1000,
+    enabled: false, // Manual trigger for performance
+  })
 }
 ```
 
-### static generation caching
+## Testing Cache Behavior
 
-incremental static regeneration (isr) configuration:
+The template includes testing patterns for cache functionality. For detailed testing guidance, see the [TanStack Query Testing Guide](https://tanstack.com/query/latest/docs/react/guides/testing).
 
-```typescript
-// page with isr
-export async function generateStaticParams() {
-  // generate static params for popular pokemon
-  const popularPokemon = await fetchPopularPokemon()
+### Cache State Testing
 
-  return popularPokemon.map(pokemon => ({
-    id: pokemon.id.toString()
-  }))
-}
-
-export default async function PokemonPage({ params }: { params: { id: string } }) {
-  const pokemon = await fetchPokemonWithCache(parseInt(params.id))
-
-  return <PokemonDetail pokemon={pokemon} />
-}
-
-// next.js config for caching
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  experimental: {
-    staleTimes: {
-      dynamic: 30, // 30 seconds
-      static: 180 // 3 minutes
-    }
-  }
-}
-```
-
-## cache testing
-
-### cache behavior testing
-
-test cache functionality and invalidation:
+Test cache behavior without external dependencies:
 
 ```typescript
-describe('Pokemon Species Cache', () => {
+describe('Reference Data Cache', () => {
   let queryClient: QueryClient
 
   beforeEach(() => {
@@ -662,11 +633,11 @@ describe('Pokemon Species Cache', () => {
     queryClient.clear()
   })
 
-  it('should cache pokemon species data', async () => {
-    const mockData = createMockPokemonSpecies()
-    mockRestGet.mockResolvedValue(mockData)
+  it('should cache reference data correctly', async () => {
+    const mockData = createMockReferenceData({ id: 25, name: 'test-entity' })
+    mockRestClient.get.mockResolvedValue(mockData)
 
-    const { result } = renderHook(() => usePokemonSpecies(25), {
+    const { result } = renderHook(() => useReferenceData(25), {
       wrapper: createQueryWrapper(queryClient),
     })
 
@@ -674,52 +645,144 @@ describe('Pokemon Species Cache', () => {
       expect(result.current.data).toEqual(mockData)
     })
 
-    // verify data is cached
-    const cachedData = queryClient.getQueryData([POKEMON_SPECIES_QUERY_KEY, 25])
+    // Verify data is cached
+    const cachedData = queryClient.getQueryData(['reference-data', 25])
     expect(cachedData).toEqual(mockData)
+
+    // Verify cache configuration
+    const query = queryClient.getQueryState(['reference-data', 25])
+    expect(query?.dataUpdatedAt).toBeTruthy()
   })
 
-  it('should invalidate cache on mutation', async () => {
-    // setup initial cache
-    queryClient.setQueryData(
-      [POKEMON_SPECIES_QUERY_KEY, 25],
-      createMockPokemonSpecies(),
-    )
+  it('should handle cache invalidation correctly', async () => {
+    // Setup initial cache state
+    queryClient.setQueryData(['reference-data', 25], createMockReferenceData())
 
-    const { result } = renderHook(() => useUpdatePokemonSpecies(), {
+    const { result } = renderHook(() => useUpdateReferenceData(), {
       wrapper: createQueryWrapper(queryClient),
     })
 
     await act(async () => {
-      result.current.mutate({ id: 25, name: 'updated-pikachu' })
+      result.current.mutate({ id: 25, updates: { name: 'updated-entity' } })
     })
 
-    // verify cache was invalidated
-    const cachedData = queryClient.getQueryState([
-      POKEMON_SPECIES_QUERY_KEY,
-      25,
-    ])
-    expect(cachedData?.isInvalidated).toBe(true)
-  })
-
-  it('should handle optimistic updates correctly', async () => {
-    const initialFavorites = [createMockPokemon({ id: 1 })]
-    queryClient.setQueryData(['pokemon-favorites'], initialFavorites)
-
-    const { result } = renderHook(() => useOptimisticUpdate(), {
-      wrapper: createQueryWrapper(queryClient),
-    })
-
-    const newPokemon = createMockPokemon({ id: 2 })
-
-    act(() => {
-      result.current.mutate({ pokemon: newPokemon, action: 'add' })
-    })
-
-    // verify optimistic update
-    const optimisticData = queryClient.getQueryData(['pokemon-favorites'])
-    expect(optimisticData).toHaveLength(2)
-    expect(optimisticData).toContain(newPokemon)
+    // Verify cache was invalidated
+    const queryState = queryClient.getQueryState(['reference-data', 25])
+    expect(queryState?.isInvalidated).toBe(true)
   })
 })
 ```
+
+### Cache Timing Tests
+
+Verify cache timing configurations:
+
+```typescript
+describe('Cache Configuration', () => {
+  it('should use correct cache timings for reference data', () => {
+    const expectedStaleTime = REFERENCE_DATA_CONFIG.CACHE_MINUTES * 60 * 1000
+    const expectedGcTime = REFERENCE_DATA_CONFIG.GC_MINUTES * 60 * 1000
+
+    expect(expectedStaleTime).toBe(30 * 60 * 1000) // 30 minutes
+    expect(expectedGcTime).toBe(60 * 60 * 1000) // 60 minutes
+  })
+
+  it('should use correct cache timings for dynamic content', () => {
+    const expectedStaleTime = DYNAMIC_CONTENT_CONFIG.CACHE_MINUTES * 60 * 1000
+    const expectedGcTime = DYNAMIC_CONTENT_CONFIG.GC_MINUTES * 60 * 1000
+
+    expect(expectedStaleTime).toBe(15 * 60 * 1000) // 15 minutes
+    expect(expectedGcTime).toBe(30 * 60 * 1000) // 30 minutes
+  })
+})
+```
+
+## Cache Management
+
+Teams can extend and customize the caching system based on their specific requirements.
+
+### Custom Cache Strategies
+
+Implement specialized caching for unique data patterns:
+
+```typescript
+// Time-sensitive data with automatic invalidation
+const useRealTimeData = (endpoint: string, interval: number = 30000) => {
+  return useQuery({
+    queryKey: ['real-time', endpoint],
+    queryFn: () => fetchRealTimeData(endpoint),
+    staleTime: 0, // Always consider stale
+    refetchInterval: interval,
+    refetchIntervalInBackground: true,
+  })
+}
+
+// User-specific data with automatic cleanup
+const useUserSpecificData = (userId: string, dataType: string) => {
+  const queryClient = useQueryClient()
+
+  // Clear user data on logout
+  useEffect(() => {
+    const handleLogout = () => {
+      queryClient.removeQueries({
+        predicate: (query) => {
+          const [type, id] = query.queryKey
+          return (
+            typeof type === 'string' && type.includes('user') && id === userId
+          )
+        },
+      })
+    }
+
+    window.addEventListener('logout', handleLogout)
+    return () => window.removeEventListener('logout', handleLogout)
+  }, [queryClient, userId])
+
+  return useQuery({
+    queryKey: ['user-data', userId, dataType],
+    queryFn: () => fetchUserData(userId, dataType),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  })
+}
+```
+
+### Environment-Specific Configuration
+
+Adjust caching behavior based on environment:
+
+```typescript
+const getCacheConfig = () => {
+  const isDevelopment = process.env.NODE_ENV === 'development'
+  const isProduction = process.env.NODE_ENV === 'production'
+
+  return {
+    staleTime: isDevelopment
+      ? 0 // Always fresh in development
+      : 5 * 60 * 1000, // 5 minutes in production
+
+    gcTime: isDevelopment
+      ? 0 // No caching in development
+      : 30 * 60 * 1000, // 30 minutes in production
+
+    refetchOnMount: isDevelopment ? 'always' : true,
+    refetchOnWindowFocus: !isProduction,
+  }
+}
+```
+
+The caching system provides a foundation that teams can customize while maintaining the benefits of cache management and performance optimization.
+
+---
+
+## References
+
+| Resource                                                                                                    | Description                                              |
+| ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| [TanStack Query](https://tanstack.com/query/latest)                                                         | Data synchronization library for React applications      |
+| [TanStack Query Caching Guide](https://tanstack.com/query/latest/docs/react/guides/caching)                 | Guide to caching strategies and configuration            |
+| [TanStack Query Configuration](https://tanstack.com/query/latest/docs/react/reference/QueryClient)          | QueryClient configuration options and setup              |
+| [TanStack Query Invalidation Guide](https://tanstack.com/query/latest/docs/react/guides/query-invalidation) | Cache invalidation patterns and best practices           |
+| [TanStack Query Optimistic Updates](https://tanstack.com/query/latest/docs/react/guides/optimistic-updates) | Implementing optimistic UI updates with cache management |
+| [TanStack Query Prefetching Guide](https://tanstack.com/query/latest/docs/react/guides/prefetching)         | Data prefetching strategies for better user experience   |
+| [TanStack Query Testing Guide](https://tanstack.com/query/latest/docs/react/guides/testing)                 | Testing patterns for cached data and query behavior      |
+| [Next.js Caching Documentation](https://nextjs.org/docs/app/building-your-application/caching)              | Server-side caching strategies and configuration         |
