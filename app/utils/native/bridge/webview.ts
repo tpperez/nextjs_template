@@ -1,4 +1,4 @@
-import { ExternalFn, Fn, TOptionalFunction, TStore } from './native.types'
+import { ExternalFn, Fn, TOptionalFunction, TStore } from '../types'
 
 export class WebViewBridge {
   public eventListenerMap: Record<string, Fn[]> = {}

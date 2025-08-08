@@ -1,4 +1,4 @@
-import { NativeInboundEvents, NativeOutboundEvents } from './events-name'
+import { NativeInboundEvents, NativeOutboundEvents } from '../events'
 
 const closeWebView = () => {
   if (typeof window !== 'undefined') {

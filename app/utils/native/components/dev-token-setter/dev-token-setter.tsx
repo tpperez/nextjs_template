@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react'
 
 import Cookies from 'js-cookie'
 
-import { getTokenExpiration, TOKEN_COOKIE_NAME } from './token.utils'
+import { getTokenExpiration, TOKEN_COOKIE_NAME } from '../../token'
 
-export const DevTokenSetter = () => {
+const DevTokenSetter = () => {
   const [jwt, setJwt] = useState('')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -19,7 +19,7 @@ export const DevTokenSetter = () => {
   }, [])
 
   const handleSubmit = () => {
-    if (!jwt || !jwt.startsWith('ey')) {
+    if (!jwt) {
       setError('Invalid JWT')
       return
     }
@@ -102,3 +102,5 @@ export const DevTokenSetter = () => {
     </div>
   )
 }
+
+export default DevTokenSetter
