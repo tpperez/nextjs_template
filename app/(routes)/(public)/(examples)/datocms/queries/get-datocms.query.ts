@@ -1,4 +1,4 @@
-import { graphqlClient } from '@/app/services/http'
+import { graphqlClient } from '@/app/services/http/graphql'
 
 import type { IDatocmsResponse } from './get-datocms.type'
 import { GET_DATOCMS_QUERY } from './get-datocms-query.const'

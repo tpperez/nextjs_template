@@ -9,7 +9,7 @@ import type { IPokemonsResponse } from '@/app/(routes)/(public)/(examples)/pokem
 import { POKEMONS_PER_PAGE, POKEMONS_QUERY_CONFIG } from './pokemons.const'
 import { useMorePokemons } from './pokemons.hook'
 
-vi.mock('@/app/services/http', () => {
+vi.mock('@/app/services/http/graphql', () => {
   return {
     graphqlClient: {
       query: vi.fn(),
@@ -17,7 +17,7 @@ vi.mock('@/app/services/http', () => {
   }
 })
 
-import { graphqlClient } from '@/app/services/http'
+import { graphqlClient } from '@/app/services/http/graphql'
 
 vi.mock(
   '@/app/(routes)/(public)/(examples)/pokemons/queries/get-pokemons.const',

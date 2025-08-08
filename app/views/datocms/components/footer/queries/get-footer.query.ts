@@ -1,4 +1,4 @@
-import { graphqlClient } from '@/app/services/http'
+import { graphqlClient } from '@/app/services/http/graphql'
 
 import { GET_FOOTER_QUERY } from './get-footer.const'
 import type { IGetFooterResponse } from './get-footer.type'

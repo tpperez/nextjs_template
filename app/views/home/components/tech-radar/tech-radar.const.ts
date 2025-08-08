@@ -7,12 +7,12 @@ export const TECH_RADAR_CONFIG: IRadarConfig = {
   height: 1000,
   scale: 1.0,
   colors: {
-    background: '#fff',
+    background: 'transparent',
     grid: '#bbb',
     inactive: '#ddd',
   },
   font_family: 'Arial, Helvetica',
-  title: 'YAPE - Frontend Tech Radar',
+  title: 'Frontend Tech Radar',
   quadrants: [
     { name: 'Languages & Frameworks' }, // Bottom Right (0)
     { name: 'Data & APIs' }, // Bottom Left (1)

@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { renderHook, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { graphqlClient } from '@/app/services/http'
+import { graphqlClient } from '@/app/services/http/graphql'
 
 import {
   POKEMON_MOVES_GRAPHQL_CONFIG,
@@ -13,7 +13,7 @@ import {
 import usePokemonMovesGraphQL from './pokemon-moves.hook'
 import type { IGraphQLPokemonMovesResponse } from './pokemon-moves.type'
 
-vi.mock('@/app/services/http', () => {
+vi.mock('@/app/services/http/graphql', () => {
   return {
     graphqlClient: {
       query: vi.fn(),

@@ -14,7 +14,7 @@ import type {
   IPokemonSearchResult,
 } from './pokemon-search.type'
 
-vi.mock('@/app/services/http', () => {
+vi.mock('@/app/services/http/graphql', () => {
   return {
     graphqlClient: {
       query: vi.fn(),
@@ -30,7 +30,7 @@ vi.mock('./pokemon-search.const', () => {
   }
 })
 
-import { graphqlClient } from '@/app/services/http'
+import { graphqlClient } from '@/app/services/http/graphql'
 
 describe('usePokemonNameSearch Hook', () => {
   let queryClient: QueryClient

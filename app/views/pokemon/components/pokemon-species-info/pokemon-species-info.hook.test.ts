@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { renderHook, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { restClient } from '@/app/services/http'
+import { restClient } from '@/app/services/http/rest'
 
 import {
   POKEMON_SPECIES_CONFIG,
@@ -13,7 +13,7 @@ import {
 import usePokemonSpecies from './pokemon-species-info.hook'
 import type { IPokemonSpecies } from './pokemon-species-info.type'
 
-vi.mock('@/app/services/http', () => {
+vi.mock('@/app/services/http/rest', () => {
   return {
     restClient: {
       get: vi.fn(),
