@@ -1,4 +1,4 @@
-import { restClient } from '@/app/services/http'
+import { restClient } from '@/app/services/http/rest'
 
 import { IPokemonDetail } from './get-pokemon-detail.type'
 

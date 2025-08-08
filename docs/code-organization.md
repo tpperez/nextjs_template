@@ -394,7 +394,7 @@ import Button from '@/app/components/ui/button'
 import Spinner from '@/app/components/ui/spinner'
 
 // Importing global services
-import { restClient, graphqlClient } from '@/app/services/http'
+import { graphqlClient } from '@/app/services/http/graphql'
 
 // Importing global state
 import useUserPreferencesStore from '@/app/stores/user-preferences'

@@ -5,7 +5,7 @@ import type { Metadata } from 'next'
 import { LANGUAGE } from '@/app/constants/config'
 import type ILayout from '@/app/types/layout'
 
-import { HttpProvider } from './services/http'
+import { HttpProvider } from './services/http/providers'
 
 import '@/app/styles/globals.css'
 

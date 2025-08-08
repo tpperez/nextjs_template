@@ -1,4 +1,4 @@
-import { graphqlClient } from '@/app/services/http'
+import { graphqlClient } from '@/app/services/http/graphql'
 
 import { GET_HEADER_QUERY } from './get-header.const'
 import type { IGetHeaderResponse } from './get-header.type'

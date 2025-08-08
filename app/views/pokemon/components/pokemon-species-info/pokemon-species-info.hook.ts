@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { restClient } from '@/app/services/http'
+import { restClient } from '@/app/services/http/rest'
 
 import {
   POKEMON_SPECIES_CONFIG,

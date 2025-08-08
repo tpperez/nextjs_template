@@ -805,14 +805,16 @@ The template includes testing utilities and patterns for reliable data fetching 
 Testing focuses on behavior rather than implementation details. Mock the HTTP clients rather than individual fetch calls:
 
 ```typescript
-// Mock the entire HTTP client
-vi.mock('@/app/services/http', () => ({
+vi.mock('@/app/services/http/rest', () => ({
   restClient: {
     get: vi.fn(),
     post: vi.fn(),
     put: vi.fn(),
     delete: vi.fn(),
   },
+}))
+
+vi.mock('@/app/services/http/graphql', () => ({
   graphqlClient: {
     query: vi.fn(),
     mutation: vi.fn(),

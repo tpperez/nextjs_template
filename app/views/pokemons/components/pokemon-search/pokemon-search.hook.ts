@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { graphqlClient } from '@/app/services/http'
+import { graphqlClient } from '@/app/services/http/graphql'
 
 import {
   GET_POKEMON_BY_NAME,

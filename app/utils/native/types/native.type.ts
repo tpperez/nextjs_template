@@ -1,4 +1,4 @@
-import { WebViewBridge } from './webview-bridge'
+import { WebViewBridge } from '@/app/utils/native/bridge'
 
 declare global {
   interface Window {
@@ -9,12 +9,12 @@ declare global {
   }
 }
 
-interface EventPayload {
+export interface EventPayload {
   url?: string
   tag?: string
 }
 
-interface JWTEventPayload {
+export interface JWTEventPayload {
   jwt: string
 }
 

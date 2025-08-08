@@ -1,4 +1,4 @@
-import { graphqlClient } from '@/app/services/http'
+import { graphqlClient } from '@/app/services/http/graphql'
 
 import { GET_POKEMONS } from './get-pokemons.const'
 import { IPokemonsResponse } from './get-pokemons.type'
